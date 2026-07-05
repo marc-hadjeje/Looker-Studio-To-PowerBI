@@ -1,0 +1,10 @@
+{
+  "projectName": "dim_store_Looker_Studio_Example",
+  "sourceReport": "dim_store_Looker_Studio_Example",
+  "dataSourcesCount": 1,
+  "tablesCount": 1,
+  "measuresCount": 0,
+  "refreshMode": "Import",
+  "migratedFrom": "Looker Studio (BigQuery)",
+  "createdDate": "2026-07-02T19:12:04.609560"
+}

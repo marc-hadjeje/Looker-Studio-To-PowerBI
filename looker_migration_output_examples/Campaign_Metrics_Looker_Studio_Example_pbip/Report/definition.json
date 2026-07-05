@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "name": "Campaign_Metrics_Looker_Studio_Example",
+  "pages": [
+    {
+      "name": "Overview",
+      "displayName": "Overview",
+      "visuals": []
+    }
+  ],
+  "filters": [
+    {
+      "name": "Date Range",
+      "type": "daterange",
+      "field": ""
+    },
+    {
+      "name": "campaign_id",
+      "type": "dropdown",
+      "field": ""
+    }
+  ],
+  "theme": {}
+}

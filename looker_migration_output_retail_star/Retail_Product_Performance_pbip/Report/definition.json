@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "name": "Retail_Product_Performance",
+  "pages": [
+    {
+      "name": "Product Analysis",
+      "displayName": "Product Analysis",
+      "visuals": []
+    }
+  ],
+  "filters": [
+    {
+      "name": "Date Range",
+      "type": "Filter",
+      "field": "sales_date"
+    },
+    {
+      "name": "Category",
+      "type": "Filter",
+      "field": "category"
+    }
+  ],
+  "theme": {}
+}

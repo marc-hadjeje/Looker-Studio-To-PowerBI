@@ -1,0 +1,10 @@
+{
+  "projectName": "Retail_Product_Performance",
+  "sourceReport": "Retail_Product_Performance",
+  "dataSourcesCount": 1,
+  "tablesCount": 1,
+  "measuresCount": 1,
+  "refreshMode": "Import",
+  "migratedFrom": "Looker Studio (BigQuery)",
+  "createdDate": "2026-07-02T16:13:59.479597"
+}

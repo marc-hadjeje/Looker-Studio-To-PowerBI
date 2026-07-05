@@ -1,0 +1,22 @@
+[
+  {
+    "datasetReference": {
+      "datasetId": "demo",
+      "projectId": "ferrous-gate-496806-b7"
+    },
+    "id": "ferrous-gate-496806-b7:demo",
+    "kind": "bigquery#dataset",
+    "location": "europe-west9",
+    "type": "DEFAULT"
+  },
+  {
+    "datasetReference": {
+      "datasetId": "retail_star",
+      "projectId": "ferrous-gate-496806-b7"
+    },
+    "id": "ferrous-gate-496806-b7:retail_star",
+    "kind": "bigquery#dataset",
+    "location": "US",
+    "type": "DEFAULT"
+  }
+]

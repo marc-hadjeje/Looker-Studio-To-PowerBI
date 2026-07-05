@@ -1,0 +1,10 @@
+{
+  "projectName": "Retail_Hybrid_Actual_vs_Target_(BigQuery_+_Google_Sheets)",
+  "sourceReport": "Retail_Hybrid_Actual_vs_Target_(BigQuery_+_Google_Sheets)",
+  "dataSourcesCount": 2,
+  "tablesCount": 2,
+  "measuresCount": 2,
+  "refreshMode": "Import",
+  "migratedFrom": "Looker Studio (BigQuery)",
+  "createdDate": "2026-07-01T14:55:06.515908"
+}

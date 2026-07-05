@@ -1,0 +1,4 @@
+database 'Retail_Product_Performance' 
+    compatibilityLevel = 1550
+    collation = 'en-US'
+    language = 'en-US'

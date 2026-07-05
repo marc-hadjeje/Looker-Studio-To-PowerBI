@@ -1,0 +1,7 @@
+// Data sources from Looker Studio
+
+table 'ds_sales'
+    sourceLineageTag = "ds_sales"
+    partition 'Partition1' = m(#"ds_sales")
+    annotation PBI_ResultType = Table
+

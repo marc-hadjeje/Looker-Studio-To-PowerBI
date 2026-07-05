@@ -1,0 +1,30 @@
+{
+  "migrationDate": "2026-07-02T13:25:59.127993",
+  "projectPath": "looker_migration_output_examples_fixed\\sales_Looker_Studio_Example_pbip",
+  "dataSources": {
+    "totalSources": 1,
+    "bigQuerySources": 1,
+    "googleSheetsSources": 0,
+    "sources": {
+      "ds_sales": {
+        "original": "SELECT * FROM `ferrous-gate-496806-b7.demo.sales`",
+        "dataset": "demo",
+        "table": "sales",
+        "sourceType": "bigquery",
+        "priority": 1
+      }
+    }
+  },
+  "transformation": {
+    "dataSources": 1,
+    "controls": 1,
+    "formulas": 1,
+    "formulaFidelity": 100.0
+  },
+  "notes": [
+    "BigQuery queries have been converted to T-SQL format",
+    "Google Sheets connections use ExcelOnline connector",
+    "Review all formulas for DAX compatibility",
+    "Update connection credentials before publishing"
+  ]
+}

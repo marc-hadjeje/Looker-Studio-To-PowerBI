@@ -1,0 +1,163 @@
+{
+  "id": "dim_date",
+  "title": "dim_date Looker Studio Example",
+  "description": "Adaptive Looker Studio sample generated from dim_date (generic profile)",
+  "dataSources": [
+    {
+      "id": "ds_dim_date",
+      "sourceType": "BigQuery",
+      "name": "dim_date",
+      "query": "SELECT * FROM `ferrous-gate-496806-b7.retail_star.dim_date`",
+      "configuration": {
+        "projectId": "ferrous-gate-496806-b7",
+        "datasetId": "retail_star",
+        "table": "dim_date",
+        "tableId": "dim_date",
+        "query": "SELECT * FROM `ferrous-gate-496806-b7.retail_star.dim_date`"
+      }
+    }
+  ],
+  "parameterControls": [
+    {
+      "id": "ctrl_dim_date_date_range",
+      "name": "Date Range",
+      "type": "DateRange",
+      "defaultValue": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-12-31"
+      },
+      "linkedField": "date_key"
+    },
+    {
+      "id": "ctrl_dim_date_dimension",
+      "name": "year",
+      "type": "Dropdown",
+      "options": [],
+      "multiSelect": true,
+      "linkedField": "year"
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_dim_date_overview",
+      "name": "Overview",
+      "layout": {
+        "rows": 3,
+        "columns": 4
+      },
+      "visuals": [
+        {
+          "id": "visual_dim_date_scorecard_1",
+          "name": "Total Records",
+          "type": "Scorecard",
+          "position": {
+            "row": 0,
+            "column": 0,
+            "width": 1,
+            "height": 1
+          },
+          "dataSourceId": "ds_dim_date",
+          "configuration": {
+            "metric": "COUNT(*)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_dim_date_scorecard_2",
+          "name": "Primary Metric",
+          "type": "Scorecard",
+          "position": {
+            "row": 0,
+            "column": 1,
+            "width": 1,
+            "height": 1
+          },
+          "dataSourceId": "ds_dim_date",
+          "configuration": {
+            "metric": "COUNT(*)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_dim_date_trend",
+          "name": "dim_date Trend",
+          "type": "LineChart",
+          "position": {
+            "row": 1,
+            "column": 0,
+            "width": 2,
+            "height": 1
+          },
+          "dataSourceId": "ds_dim_date",
+          "configuration": {
+            "xAxis": "DATE_TRUNC(date_key, MONTH)",
+            "yAxis": "COUNT(*)",
+            "legend": false
+          }
+        },
+        {
+          "id": "visual_dim_date_breakdown",
+          "name": "dim_date by year",
+          "type": "ColumnChart",
+          "position": {
+            "row": 1,
+            "column": 2,
+            "width": 2,
+            "height": 1
+          },
+          "dataSourceId": "ds_dim_date",
+          "configuration": {
+            "xAxis": "year",
+            "yAxis": "COUNT(*)",
+            "sort": "descending"
+          }
+        },
+        {
+          "id": "visual_dim_date_table",
+          "name": "dim_date Details",
+          "type": "Table",
+          "position": {
+            "row": 2,
+            "column": 0,
+            "width": 4,
+            "height": 1
+          },
+          "dataSourceId": "ds_dim_date",
+          "configuration": {
+            "dimensions": [
+              "year",
+              "date_key"
+            ],
+            "metrics": [
+              "COUNT(*)"
+            ],
+            "sort": "COUNT(*) DESC",
+            "limit": 20
+          }
+        }
+      ]
+    }
+  ],
+  "calculatedFields": [],
+  "generatedFromTableSchema": {
+    "profile": "generic",
+    "dateColumn": "date_key",
+    "dimensionColumn": "year",
+    "metricColumn": null,
+    "columns": [
+      "date_key",
+      "full_date",
+      "year",
+      "quarter",
+      "month",
+      "month_name",
+      "week_of_year",
+      "day_of_month",
+      "day_name",
+      "iso_week",
+      "is_weekend"
+    ]
+  },
+  "generatedAt": "2026-07-05T10:07:10.563985",
+  "version": "2.0"
+}

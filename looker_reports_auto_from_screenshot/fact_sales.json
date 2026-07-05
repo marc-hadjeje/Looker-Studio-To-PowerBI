@@ -1,0 +1,176 @@
+{
+  "id": "fact_sales",
+  "title": "fact_sales Looker Studio Example",
+  "description": "Adaptive Looker Studio sample generated from fact_sales (customer profile)",
+  "dataSources": [
+    {
+      "id": "ds_fact_sales",
+      "sourceType": "BigQuery",
+      "name": "fact_sales",
+      "query": "SELECT * FROM `ferrous-gate-496806-b7.retail_star.fact_sales`",
+      "configuration": {
+        "projectId": "ferrous-gate-496806-b7",
+        "datasetId": "retail_star",
+        "table": "fact_sales",
+        "tableId": "fact_sales",
+        "query": "SELECT * FROM `ferrous-gate-496806-b7.retail_star.fact_sales`"
+      }
+    }
+  ],
+  "parameterControls": [
+    {
+      "id": "ctrl_fact_sales_date_range",
+      "name": "Date Range",
+      "type": "DateRange",
+      "defaultValue": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-12-31"
+      },
+      "linkedField": "date_key"
+    },
+    {
+      "id": "ctrl_fact_sales_dimension",
+      "name": "sales_key",
+      "type": "Dropdown",
+      "options": [],
+      "multiSelect": true,
+      "linkedField": "sales_key"
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_fact_sales_overview",
+      "name": "Overview",
+      "layout": {
+        "rows": 3,
+        "columns": 4
+      },
+      "visuals": [
+        {
+          "id": "visual_fact_sales_scorecard_1",
+          "name": "Total Records",
+          "type": "Scorecard",
+          "position": {
+            "row": 0,
+            "column": 0,
+            "width": 1,
+            "height": 1
+          },
+          "dataSourceId": "ds_fact_sales",
+          "configuration": {
+            "metric": "COUNT(*)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_fact_sales_scorecard_2",
+          "name": "Primary Metric",
+          "type": "Scorecard",
+          "position": {
+            "row": 0,
+            "column": 1,
+            "width": 1,
+            "height": 1
+          },
+          "dataSourceId": "ds_fact_sales",
+          "configuration": {
+            "metric": "SUM(sales_key)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_fact_sales_trend",
+          "name": "fact_sales Trend",
+          "type": "LineChart",
+          "position": {
+            "row": 1,
+            "column": 0,
+            "width": 2,
+            "height": 1
+          },
+          "dataSourceId": "ds_fact_sales",
+          "configuration": {
+            "xAxis": "DATE_TRUNC(date_key, MONTH)",
+            "yAxis": "SUM(sales_key)",
+            "legend": false
+          }
+        },
+        {
+          "id": "visual_fact_sales_breakdown",
+          "name": "fact_sales by sales_key",
+          "type": "ColumnChart",
+          "position": {
+            "row": 1,
+            "column": 2,
+            "width": 2,
+            "height": 1
+          },
+          "dataSourceId": "ds_fact_sales",
+          "configuration": {
+            "xAxis": "sales_key",
+            "yAxis": "SUM(sales_key)",
+            "sort": "descending"
+          }
+        },
+        {
+          "id": "visual_fact_sales_table",
+          "name": "fact_sales Details",
+          "type": "Table",
+          "position": {
+            "row": 2,
+            "column": 0,
+            "width": 4,
+            "height": 1
+          },
+          "dataSourceId": "ds_fact_sales",
+          "configuration": {
+            "dimensions": [
+              "sales_key",
+              "date_key"
+            ],
+            "metrics": [
+              "sales_key"
+            ],
+            "sort": "sales_key DESC",
+            "limit": 20
+          }
+        }
+      ]
+    }
+  ],
+  "calculatedFields": [
+    {
+      "id": "calc_fact_sales_metric",
+      "name": "sales_key Total",
+      "formula": "SUM(sales_key)",
+      "description": "Aggregated metric for sales_key"
+    }
+  ],
+  "generatedFromTableSchema": {
+    "profile": "customer",
+    "dateColumn": "date_key",
+    "dimensionColumn": "sales_key",
+    "metricColumn": "sales_key",
+    "columns": [
+      "sales_key",
+      "order_id",
+      "order_line_id",
+      "date_key",
+      "product_key",
+      "customer_key",
+      "store_key",
+      "channel_key",
+      "quantity",
+      "unit_price",
+      "gross_amount",
+      "discount_amount",
+      "net_sales_amount",
+      "cost_amount",
+      "profit_amount"
+    ],
+    "layoutProfile": "desktop",
+    "screenshotSize": null
+  },
+  "generatedAt": "2026-07-05T10:09:10.807962",
+  "version": "2.0"
+}

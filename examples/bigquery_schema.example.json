@@ -1,0 +1,37 @@
+{
+  "projectId": "your-gcp-project",
+  "defaultDatasetId": "analytics",
+  "tables": [
+    {
+      "projectId": "your-gcp-project",
+      "datasetId": "sales",
+      "table": "orders",
+      "name": "Orders",
+      "preferredReport": "sales",
+      "columns": [
+        {"name": "order_id", "type": "STRING"},
+        {"name": "customer_id", "type": "STRING"},
+        {"name": "order_date", "type": "DATE"},
+        {"name": "region", "type": "STRING"},
+        {"name": "product_category", "type": "STRING"},
+        {"name": "order_amount", "type": "NUMERIC"}
+      ]
+    },
+    {
+      "projectId": "your-gcp-project",
+      "datasetId": "marketing",
+      "table": "campaign_metrics",
+      "name": "Campaign Metrics",
+      "preferredReport": "marketing",
+      "columns": [
+        {"name": "campaign_id", "type": "STRING"},
+        {"name": "channel", "type": "STRING"},
+        {"name": "start_date", "type": "DATE"},
+        {"name": "budget_spent", "type": "NUMERIC"},
+        {"name": "clicks", "type": "INT64"},
+        {"name": "conversions", "type": "INT64"},
+        {"name": "revenue_attributed", "type": "NUMERIC"}
+      ]
+    }
+  ]
+}

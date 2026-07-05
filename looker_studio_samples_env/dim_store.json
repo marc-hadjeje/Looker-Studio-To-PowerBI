@@ -1,0 +1,160 @@
+{
+  "id": "dim_store",
+  "title": "dim_store Looker Studio Example",
+  "description": "Adaptive Looker Studio sample generated from dim_store (generic profile)",
+  "dataSources": [
+    {
+      "id": "ds_dim_store",
+      "sourceType": "BigQuery",
+      "name": "dim_store",
+      "query": "SELECT * FROM `ferrous-gate-496806-b7.retail_star.dim_store`",
+      "configuration": {
+        "projectId": "ferrous-gate-496806-b7",
+        "datasetId": "retail_star",
+        "table": "dim_store",
+        "tableId": "dim_store",
+        "query": "SELECT * FROM `ferrous-gate-496806-b7.retail_star.dim_store`"
+      }
+    }
+  ],
+  "parameterControls": [
+    {
+      "id": "ctrl_dim_store_date_range",
+      "name": "Date Range",
+      "type": "DateRange",
+      "defaultValue": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-12-31"
+      },
+      "linkedField": "opened_date"
+    },
+    {
+      "id": "ctrl_dim_store_dimension",
+      "name": "store_key",
+      "type": "Dropdown",
+      "options": [],
+      "multiSelect": true,
+      "linkedField": "store_key"
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_dim_store_overview",
+      "name": "Overview",
+      "layout": {
+        "rows": 3,
+        "columns": 4
+      },
+      "visuals": [
+        {
+          "id": "visual_dim_store_scorecard_1",
+          "name": "Total Records",
+          "type": "Scorecard",
+          "position": {
+            "row": 0,
+            "column": 0,
+            "width": 1,
+            "height": 1
+          },
+          "dataSourceId": "ds_dim_store",
+          "configuration": {
+            "metric": "COUNT(*)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_dim_store_scorecard_2",
+          "name": "Primary Metric",
+          "type": "Scorecard",
+          "position": {
+            "row": 0,
+            "column": 1,
+            "width": 1,
+            "height": 1
+          },
+          "dataSourceId": "ds_dim_store",
+          "configuration": {
+            "metric": "COUNT(*)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_dim_store_trend",
+          "name": "dim_store Trend",
+          "type": "LineChart",
+          "position": {
+            "row": 1,
+            "column": 0,
+            "width": 2,
+            "height": 1
+          },
+          "dataSourceId": "ds_dim_store",
+          "configuration": {
+            "xAxis": "DATE_TRUNC(opened_date, MONTH)",
+            "yAxis": "COUNT(*)",
+            "legend": false
+          }
+        },
+        {
+          "id": "visual_dim_store_breakdown",
+          "name": "dim_store by store_key",
+          "type": "ColumnChart",
+          "position": {
+            "row": 1,
+            "column": 2,
+            "width": 2,
+            "height": 1
+          },
+          "dataSourceId": "ds_dim_store",
+          "configuration": {
+            "xAxis": "store_key",
+            "yAxis": "COUNT(*)",
+            "sort": "descending"
+          }
+        },
+        {
+          "id": "visual_dim_store_table",
+          "name": "dim_store Details",
+          "type": "Table",
+          "position": {
+            "row": 2,
+            "column": 0,
+            "width": 4,
+            "height": 1
+          },
+          "dataSourceId": "ds_dim_store",
+          "configuration": {
+            "dimensions": [
+              "store_key",
+              "opened_date"
+            ],
+            "metrics": [
+              "COUNT(*)"
+            ],
+            "sort": "COUNT(*) DESC",
+            "limit": 20
+          }
+        }
+      ]
+    }
+  ],
+  "calculatedFields": [],
+  "generatedFromTableSchema": {
+    "profile": "generic",
+    "dateColumn": "opened_date",
+    "dimensionColumn": "store_key",
+    "metricColumn": null,
+    "columns": [
+      "store_key",
+      "store_id",
+      "store_name",
+      "city",
+      "region",
+      "country",
+      "store_format",
+      "opened_date"
+    ]
+  },
+  "generatedAt": "2026-07-02T19:38:48.696620",
+  "version": "2.0"
+}

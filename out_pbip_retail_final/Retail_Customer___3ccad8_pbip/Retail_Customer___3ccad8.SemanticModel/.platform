@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Retail_Customer_&_Channel_Insights"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "93b2513b-b3c8-4caf-860d-07bb5b06456c"
+  }
+}

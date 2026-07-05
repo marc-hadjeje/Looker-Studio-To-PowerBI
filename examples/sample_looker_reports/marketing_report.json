@@ -1,0 +1,201 @@
+{
+  "id": "marketing-report-2024",
+  "title": "Marketing Campaign Performance",
+  "description": "Marketing metrics including campaign ROI, customer acquisition, and engagement",
+  "dataSources": [
+    {
+      "id": "ds_campaigns",
+      "sourceType": "BigQuery",
+      "name": "Campaign Data",
+      "configuration": {
+        "projectId": "your-gcp-project",
+        "datasetId": "marketing_analytics",
+        "table": "campaign_metrics",
+        "query": "SELECT campaign_id, campaign_name, channel, start_date, end_date, budget_spent, impressions, clicks, conversions, revenue_attributed FROM marketing_analytics.campaign_metrics"
+      }
+    },
+    {
+      "id": "ds_customers",
+      "sourceType": "BigQuery",
+      "name": "Customer Acquisition",
+      "configuration": {
+        "projectId": "your-gcp-project",
+        "datasetId": "marketing_analytics",
+        "table": "customer_journey",
+        "query": "SELECT customer_id, acquisition_date, acquisition_channel, first_purchase_value, lifetime_value, repeat_purchase_count FROM marketing_analytics.customer_journey"
+      }
+    }
+  ],
+  "parameterControls": [
+    {
+      "id": "ctrl_period",
+      "name": "Time Period",
+      "type": "Dropdown",
+      "options": ["Last 7 days", "Last 30 days", "Last 90 days", "YTD", "Custom"],
+      "defaultValue": "Last 30 days"
+    },
+    {
+      "id": "ctrl_channel",
+      "name": "Marketing Channel",
+      "type": "Dropdown",
+      "options": ["Email", "Social Media", "Search", "Display", "Affiliate", "Direct"],
+      "multiSelect": true,
+      "defaultValue": ["Email", "Social Media"]
+    },
+    {
+      "id": "ctrl_campaign_status",
+      "name": "Campaign Status",
+      "type": "Dropdown",
+      "options": ["Active", "Paused", "Completed", "Planned"],
+      "multiSelect": true,
+      "defaultValue": ["Active", "Completed"]
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_dashboard",
+      "name": "Dashboard",
+      "layout": {
+        "rows": 3,
+        "columns": 4
+      },
+      "visuals": [
+        {
+          "id": "visual_total_spend",
+          "name": "Total Spend",
+          "type": "Scorecard",
+          "position": {"row": 0, "column": 0, "width": 1, "height": 1},
+          "dataSourceId": "ds_campaigns",
+          "configuration": {
+            "metric": "SUM(budget_spent)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_total_revenue",
+          "name": "Total Revenue",
+          "type": "Scorecard",
+          "position": {"row": 0, "column": 1, "width": 1, "height": 1},
+          "dataSourceId": "ds_campaigns",
+          "configuration": {
+            "metric": "SUM(revenue_attributed)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_roas",
+          "name": "ROAS",
+          "type": "Scorecard",
+          "position": {"row": 0, "column": 2, "width": 1, "height": 1},
+          "dataSourceId": "ds_campaigns",
+          "configuration": {
+            "metric": "SUM(revenue_attributed) / SUM(budget_spent)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_conversion_rate",
+          "name": "Conversion Rate",
+          "type": "Scorecard",
+          "position": {"row": 0, "column": 3, "width": 1, "height": 1},
+          "dataSourceId": "ds_campaigns",
+          "configuration": {
+            "metric": "SUM(conversions) / SUM(clicks) * 100",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_channel_performance",
+          "name": "Performance by Channel",
+          "type": "Table",
+          "position": {"row": 1, "column": 0, "width": 2, "height": 1},
+          "dataSourceId": "ds_campaigns",
+          "configuration": {
+            "dimensions": ["channel"],
+            "metrics": ["SUM(budget_spent)", "SUM(revenue_attributed)", "SUM(conversions)", "SUM(revenue_attributed)/SUM(budget_spent)"],
+            "sort": "SUM(revenue_attributed) DESC"
+          }
+        },
+        {
+          "id": "visual_ctr_by_channel",
+          "name": "CTR by Channel",
+          "type": "BarChart",
+          "position": {"row": 1, "column": 2, "width": 2, "height": 1},
+          "dataSourceId": "ds_campaigns",
+          "configuration": {
+            "xAxis": "channel",
+            "yAxis": "SUM(clicks) / SUM(impressions) * 100",
+            "sort": "descending"
+          }
+        },
+        {
+          "id": "visual_spend_timeline",
+          "name": "Spend Over Time",
+          "type": "AreaChart",
+          "position": {"row": 2, "column": 0, "width": 2, "height": 1},
+          "dataSourceId": "ds_campaigns",
+          "configuration": {
+            "xAxis": "DATE_TRUNC(start_date, DAY)",
+            "yAxis": "SUM(budget_spent)",
+            "legend": "channel"
+          }
+        },
+        {
+          "id": "visual_customer_value",
+          "name": "Customer Lifetime Value by Acquisition Channel",
+          "type": "ColumnChart",
+          "position": {"row": 2, "column": 2, "width": 2, "height": 1},
+          "dataSourceId": "ds_customers",
+          "configuration": {
+            "xAxis": "acquisition_channel",
+            "yAxis": "AVG(lifetime_value)",
+            "sort": "descending"
+          }
+        }
+      ]
+    },
+    {
+      "id": "page_campaigns",
+      "name": "Campaign Details",
+      "layout": {
+        "rows": 2,
+        "columns": 1
+      },
+      "visuals": [
+        {
+          "id": "visual_campaigns_table",
+          "name": "All Campaigns",
+          "type": "Table",
+          "position": {"row": 0, "column": 0, "width": 1, "height": 2},
+          "dataSourceId": "ds_campaigns",
+          "configuration": {
+            "dimensions": ["campaign_name", "channel", "start_date", "end_date"],
+            "metrics": ["SUM(budget_spent)", "SUM(impressions)", "SUM(clicks)", "SUM(conversions)", "SUM(revenue_attributed)"],
+            "sort": "SUM(budget_spent) DESC",
+            "limit": 50
+          }
+        }
+      ]
+    }
+  ],
+  "calculatedFields": [
+    {
+      "id": "calc_cpc",
+      "name": "Cost Per Click",
+      "formula": "SUM(budget_spent) / SUM(clicks)",
+      "description": "Average cost per click"
+    },
+    {
+      "id": "calc_cpa",
+      "name": "Cost Per Acquisition",
+      "formula": "SUM(budget_spent) / SUM(conversions)",
+      "description": "Average cost per conversion/sale"
+    },
+    {
+      "id": "calc_roi",
+      "name": "ROI %",
+      "formula": "(SUM(revenue_attributed) - SUM(budget_spent)) / SUM(budget_spent) * 100",
+      "description": "Return on investment percentage"
+    }
+  ]
+}

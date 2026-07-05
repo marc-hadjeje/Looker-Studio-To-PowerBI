@@ -1,0 +1,49 @@
+{
+  "version": "1.0",
+  "name": "Retail_Board_Storytelling_-_Strategy_Pack",
+  "pages": [
+    {
+      "name": "01 Executive Overview",
+      "displayName": "01 Executive Overview",
+      "visuals": []
+    },
+    {
+      "name": "02 Growth Drivers",
+      "displayName": "02 Growth Drivers",
+      "visuals": []
+    },
+    {
+      "name": "03 Risk & Opportunities",
+      "displayName": "03 Risk & Opportunities",
+      "visuals": []
+    }
+  ],
+  "filters": [
+    {
+      "name": "Date Range",
+      "type": "Filter",
+      "field": "sales_date"
+    },
+    {
+      "name": "Category",
+      "type": "Filter",
+      "field": "category"
+    },
+    {
+      "name": "Customer Segment",
+      "type": "Filter",
+      "field": "segment"
+    },
+    {
+      "name": "Channel",
+      "type": "Filter",
+      "field": "channel_name"
+    },
+    {
+      "name": "Region",
+      "type": "Filter",
+      "field": "store_region"
+    }
+  ],
+  "theme": {}
+}

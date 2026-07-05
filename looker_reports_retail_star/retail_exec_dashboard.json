@@ -1,0 +1,63 @@
+{
+  "id": "retail-exec-dashboard",
+  "title": "Retail Executive Dashboard",
+  "description": "Executive KPIs from retail star schema",
+  "dataSources": [
+    {
+      "id": "ds_exec",
+      "sourceType": "BigQuery",
+      "name": "Retail Exec Model",
+      "query": "SELECT d.full_date AS sales_date, p.category, p.brand, c.segment AS customer_segment, s.region AS store_region, ch.channel_name, f.quantity, f.gross_amount, f.discount_amount, f.net_sales_amount, f.cost_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_product` p ON f.product_key = p.product_key JOIN `ferrous-gate-496806-b7.retail_star.dim_customer` c ON f.customer_key = c.customer_key JOIN `ferrous-gate-496806-b7.retail_star.dim_store` s ON f.store_key = s.store_key JOIN `ferrous-gate-496806-b7.retail_star.dim_channel` ch ON f.channel_key = ch.channel_key",
+      "configuration": {
+        "projectId": "ferrous-gate-496806-b7",
+        "datasetId": "retail_star",
+        "tableId": "fact_sales"
+      }
+    }
+  ],
+  "parameterControls": [
+    {
+      "id": "ctrl_date",
+      "name": "Date Range",
+      "controlType": "date_range_control",
+      "linkedParameter": "sales_date",
+      "options": {
+        "startDate": "2025-01-01",
+        "endDate": "2025-03-31"
+      }
+    },
+    {
+      "id": "ctrl_region",
+      "name": "Region",
+      "controlType": "dropdown_control",
+      "linkedParameter": "store_region",
+      "options": ["Ile-de-France", "Auvergne-Rhone-Alpes", "Provence-Alpes-Cote d Azur", "Hauts-de-France", "Pays de la Loire"]
+    },
+    {
+      "id": "ctrl_channel",
+      "name": "Channel",
+      "controlType": "dropdown_control",
+      "linkedParameter": "channel_name",
+      "options": ["In-Store", "Website", "Mobile App", "Marketplace"]
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_overview",
+      "name": "Overview",
+      "layout": "GRID",
+      "elements": [
+        {"id": "kpi_sales", "type": "SCORECARD", "name": "Net Sales", "sourceId": "ds_exec", "chartConfig": {"metric": "SUM(net_sales_amount)"}},
+        {"id": "kpi_profit", "type": "SCORECARD", "name": "Profit", "sourceId": "ds_exec", "chartConfig": {"metric": "SUM(profit_amount)"}},
+        {"id": "kpi_margin", "type": "SCORECARD", "name": "Margin %", "sourceId": "ds_exec", "chartConfig": {"metric": "SUM(profit_amount)/SUM(net_sales_amount)"}},
+        {"id": "trend_sales", "type": "CHART", "name": "Sales Trend", "sourceId": "ds_exec", "chartConfig": {"chartType": "TIME_SERIES", "dimension": "sales_date", "metric": "SUM(net_sales_amount)"}},
+        {"id": "by_category", "type": "CHART", "name": "Sales by Category", "sourceId": "ds_exec", "chartConfig": {"chartType": "BAR", "dimension": "category", "metric": "SUM(net_sales_amount)"}},
+        {"id": "by_channel", "type": "CHART", "name": "Profit by Channel", "sourceId": "ds_exec", "chartConfig": {"chartType": "COLUMN", "dimension": "channel_name", "metric": "SUM(profit_amount)"}}
+      ]
+    }
+  ],
+  "calculatedFields": [
+    {"id": "cf_margin", "name": "MarginPct", "expression": "SUM(profit_amount) / SUM(net_sales_amount)", "type": "NUMBER", "sourceId": "ds_exec"},
+    {"id": "cf_avg_basket", "name": "AvgBasket", "expression": "SUM(net_sales_amount) / COUNT_DISTINCT(order_id)", "type": "NUMBER", "sourceId": "ds_exec"}
+  ]
+}

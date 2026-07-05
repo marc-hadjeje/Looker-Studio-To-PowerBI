@@ -1,0 +1,41 @@
+{
+  "migrationDate": "2026-07-02T16:01:44.316330",
+  "projectPath": "out_pbip_short_all\\Retail_Hybrid_Act_10495d_pbip",
+  "dataSources": {
+    "totalSources": 2,
+    "bigQuerySources": 1,
+    "googleSheetsSources": 1,
+    "sources": {
+      "ds_actuals_bq": {
+        "original": "SELECT d.full_date AS sales_date, d.month, d.month_name, s.region AS store_region, p.category, ch.channel_name, f.order_id, f.net_sales_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_store` s ON f.store_key = s.store_key JOIN `ferrous-gate-496806-b7.retail_star.dim_product` p ON f.product_key = p.product_key JOIN `ferrous-gate-496806-b7.retail_star.dim_channel` ch ON f.channel_key = ch.channel_key",
+        "dataset": "retail_star",
+        "table": "fact_sales",
+        "sourceType": "bigquery",
+        "priority": 1
+      },
+      "ds_targets_sheet": {
+        "spreadsheetId": "1REPLACE_WITH_REAL_SHEET_ID",
+        "worksheetName": "targets",
+        "range": "A1:H500",
+        "namedRange": "retail_targets",
+        "hasHeaders": true,
+        "query": "SELECT * FROM retail_targets",
+        "name": "Retail Targets Sheet",
+        "sourceType": "google_sheets",
+        "priority": 2
+      }
+    }
+  },
+  "transformation": {
+    "dataSources": 2,
+    "controls": 3,
+    "formulas": 2,
+    "formulaFidelity": 100.0
+  },
+  "notes": [
+    "BigQuery queries have been converted to T-SQL format",
+    "Google Sheets connections use ExcelOnline connector",
+    "Review all formulas for DAX compatibility",
+    "Update connection credentials before publishing"
+  ]
+}

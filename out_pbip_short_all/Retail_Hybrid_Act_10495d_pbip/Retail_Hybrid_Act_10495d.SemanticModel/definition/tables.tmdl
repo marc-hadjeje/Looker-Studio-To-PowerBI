@@ -1,0 +1,12 @@
+// Data sources from Looker Studio
+
+table 'ds_actuals_bq'
+    sourceLineageTag = "ds_actuals_bq"
+    partition 'Partition1' = m(#"ds_actuals_bq")
+    annotation PBI_ResultType = Table
+
+table 'Retail Targets Sheet'
+    sourceLineageTag = "ds_targets_sheet"
+    partition 'Partition1' = m(#"Retail Targets Sheet")
+    annotation PBI_ResultType = Table
+

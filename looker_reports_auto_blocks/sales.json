@@ -1,0 +1,138 @@
+{
+  "id": "sales",
+  "title": "sales Looker Studio Example",
+  "description": "Adaptive Looker Studio sample generated from sales (sales profile)",
+  "dataSources": [
+    {
+      "id": "ds_sales",
+      "sourceType": "BigQuery",
+      "name": "sales",
+      "query": "SELECT * FROM `ferrous-gate-496806-b7.demo.sales`",
+      "configuration": {
+        "projectId": "ferrous-gate-496806-b7",
+        "datasetId": "demo",
+        "table": "sales",
+        "tableId": "sales",
+        "query": "SELECT * FROM `ferrous-gate-496806-b7.demo.sales`"
+      }
+    }
+  ],
+  "parameterControls": [
+    {
+      "id": "ctrl_sales_dimension",
+      "name": "id",
+      "type": "Dropdown",
+      "options": [],
+      "multiSelect": true,
+      "linkedField": "id"
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_sales_overview",
+      "name": "Overview",
+      "layout": {
+        "rows": 3,
+        "columns": 4
+      },
+      "visuals": [
+        {
+          "id": "visual_sales_scorecard_1",
+          "name": "Total Records",
+          "type": "Scorecard",
+          "position": {
+            "row": 0,
+            "column": 0,
+            "width": 1,
+            "height": 1
+          },
+          "dataSourceId": "ds_sales",
+          "configuration": {
+            "metric": "COUNT(*)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_sales_scorecard_2",
+          "name": "Primary Metric",
+          "type": "Scorecard",
+          "position": {
+            "row": 0,
+            "column": 1,
+            "width": 1,
+            "height": 1
+          },
+          "dataSourceId": "ds_sales",
+          "configuration": {
+            "metric": "SUM(amount)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_sales_breakdown",
+          "name": "sales by id",
+          "type": "ColumnChart",
+          "position": {
+            "row": 1,
+            "column": 0,
+            "width": 2,
+            "height": 1
+          },
+          "dataSourceId": "ds_sales",
+          "configuration": {
+            "xAxis": "id",
+            "yAxis": "SUM(amount)",
+            "sort": "descending"
+          }
+        },
+        {
+          "id": "visual_sales_table",
+          "name": "sales Details",
+          "type": "Table",
+          "position": {
+            "row": 1,
+            "column": 2,
+            "width": 2,
+            "height": 1
+          },
+          "dataSourceId": "ds_sales",
+          "configuration": {
+            "dimensions": [
+              "id"
+            ],
+            "metrics": [
+              "amount"
+            ],
+            "sort": "amount DESC",
+            "limit": 20
+          }
+        }
+      ]
+    }
+  ],
+  "calculatedFields": [
+    {
+      "id": "calc_sales_metric",
+      "name": "amount Total",
+      "formula": "SUM(amount)",
+      "description": "Aggregated metric for amount"
+    }
+  ],
+  "generatedFromTableSchema": {
+    "profile": "sales",
+    "dateColumn": null,
+    "dimensionColumn": "id",
+    "metricColumn": "amount",
+    "columns": [
+      "id",
+      "product",
+      "amount"
+    ],
+    "layoutProfile": "desktop",
+    "screenshotSize": null,
+    "detectedBlocks": [],
+    "layoutSource": "profile-ratio"
+  },
+  "generatedAt": "2026-07-05T10:16:59.513688",
+  "version": "2.0"
+}

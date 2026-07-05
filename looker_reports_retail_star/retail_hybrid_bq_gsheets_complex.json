@@ -1,0 +1,94 @@
+{
+  "id": "retail-hybrid-bq-gsheets-complex",
+  "title": "Retail Hybrid Actual vs Target (BigQuery + Google Sheets)",
+  "description": "Demonstrates combined migration for BigQuery actuals and Google Sheets targets",
+  "dataSources": [
+    {
+      "id": "ds_actuals_bq",
+      "sourceType": "BigQuery",
+      "name": "Retail Actuals BigQuery",
+      "query": "SELECT d.full_date AS sales_date, d.month, d.month_name, s.region AS store_region, p.category, ch.channel_name, f.order_id, f.net_sales_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_store` s ON f.store_key = s.store_key JOIN `ferrous-gate-496806-b7.retail_star.dim_product` p ON f.product_key = p.product_key JOIN `ferrous-gate-496806-b7.retail_star.dim_channel` ch ON f.channel_key = ch.channel_key",
+      "configuration": {
+        "projectId": "ferrous-gate-496806-b7",
+        "datasetId": "retail_star",
+        "tableId": "fact_sales"
+      }
+    },
+    {
+      "id": "ds_targets_sheet",
+      "sourceType": "google_sheets",
+      "name": "Retail Targets Sheet",
+      "query": "SELECT * FROM retail_targets",
+      "configuration": {
+        "spreadsheetId": "1REPLACE_WITH_REAL_SHEET_ID",
+        "worksheetName": "targets",
+        "range": "A1:H500",
+        "namedRange": "retail_targets",
+        "hasHeaders": true
+      }
+    }
+  ],
+  "parameterControls": [
+    {
+      "id": "ctrl_hybrid_date",
+      "name": "Date Range",
+      "controlType": "date_range_control",
+      "linkedParameter": "sales_date",
+      "options": {
+        "startDate": "2025-01-01",
+        "endDate": "2025-03-31"
+      }
+    },
+    {
+      "id": "ctrl_hybrid_region",
+      "name": "Region",
+      "controlType": "dropdown_control",
+      "linkedParameter": "store_region",
+      "options": ["Ile-de-France", "Auvergne-Rhone-Alpes", "Provence-Alpes-Cote d Azur", "Hauts-de-France", "Pays de la Loire"]
+    },
+    {
+      "id": "ctrl_hybrid_category",
+      "name": "Category",
+      "controlType": "dropdown_control",
+      "linkedParameter": "category",
+      "options": ["Electronics", "Furniture", "Grocery", "Sports", "Books"]
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_01_actuals",
+      "name": "01 Actuals (BigQuery)",
+      "layout": "GRID",
+      "elements": [
+        {"id": "kpi_actual_sales", "type": "SCORECARD", "name": "Actual Net Sales", "sourceId": "ds_actuals_bq", "chartConfig": {"metric": "SUM(net_sales_amount)"}},
+        {"id": "kpi_actual_profit", "type": "SCORECARD", "name": "Actual Profit", "sourceId": "ds_actuals_bq", "chartConfig": {"metric": "SUM(profit_amount)"}},
+        {"id": "trend_actual", "type": "CHART", "name": "Actual Trend", "sourceId": "ds_actuals_bq", "chartConfig": {"chartType": "TIME_SERIES", "dimension": "sales_date", "metric": "SUM(net_sales_amount)"}},
+        {"id": "actual_region", "type": "CHART", "name": "Actual by Region", "sourceId": "ds_actuals_bq", "chartConfig": {"chartType": "BAR", "dimension": "store_region", "metric": "SUM(net_sales_amount)"}}
+      ]
+    },
+    {
+      "id": "page_02_targets",
+      "name": "02 Targets (Google Sheets)",
+      "layout": "GRID",
+      "elements": [
+        {"id": "table_targets", "type": "TABLE", "name": "Targets Table", "sourceId": "ds_targets_sheet", "chartConfig": {"dimensions": ["month", "region", "category", "channel"], "metrics": ["target_sales", "target_profit"]}},
+        {"id": "target_region", "type": "CHART", "name": "Target by Region", "sourceId": "ds_targets_sheet", "chartConfig": {"chartType": "COLUMN", "dimension": "region", "metric": "SUM(target_sales)"}},
+        {"id": "target_category", "type": "CHART", "name": "Target by Category", "sourceId": "ds_targets_sheet", "chartConfig": {"chartType": "BAR", "dimension": "category", "metric": "SUM(target_sales)"}}
+      ]
+    },
+    {
+      "id": "page_03_bridge",
+      "name": "03 Actual vs Target Bridge",
+      "layout": "GRID",
+      "elements": [
+        {"id": "bridge_note", "type": "TEXT", "name": "Modeling Note", "sourceId": "ds_actuals_bq", "chartConfig": {"text": "In migration, join ds_actuals_bq and ds_targets_sheet on month/region/category/channel in semantic model."}},
+        {"id": "table_bridge", "type": "TABLE", "name": "Bridge View Placeholder", "sourceId": "ds_actuals_bq", "chartConfig": {"dimensions": ["month_name", "store_region", "category", "channel_name"], "metrics": ["SUM(net_sales_amount)", "SUM(profit_amount)"]}},
+        {"id": "waterfall_placeholder", "type": "CHART", "name": "Variance Waterfall Placeholder", "sourceId": "ds_actuals_bq", "chartConfig": {"chartType": "WATERFALL", "dimension": "month_name", "metric": "SUM(net_sales_amount)"}}
+      ]
+    }
+  ],
+  "calculatedFields": [
+    {"id": "cf_actual_margin", "name": "ActualMarginPct", "expression": "SUM(profit_amount) / SUM(net_sales_amount)", "type": "NUMBER", "sourceId": "ds_actuals_bq"},
+    {"id": "cf_target_attainment", "name": "TargetAttainmentPlaceholder", "expression": "SUM(net_sales_amount) / SUM(target_sales)", "type": "NUMBER", "sourceId": "ds_actuals_bq"}
+  ]
+}

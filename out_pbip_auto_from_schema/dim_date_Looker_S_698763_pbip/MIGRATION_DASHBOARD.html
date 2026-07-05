@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en"> 
+<head>
+    <meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <title>Looker Studio Migration Dashboard</title>
+    <style>
+        body { font-family: Segoe UI, Arial, sans-serif; margin: 24px; background: #f6f8fb; color: #1f2937; }
+        h1 { margin: 0 0 6px; }
+        .muted { color: #6b7280; margin-bottom: 18px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 16px 0 24px; }
+        .card { background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px; }
+        .label { color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+        .value { font-size: 24px; font-weight: 700; margin-top: 4px; }
+        table { width: 100%; border-collapse: collapse; background: white; border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; }
+        th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #eef2f7; }
+        th { background: #f9fafb; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: #6b7280; }
+        .section-title { margin: 18px 0 10px; font-size: 16px; }
+        ul { background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px 20px; }
+    </style>
+</head>
+<body>
+    <h1>Looker Studio to Power BI Migration Dashboard</h1>
+    <div class="muted">Generated at 2026-07-05T10:07:15.962170</div>
+
+    <div class="grid">
+        <div class="card"><div class="label">Total Sources</div><div class="value">1</div></div>
+        <div class="card"><div class="label">BigQuery Sources</div><div class="value">1</div></div>
+        <div class="card"><div class="label">Google Sheets Sources</div><div class="value">0</div></div>
+        <div class="card"><div class="label">Controls</div><div class="value">2</div></div>
+        <div class="card"><div class="label">Formulas</div><div class="value">0</div></div>
+        <div class="card"><div class="label">Fidelity</div><div class="value">100.0% (A)</div></div>
+    </div>
+
+    <div class="section-title">Sources</div>
+    <table>
+        <thead>
+            <tr><th>Source Id</th><th>Type</th><th>Dataset</th><th>Table</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>ds_dim_date</td><td>bigquery</td><td>retail_star</td><td>dim_date</td></tr>
+        </tbody>
+    </table>
+
+    <div class="section-title">Migration Notes</div>
+    <ul>
+        <li>BigQuery queries have been converted to T-SQL format</li><li>Google Sheets connections use ExcelOnline connector</li><li>Review all formulas for DAX compatibility</li><li>Update connection credentials before publishing</li>
+    </ul>
+</body>
+</html>

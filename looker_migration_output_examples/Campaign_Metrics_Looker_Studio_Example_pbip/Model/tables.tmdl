@@ -1,0 +1,7 @@
+// Data sources from Looker Studio
+
+table 'ds_campaign_metrics'
+    sourceLineageTag = "ds_campaign_metrics"
+    partition 'Partition1' = m(#"ds_campaign_metrics")
+    annotation PBI_ResultType = Table
+

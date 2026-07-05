@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Retail_Hybrid_Actual_vs_Target_(BigQuery_+_Google_Sheets)"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "f827a85a-da8a-400c-92b0-647f423f0975"
+  }
+}

@@ -1,0 +1,4 @@
+database 'Retail_Customer_&_Channel_Insights' 
+    compatibilityLevel = 1550
+    collation = 'en-US'
+    language = 'en-US'

@@ -1,0 +1,55 @@
+{
+  "id": "retail-product-performance",
+  "title": "Retail Product Performance",
+  "description": "Product and brand performance analysis",
+  "dataSources": [
+    {
+      "id": "ds_product",
+      "sourceType": "BigQuery",
+      "name": "Retail Product Model",
+      "query": "SELECT d.full_date AS sales_date, p.product_name, p.category, p.subcategory, p.brand, f.quantity, f.net_sales_amount, f.cost_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_product` p ON f.product_key = p.product_key",
+      "configuration": {
+        "projectId": "ferrous-gate-496806-b7",
+        "datasetId": "retail_star",
+        "tableId": "fact_sales"
+      }
+    }
+  ],
+  "parameterControls": [
+    {
+      "id": "ctrl_prod_date",
+      "name": "Date Range",
+      "controlType": "date_range_control",
+      "linkedParameter": "sales_date",
+      "options": {
+        "startDate": "2025-01-01",
+        "endDate": "2025-03-31"
+      }
+    },
+    {
+      "id": "ctrl_category",
+      "name": "Category",
+      "controlType": "dropdown_control",
+      "linkedParameter": "category",
+      "options": ["Electronics", "Furniture", "Grocery", "Sports", "Books"]
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_product",
+      "name": "Product Analysis",
+      "layout": "GRID",
+      "elements": [
+        {"id": "kpi_qty", "type": "SCORECARD", "name": "Units Sold", "sourceId": "ds_product", "chartConfig": {"metric": "SUM(quantity)"}},
+        {"id": "kpi_sales", "type": "SCORECARD", "name": "Net Sales", "sourceId": "ds_product", "chartConfig": {"metric": "SUM(net_sales_amount)"}},
+        {"id": "kpi_profit", "type": "SCORECARD", "name": "Profit", "sourceId": "ds_product", "chartConfig": {"metric": "SUM(profit_amount)"}},
+        {"id": "top_products", "type": "TABLE", "name": "Top Products", "sourceId": "ds_product", "chartConfig": {"dimensions": ["product_name", "category", "brand"], "metrics": ["SUM(quantity)", "SUM(net_sales_amount)", "SUM(profit_amount)"]}},
+        {"id": "brand_chart", "type": "CHART", "name": "Sales by Brand", "sourceId": "ds_product", "chartConfig": {"chartType": "BAR", "dimension": "brand", "metric": "SUM(net_sales_amount)"}},
+        {"id": "trend_product", "type": "CHART", "name": "Daily Sales", "sourceId": "ds_product", "chartConfig": {"chartType": "TIME_SERIES", "dimension": "sales_date", "metric": "SUM(net_sales_amount)"}}
+      ]
+    }
+  ],
+  "calculatedFields": [
+    {"id": "cf_unit_margin", "name": "UnitMargin", "expression": "SUM(profit_amount) / SUM(quantity)", "type": "NUMBER", "sourceId": "ds_product"}
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "id": "dim_product",
+  "title": "dim_product Looker Studio Example",
+  "description": "Adaptive Looker Studio sample generated from dim_product (sales profile)",
+  "dataSources": [
+    {
+      "id": "ds_dim_product",
+      "sourceType": "BigQuery",
+      "name": "dim_product",
+      "query": "SELECT * FROM `ferrous-gate-496806-b7.retail_star.dim_product`",
+      "configuration": {
+        "projectId": "ferrous-gate-496806-b7",
+        "datasetId": "retail_star",
+        "table": "dim_product",
+        "tableId": "dim_product",
+        "query": "SELECT * FROM `ferrous-gate-496806-b7.retail_star.dim_product`"
+      }
+    }
+  ],
+  "parameterControls": [
+    {
+      "id": "ctrl_dim_product_dimension",
+      "name": "product_key",
+      "type": "Dropdown",
+      "options": [],
+      "multiSelect": true,
+      "linkedField": "product_key"
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_dim_product_overview",
+      "name": "Overview",
+      "layout": {
+        "rows": 3,
+        "columns": 4
+      },
+      "visuals": [
+        {
+          "id": "visual_dim_product_scorecard_1",
+          "name": "Total Records",
+          "type": "Scorecard",
+          "position": {
+            "row": 0,
+            "column": 0,
+            "width": 1,
+            "height": 1
+          },
+          "dataSourceId": "ds_dim_product",
+          "configuration": {
+            "metric": "COUNT(*)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_dim_product_scorecard_2",
+          "name": "Primary Metric",
+          "type": "Scorecard",
+          "position": {
+            "row": 0,
+            "column": 1,
+            "width": 1,
+            "height": 1
+          },
+          "dataSourceId": "ds_dim_product",
+          "configuration": {
+            "metric": "SUM(unit_cost)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_dim_product_breakdown",
+          "name": "dim_product by product_key",
+          "type": "ColumnChart",
+          "position": {
+            "row": 1,
+            "column": 2,
+            "width": 2,
+            "height": 1
+          },
+          "dataSourceId": "ds_dim_product",
+          "configuration": {
+            "xAxis": "product_key",
+            "yAxis": "SUM(unit_cost)",
+            "sort": "descending"
+          }
+        },
+        {
+          "id": "visual_dim_product_table",
+          "name": "dim_product Details",
+          "type": "Table",
+          "position": {
+            "row": 2,
+            "column": 0,
+            "width": 4,
+            "height": 1
+          },
+          "dataSourceId": "ds_dim_product",
+          "configuration": {
+            "dimensions": [
+              "product_key"
+            ],
+            "metrics": [
+              "unit_cost"
+            ],
+            "sort": "unit_cost DESC",
+            "limit": 20
+          }
+        }
+      ]
+    }
+  ],
+  "calculatedFields": [
+    {
+      "id": "calc_dim_product_metric",
+      "name": "unit_cost Total",
+      "formula": "SUM(unit_cost)",
+      "description": "Aggregated metric for unit_cost"
+    }
+  ],
+  "generatedFromTableSchema": {
+    "profile": "sales",
+    "dateColumn": null,
+    "dimensionColumn": "product_key",
+    "metricColumn": "unit_cost",
+    "columns": [
+      "product_key",
+      "product_id",
+      "product_name",
+      "category",
+      "subcategory",
+      "brand",
+      "unit_cost",
+      "unit_price",
+      "is_active"
+    ]
+  },
+  "generatedAt": "2026-07-02T19:38:48.695562",
+  "version": "2.0"
+}

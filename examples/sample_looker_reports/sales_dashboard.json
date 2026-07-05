@@ -1,0 +1,219 @@
+{
+  "id": "sales-dashboard-2024",
+  "title": "Sales Dashboard 2024",
+  "description": "Comprehensive sales analytics dashboard with regional breakdown",
+  "dataSources": [
+    {
+      "id": "ds_sales",
+      "sourceType": "BigQuery",
+      "name": "Sales Data",
+      "configuration": {
+        "projectId": "your-gcp-project",
+        "datasetId": "ecommerce_analytics",
+        "table": "sales_transactions",
+        "query": "SELECT order_id, customer_id, order_date, order_amount, currency, transaction_type, region, product_category FROM ecommerce_analytics.sales_transactions WHERE order_date >= @start_date AND order_date <= @end_date"
+      }
+    },
+    {
+      "id": "ds_products",
+      "sourceType": "BigQuery",
+      "name": "Product Reference",
+      "configuration": {
+        "projectId": "your-gcp-project",
+        "datasetId": "ecommerce_analytics",
+        "table": "products",
+        "query": "SELECT product_id, product_name, product_category, list_price, cost FROM ecommerce_analytics.products"
+      }
+    }
+  ],
+  "parameterControls": [
+    {
+      "id": "ctrl_date_range",
+      "name": "Date Range",
+      "type": "DateRange",
+      "defaultValue": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-12-31"
+      },
+      "linkedField": "ds_sales.order_date"
+    },
+    {
+      "id": "ctrl_region",
+      "name": "Region",
+      "type": "Dropdown",
+      "options": ["North America", "Europe", "Asia Pacific", "Latin America", "EMEA"],
+      "multiSelect": true,
+      "defaultValue": ["North America"]
+    },
+    {
+      "id": "ctrl_category",
+      "name": "Product Category",
+      "type": "Dropdown",
+      "options": ["Electronics", "Apparel", "Home & Garden", "Sports", "Books"],
+      "multiSelect": true,
+      "defaultValue": ["Electronics", "Apparel"]
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_overview",
+      "name": "Overview",
+      "layout": {
+        "rows": 3,
+        "columns": 4
+      },
+      "visuals": [
+        {
+          "id": "visual_total_revenue",
+          "name": "Total Revenue",
+          "type": "Scorecard",
+          "position": {"row": 0, "column": 0, "width": 1, "height": 1},
+          "dataSourceId": "ds_sales",
+          "configuration": {
+            "metric": "SUM(order_amount)",
+            "dimensions": [],
+            "filters": [
+              {"field": "transaction_type", "operator": "equals", "value": "completed"}
+            ]
+          }
+        },
+        {
+          "id": "visual_order_count",
+          "name": "Total Orders",
+          "type": "Scorecard",
+          "position": {"row": 0, "column": 1, "width": 1, "height": 1},
+          "dataSourceId": "ds_sales",
+          "configuration": {
+            "metric": "COUNT_DISTINCT(order_id)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_avg_order_value",
+          "name": "Average Order Value",
+          "type": "Scorecard",
+          "position": {"row": 0, "column": 2, "width": 1, "height": 1},
+          "dataSourceId": "ds_sales",
+          "configuration": {
+            "metric": "AVG(order_amount)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_customer_count",
+          "name": "Unique Customers",
+          "type": "Scorecard",
+          "position": {"row": 0, "column": 3, "width": 1, "height": 1},
+          "dataSourceId": "ds_sales",
+          "configuration": {
+            "metric": "COUNT_DISTINCT(customer_id)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_revenue_trend",
+          "name": "Revenue Trend",
+          "type": "LineChart",
+          "position": {"row": 1, "column": 0, "width": 2, "height": 1},
+          "dataSourceId": "ds_sales",
+          "configuration": {
+            "xAxis": "DATE_TRUNC(order_date, MONTH)",
+            "yAxis": "SUM(order_amount)",
+            "legend": false
+          }
+        },
+        {
+          "id": "visual_region_breakdown",
+          "name": "Revenue by Region",
+          "type": "ColumnChart",
+          "position": {"row": 1, "column": 2, "width": 2, "height": 1},
+          "dataSourceId": "ds_sales",
+          "configuration": {
+            "xAxis": "region",
+            "yAxis": "SUM(order_amount)",
+            "sort": "descending"
+          }
+        },
+        {
+          "id": "visual_category_pie",
+          "name": "Revenue by Category",
+          "type": "PieChart",
+          "position": {"row": 2, "column": 0, "width": 2, "height": 1},
+          "dataSourceId": "ds_sales",
+          "configuration": {
+            "dimension": "product_category",
+            "metric": "SUM(order_amount)",
+            "sliceCount": 5
+          }
+        },
+        {
+          "id": "visual_top_products",
+          "name": "Top 10 Products",
+          "type": "Table",
+          "position": {"row": 2, "column": 2, "width": 2, "height": 1},
+          "dataSourceId": "ds_sales",
+          "configuration": {
+            "dimensions": ["product_name"],
+            "metrics": ["SUM(order_amount)", "COUNT(order_id)"],
+            "sort": "SUM(order_amount) DESC",
+            "limit": 10
+          }
+        }
+      ]
+    },
+    {
+      "id": "page_regional",
+      "name": "Regional Analysis",
+      "layout": {
+        "rows": 2,
+        "columns": 4
+      },
+      "visuals": [
+        {
+          "id": "visual_region_table",
+          "name": "Regional Performance",
+          "type": "Table",
+          "position": {"row": 0, "column": 0, "width": 4, "height": 1},
+          "dataSourceId": "ds_sales",
+          "configuration": {
+            "dimensions": ["region"],
+            "metrics": ["SUM(order_amount)", "COUNT(order_id)", "AVG(order_amount)", "COUNT_DISTINCT(customer_id)"],
+            "sort": "SUM(order_amount) DESC"
+          }
+        },
+        {
+          "id": "visual_region_trend",
+          "name": "Regional Trends",
+          "type": "LineChart",
+          "position": {"row": 1, "column": 0, "width": 4, "height": 1},
+          "dataSourceId": "ds_sales",
+          "configuration": {
+            "xAxis": "DATE_TRUNC(order_date, MONTH)",
+            "yAxis": "SUM(order_amount)",
+            "legend": "region"
+          }
+        }
+      ]
+    }
+  ],
+  "calculatedFields": [
+    {
+      "id": "calc_gross_profit",
+      "name": "Gross Profit",
+      "formula": "SUM(order_amount) - SUM(cost)",
+      "description": "Revenue minus cost of goods sold"
+    },
+    {
+      "id": "calc_profit_margin",
+      "name": "Profit Margin %",
+      "formula": "(SUM(order_amount) - SUM(cost)) / SUM(order_amount) * 100",
+      "description": "Profit margin percentage"
+    },
+    {
+      "id": "calc_growth_rate",
+      "name": "YoY Growth %",
+      "formula": "(CURRENT_MONTH_SUM - LAST_YEAR_SAME_MONTH_SUM) / LAST_YEAR_SAME_MONTH_SUM * 100",
+      "description": "Year-over-year growth percentage"
+    }
+  ]
+}

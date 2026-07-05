@@ -1,0 +1,62 @@
+{
+  "id": "retail-customer-channel",
+  "title": "Retail Customer & Channel Insights",
+  "description": "Customer segment and channel behavior insights",
+  "dataSources": [
+    {
+      "id": "ds_customer",
+      "sourceType": "BigQuery",
+      "name": "Retail Customer Channel Model",
+      "query": "SELECT d.full_date AS sales_date, c.customer_id, c.segment, c.region AS customer_region, c.age_group, c.is_loyalty_member, ch.channel_name, s.store_format, f.order_id, f.quantity, f.net_sales_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_customer` c ON f.customer_key = c.customer_key JOIN `ferrous-gate-496806-b7.retail_star.dim_store` s ON f.store_key = s.store_key JOIN `ferrous-gate-496806-b7.retail_star.dim_channel` ch ON f.channel_key = ch.channel_key",
+      "configuration": {
+        "projectId": "ferrous-gate-496806-b7",
+        "datasetId": "retail_star",
+        "tableId": "fact_sales"
+      }
+    }
+  ],
+  "parameterControls": [
+    {
+      "id": "ctrl_cust_date",
+      "name": "Date Range",
+      "controlType": "date_range_control",
+      "linkedParameter": "sales_date",
+      "options": {
+        "startDate": "2025-01-01",
+        "endDate": "2025-03-31"
+      }
+    },
+    {
+      "id": "ctrl_segment",
+      "name": "Customer Segment",
+      "controlType": "dropdown_control",
+      "linkedParameter": "segment",
+      "options": ["Consumer", "Corporate", "Home Office"]
+    },
+    {
+      "id": "ctrl_loyalty",
+      "name": "Loyalty",
+      "controlType": "dropdown_control",
+      "linkedParameter": "is_loyalty_member",
+      "options": ["true", "false"]
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_customer",
+      "name": "Customer & Channel",
+      "layout": "GRID",
+      "elements": [
+        {"id": "kpi_orders", "type": "SCORECARD", "name": "Orders", "sourceId": "ds_customer", "chartConfig": {"metric": "COUNT_DISTINCT(order_id)"}},
+        {"id": "kpi_customers", "type": "SCORECARD", "name": "Customers", "sourceId": "ds_customer", "chartConfig": {"metric": "COUNT_DISTINCT(customer_id)"}},
+        {"id": "kpi_sales", "type": "SCORECARD", "name": "Net Sales", "sourceId": "ds_customer", "chartConfig": {"metric": "SUM(net_sales_amount)"}},
+        {"id": "segment_table", "type": "TABLE", "name": "Segment Performance", "sourceId": "ds_customer", "chartConfig": {"dimensions": ["segment", "channel_name"], "metrics": ["COUNT_DISTINCT(order_id)", "SUM(net_sales_amount)", "SUM(profit_amount)"]}},
+        {"id": "channel_mix", "type": "CHART", "name": "Sales by Channel", "sourceId": "ds_customer", "chartConfig": {"chartType": "PIE", "dimension": "channel_name", "metric": "SUM(net_sales_amount)"}},
+        {"id": "loyalty_split", "type": "CHART", "name": "Loyalty Sales", "sourceId": "ds_customer", "chartConfig": {"chartType": "COLUMN", "dimension": "is_loyalty_member", "metric": "SUM(net_sales_amount)"}}
+      ]
+    }
+  ],
+  "calculatedFields": [
+    {"id": "cf_aov", "name": "AverageOrderValue", "expression": "SUM(net_sales_amount) / COUNT_DISTINCT(order_id)", "type": "NUMBER", "sourceId": "ds_customer"}
+  ]
+}

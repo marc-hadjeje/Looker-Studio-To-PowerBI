@@ -1,0 +1,4 @@
+database 'Retail_Hybrid_Actual_vs_Target_(BigQuery_+_Google_Sheets)' 
+    compatibilityLevel = 1550
+    collation = 'en-US'
+    language = 'en-US'

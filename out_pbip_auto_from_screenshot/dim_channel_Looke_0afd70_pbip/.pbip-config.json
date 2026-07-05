@@ -1,0 +1,10 @@
+{
+  "projectName": "dim_channel_Looker_Studio_Example",
+  "sourceReport": "dim_channel_Looker_Studio_Example",
+  "dataSourcesCount": 1,
+  "tablesCount": 1,
+  "measuresCount": 0,
+  "refreshMode": "Import",
+  "migratedFrom": "Looker Studio (BigQuery)",
+  "createdDate": "2026-07-05T10:09:21.444997"
+}

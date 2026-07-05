@@ -1,0 +1,162 @@
+{
+  "id": "dim_customer",
+  "title": "dim_customer Looker Studio Example",
+  "description": "Adaptive Looker Studio sample generated from dim_customer (customer profile)",
+  "dataSources": [
+    {
+      "id": "ds_dim_customer",
+      "sourceType": "BigQuery",
+      "name": "dim_customer",
+      "query": "SELECT * FROM `ferrous-gate-496806-b7.retail_star.dim_customer`",
+      "configuration": {
+        "projectId": "ferrous-gate-496806-b7",
+        "datasetId": "retail_star",
+        "table": "dim_customer",
+        "tableId": "dim_customer",
+        "query": "SELECT * FROM `ferrous-gate-496806-b7.retail_star.dim_customer`"
+      }
+    }
+  ],
+  "parameterControls": [
+    {
+      "id": "ctrl_dim_customer_date_range",
+      "name": "Date Range",
+      "type": "DateRange",
+      "defaultValue": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-12-31"
+      },
+      "linkedField": "signup_date"
+    },
+    {
+      "id": "ctrl_dim_customer_dimension",
+      "name": "customer_key",
+      "type": "Dropdown",
+      "options": [],
+      "multiSelect": true,
+      "linkedField": "customer_key"
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_dim_customer_overview",
+      "name": "Overview",
+      "layout": {
+        "rows": 3,
+        "columns": 4
+      },
+      "visuals": [
+        {
+          "id": "visual_dim_customer_scorecard_1",
+          "name": "Total Records",
+          "type": "Scorecard",
+          "position": {
+            "row": 0,
+            "column": 0,
+            "width": 1,
+            "height": 1
+          },
+          "dataSourceId": "ds_dim_customer",
+          "configuration": {
+            "metric": "COUNT(*)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_dim_customer_scorecard_2",
+          "name": "Primary Metric",
+          "type": "Scorecard",
+          "position": {
+            "row": 0,
+            "column": 1,
+            "width": 1,
+            "height": 1
+          },
+          "dataSourceId": "ds_dim_customer",
+          "configuration": {
+            "metric": "COUNT(*)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_dim_customer_trend",
+          "name": "dim_customer Trend",
+          "type": "LineChart",
+          "position": {
+            "row": 1,
+            "column": 0,
+            "width": 2,
+            "height": 1
+          },
+          "dataSourceId": "ds_dim_customer",
+          "configuration": {
+            "xAxis": "DATE_TRUNC(signup_date, MONTH)",
+            "yAxis": "COUNT(*)",
+            "legend": false
+          }
+        },
+        {
+          "id": "visual_dim_customer_breakdown",
+          "name": "dim_customer by customer_key",
+          "type": "ColumnChart",
+          "position": {
+            "row": 1,
+            "column": 2,
+            "width": 2,
+            "height": 1
+          },
+          "dataSourceId": "ds_dim_customer",
+          "configuration": {
+            "xAxis": "customer_key",
+            "yAxis": "COUNT(*)",
+            "sort": "descending"
+          }
+        },
+        {
+          "id": "visual_dim_customer_table",
+          "name": "dim_customer Details",
+          "type": "Table",
+          "position": {
+            "row": 2,
+            "column": 0,
+            "width": 4,
+            "height": 1
+          },
+          "dataSourceId": "ds_dim_customer",
+          "configuration": {
+            "dimensions": [
+              "customer_key",
+              "signup_date"
+            ],
+            "metrics": [
+              "COUNT(*)"
+            ],
+            "sort": "COUNT(*) DESC",
+            "limit": 20
+          }
+        }
+      ]
+    }
+  ],
+  "calculatedFields": [],
+  "generatedFromTableSchema": {
+    "profile": "customer",
+    "dateColumn": "signup_date",
+    "dimensionColumn": "customer_key",
+    "metricColumn": null,
+    "columns": [
+      "customer_key",
+      "customer_id",
+      "full_name",
+      "gender",
+      "age_group",
+      "city",
+      "region",
+      "segment",
+      "signup_date",
+      "is_loyalty_member"
+    ]
+  },
+  "generatedAt": "2026-07-02T19:12:03.147453",
+  "version": "2.0"
+}

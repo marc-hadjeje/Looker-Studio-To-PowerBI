@@ -1,0 +1,30 @@
+{
+  "migrationDate": "2026-07-02T15:52:08.947016",
+  "projectPath": "looker_migration_output_retail_star\\Retail_Customer_&_Channel_Insights_pbip",
+  "dataSources": {
+    "totalSources": 1,
+    "bigQuerySources": 1,
+    "googleSheetsSources": 0,
+    "sources": {
+      "ds_customer": {
+        "original": "SELECT d.full_date AS sales_date, c.customer_id, c.segment, c.region AS customer_region, c.age_group, c.is_loyalty_member, ch.channel_name, s.store_format, f.order_id, f.quantity, f.net_sales_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_customer` c ON f.customer_key = c.customer_key JOIN `ferrous-gate-496806-b7.retail_star.dim_store` s ON f.store_key = s.store_key JOIN `ferrous-gate-496806-b7.retail_star.dim_channel` ch ON f.channel_key = ch.channel_key",
+        "dataset": "retail_star",
+        "table": "fact_sales",
+        "sourceType": "bigquery",
+        "priority": 1
+      }
+    }
+  },
+  "transformation": {
+    "dataSources": 1,
+    "controls": 3,
+    "formulas": 1,
+    "formulaFidelity": 100.0
+  },
+  "notes": [
+    "BigQuery queries have been converted to T-SQL format",
+    "Google Sheets connections use ExcelOnline connector",
+    "Review all formulas for DAX compatibility",
+    "Update connection credentials before publishing"
+  ]
+}

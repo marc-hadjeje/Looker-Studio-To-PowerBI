@@ -1,0 +1,30 @@
+{
+  "migrationDate": "2026-07-05T10:07:16.177240",
+  "projectPath": "out_pbip_auto_from_schema\\fact_sales_Looker_11eb0b_pbip",
+  "dataSources": {
+    "totalSources": 1,
+    "bigQuerySources": 1,
+    "googleSheetsSources": 0,
+    "sources": {
+      "ds_fact_sales": {
+        "original": "SELECT * FROM `ferrous-gate-496806-b7.retail_star.fact_sales`",
+        "dataset": "retail_star",
+        "table": "fact_sales",
+        "sourceType": "bigquery",
+        "priority": 1
+      }
+    }
+  },
+  "transformation": {
+    "dataSources": 1,
+    "controls": 2,
+    "formulas": 1,
+    "formulaFidelity": 100.0
+  },
+  "notes": [
+    "BigQuery queries have been converted to T-SQL format",
+    "Google Sheets connections use ExcelOnline connector",
+    "Review all formulas for DAX compatibility",
+    "Update connection credentials before publishing"
+  ]
+}

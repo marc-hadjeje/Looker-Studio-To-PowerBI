@@ -1,0 +1,200 @@
+{
+  "id": "finance-summary-2024",
+  "title": "Financial Summary",
+  "description": "Revenue, expenses, and profitability analysis with budget tracking",
+  "dataSources": [
+    {
+      "id": "ds_transactions",
+      "sourceType": "BigQuery",
+      "name": "Financial Transactions",
+      "configuration": {
+        "projectId": "your-gcp-project",
+        "datasetId": "finance",
+        "table": "transactions",
+        "query": "SELECT transaction_id, transaction_date, transaction_type, amount, currency, department, cost_center, description FROM finance.transactions WHERE transaction_date >= TIMESTAMP_SUB(CURRENT_DATE(), INTERVAL 12 MONTH)"
+      }
+    },
+    {
+      "id": "ds_budget",
+      "sourceType": "BigQuery",
+      "name": "Budget Data",
+      "configuration": {
+        "projectId": "your-gcp-project",
+        "datasetId": "finance",
+        "table": "budget_master",
+        "query": "SELECT fiscal_year, fiscal_quarter, department, budget_category, budgeted_amount FROM finance.budget_master"
+      }
+    }
+  ],
+  "parameterControls": [
+    {
+      "id": "ctrl_fiscal_year",
+      "name": "Fiscal Year",
+      "type": "Dropdown",
+      "options": ["2022", "2023", "2024", "2025"],
+      "defaultValue": "2024"
+    },
+    {
+      "id": "ctrl_department",
+      "name": "Department",
+      "type": "Dropdown",
+      "options": ["Sales", "Marketing", "Engineering", "Operations", "Finance", "HR"],
+      "multiSelect": true,
+      "defaultValue": ["Sales", "Marketing"]
+    },
+    {
+      "id": "ctrl_transaction_type",
+      "name": "Transaction Type",
+      "type": "Dropdown",
+      "options": ["Revenue", "COGS", "Operating Expense", "Capital"],
+      "multiSelect": true,
+      "defaultValue": ["Revenue"]
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_summary",
+      "name": "Financial Summary",
+      "layout": {
+        "rows": 3,
+        "columns": 4
+      },
+      "visuals": [
+        {
+          "id": "visual_total_revenue",
+          "name": "Total Revenue",
+          "type": "Scorecard",
+          "position": {"row": 0, "column": 0, "width": 1, "height": 1},
+          "dataSourceId": "ds_transactions",
+          "configuration": {
+            "metric": "SUM(CASE WHEN transaction_type = 'Revenue' THEN amount ELSE 0 END)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_total_expenses",
+          "name": "Total Expenses",
+          "type": "Scorecard",
+          "position": {"row": 0, "column": 1, "width": 1, "height": 1},
+          "dataSourceId": "ds_transactions",
+          "configuration": {
+            "metric": "SUM(CASE WHEN transaction_type IN ('COGS', 'Operating Expense') THEN amount ELSE 0 END)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_gross_profit",
+          "name": "Gross Profit",
+          "type": "Scorecard",
+          "position": {"row": 0, "column": 2, "width": 1, "height": 1},
+          "dataSourceId": "ds_transactions",
+          "configuration": {
+            "metric": "SUM(CASE WHEN transaction_type = 'Revenue' THEN amount WHEN transaction_type = 'COGS' THEN -amount ELSE 0 END)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_net_income",
+          "name": "Net Income",
+          "type": "Scorecard",
+          "position": {"row": 0, "column": 3, "width": 1, "height": 1},
+          "dataSourceId": "ds_transactions",
+          "configuration": {
+            "metric": "SUM(CASE WHEN transaction_type = 'Revenue' THEN amount ELSE -amount END)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_revenue_trend",
+          "name": "Revenue & Expenses Trend",
+          "type": "AreaChart",
+          "position": {"row": 1, "column": 0, "width": 2, "height": 1},
+          "dataSourceId": "ds_transactions",
+          "configuration": {
+            "xAxis": "DATE_TRUNC(transaction_date, MONTH)",
+            "yAxis": "SUM(CASE WHEN transaction_type = 'Revenue' THEN amount WHEN transaction_type IN ('COGS', 'Operating Expense') THEN -amount ELSE 0 END)",
+            "legend": false
+          }
+        },
+        {
+          "id": "visual_expense_breakdown",
+          "name": "Expense Breakdown",
+          "type": "PieChart",
+          "position": {"row": 1, "column": 2, "width": 2, "height": 1},
+          "dataSourceId": "ds_transactions",
+          "configuration": {
+            "dimension": "budget_category",
+            "metric": "SUM(CASE WHEN transaction_type IN ('COGS', 'Operating Expense') THEN amount ELSE 0 END)"
+          }
+        },
+        {
+          "id": "visual_by_department",
+          "name": "Revenue by Department",
+          "type": "ColumnChart",
+          "position": {"row": 2, "column": 0, "width": 2, "height": 1},
+          "dataSourceId": "ds_transactions",
+          "configuration": {
+            "xAxis": "department",
+            "yAxis": "SUM(CASE WHEN transaction_type = 'Revenue' THEN amount ELSE 0 END)",
+            "sort": "descending"
+          }
+        },
+        {
+          "id": "visual_budget_vs_actual",
+          "name": "Budget vs Actual",
+          "type": "ColumnChart",
+          "position": {"row": 2, "column": 2, "width": 2, "height": 1},
+          "dataSourceId": "ds_budget",
+          "configuration": {
+            "xAxis": "department",
+            "yAxis": ["budgeted_amount", "actual_amount"],
+            "sort": "descending"
+          }
+        }
+      ]
+    },
+    {
+      "id": "page_transactions",
+      "name": "Transaction Details",
+      "layout": {
+        "rows": 1,
+        "columns": 1
+      },
+      "visuals": [
+        {
+          "id": "visual_transactions_table",
+          "name": "All Transactions",
+          "type": "Table",
+          "position": {"row": 0, "column": 0, "width": 1, "height": 1},
+          "dataSourceId": "ds_transactions",
+          "configuration": {
+            "dimensions": ["transaction_date", "transaction_type", "department", "cost_center", "description"],
+            "metrics": ["amount"],
+            "sort": "transaction_date DESC",
+            "limit": 500
+          }
+        }
+      ]
+    }
+  ],
+  "calculatedFields": [
+    {
+      "id": "calc_profit_margin",
+      "name": "Profit Margin %",
+      "formula": "(SUM(Revenue) - SUM(COGS) - SUM(OpEx)) / SUM(Revenue) * 100",
+      "description": "Net profit as percentage of revenue"
+    },
+    {
+      "id": "calc_operating_margin",
+      "name": "Operating Margin %",
+      "formula": "(SUM(Revenue) - SUM(COGS) - SUM(OpEx)) / SUM(Revenue) * 100",
+      "description": "Operating income as percentage of revenue"
+    },
+    {
+      "id": "calc_budget_variance",
+      "name": "Budget Variance %",
+      "formula": "(Actual - Budgeted) / Budgeted * 100",
+      "description": "Percentage difference between actual and budgeted amounts"
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "id": "retail-board-storytelling-complex",
+  "title": "Retail Board Storytelling - Strategy Pack",
+  "description": "Complex executive storytelling report to demonstrate migration depth",
+  "dataSources": [
+    {
+      "id": "ds_kpi",
+      "sourceType": "BigQuery",
+      "name": "Executive KPI Mart",
+      "query": "WITH base AS ( SELECT d.full_date AS sales_date, d.year, d.month, p.category, p.brand, c.segment, c.is_loyalty_member, s.region AS store_region, s.store_format, ch.channel_name, f.order_id, f.quantity, f.gross_amount, f.discount_amount, f.net_sales_amount, f.cost_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_product` p ON f.product_key = p.product_key JOIN `ferrous-gate-496806-b7.retail_star.dim_customer` c ON f.customer_key = c.customer_key JOIN `ferrous-gate-496806-b7.retail_star.dim_store` s ON f.store_key = s.store_key JOIN `ferrous-gate-496806-b7.retail_star.dim_channel` ch ON f.channel_key = ch.channel_key ) SELECT * FROM base",
+      "configuration": {
+        "projectId": "ferrous-gate-496806-b7",
+        "datasetId": "retail_star",
+        "tableId": "fact_sales"
+      }
+    }
+  ],
+  "parameterControls": [
+    {
+      "id": "ctrl_date",
+      "name": "Date Range",
+      "controlType": "date_range_control",
+      "linkedParameter": "sales_date",
+      "options": {
+        "startDate": "2025-01-01",
+        "endDate": "2025-03-31"
+      }
+    },
+    {
+      "id": "ctrl_category",
+      "name": "Category",
+      "controlType": "dropdown_control",
+      "linkedParameter": "category",
+      "options": ["Electronics", "Furniture", "Grocery", "Sports", "Books"]
+    },
+    {
+      "id": "ctrl_segment",
+      "name": "Customer Segment",
+      "controlType": "dropdown_control",
+      "linkedParameter": "segment",
+      "options": ["Consumer", "Corporate", "Home Office"]
+    },
+    {
+      "id": "ctrl_channel",
+      "name": "Channel",
+      "controlType": "dropdown_control",
+      "linkedParameter": "channel_name",
+      "options": ["In-Store", "Website", "Mobile App", "Marketplace"]
+    },
+    {
+      "id": "ctrl_region",
+      "name": "Region",
+      "controlType": "filter_control",
+      "linkedParameter": "store_region",
+      "options": ["Ile-de-France", "Auvergne-Rhone-Alpes", "Provence-Alpes-Cote d Azur", "Hauts-de-France", "Pays de la Loire"]
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_01_overview",
+      "name": "01 Executive Overview",
+      "layout": "GRID",
+      "elements": [
+        {"id": "kpi_sales", "type": "SCORECARD", "name": "Net Sales", "sourceId": "ds_kpi", "chartConfig": {"metric": "SUM(net_sales_amount)"}},
+        {"id": "kpi_profit", "type": "SCORECARD", "name": "Profit", "sourceId": "ds_kpi", "chartConfig": {"metric": "SUM(profit_amount)"}},
+        {"id": "kpi_margin", "type": "SCORECARD", "name": "Margin %", "sourceId": "ds_kpi", "chartConfig": {"metric": "SUM(profit_amount)/SUM(net_sales_amount)"}},
+        {"id": "kpi_orders", "type": "SCORECARD", "name": "Orders", "sourceId": "ds_kpi", "chartConfig": {"metric": "COUNT_DISTINCT(order_id)"}},
+        {"id": "trend_sales", "type": "CHART", "name": "Net Sales Trend", "sourceId": "ds_kpi", "chartConfig": {"chartType": "TIME_SERIES", "dimension": "sales_date", "metric": "SUM(net_sales_amount)"}},
+        {"id": "trend_profit", "type": "CHART", "name": "Profit Trend", "sourceId": "ds_kpi", "chartConfig": {"chartType": "TIME_SERIES", "dimension": "sales_date", "metric": "SUM(profit_amount)"}},
+        {"id": "cat_sales", "type": "CHART", "name": "Sales by Category", "sourceId": "ds_kpi", "chartConfig": {"chartType": "BAR", "dimension": "category", "metric": "SUM(net_sales_amount)"}},
+        {"id": "channel_mix", "type": "CHART", "name": "Channel Mix", "sourceId": "ds_kpi", "chartConfig": {"chartType": "PIE", "dimension": "channel_name", "metric": "SUM(net_sales_amount)"}}
+      ]
+    },
+    {
+      "id": "page_02_growth",
+      "name": "02 Growth Drivers",
+      "layout": "GRID",
+      "elements": [
+        {"id": "table_brand", "type": "TABLE", "name": "Brand Driver Table", "sourceId": "ds_kpi", "chartConfig": {"dimensions": ["brand", "category"], "metrics": ["SUM(net_sales_amount)", "SUM(profit_amount)", "SUM(quantity)"]}},
+        {"id": "segment_profit", "type": "CHART", "name": "Profit by Segment", "sourceId": "ds_kpi", "chartConfig": {"chartType": "COLUMN", "dimension": "segment", "metric": "SUM(profit_amount)"}},
+        {"id": "region_margin", "type": "CHART", "name": "Margin by Region", "sourceId": "ds_kpi", "chartConfig": {"chartType": "BAR", "dimension": "store_region", "metric": "SUM(profit_amount)/SUM(net_sales_amount)"}},
+        {"id": "loyalty_sales", "type": "CHART", "name": "Loyalty vs Non-Loyalty Sales", "sourceId": "ds_kpi", "chartConfig": {"chartType": "COLUMN", "dimension": "is_loyalty_member", "metric": "SUM(net_sales_amount)"}},
+        {"id": "store_format", "type": "CHART", "name": "Store Format Profit", "sourceId": "ds_kpi", "chartConfig": {"chartType": "BAR", "dimension": "store_format", "metric": "SUM(profit_amount)"}}
+      ]
+    },
+    {
+      "id": "page_03_risk",
+      "name": "03 Risk & Opportunities",
+      "layout": "GRID",
+      "elements": [
+        {"id": "top_loss", "type": "TABLE", "name": "Low Margin Categories", "sourceId": "ds_kpi", "chartConfig": {"dimensions": ["category", "brand"], "metrics": ["SUM(net_sales_amount)", "SUM(cost_amount)", "SUM(profit_amount)", "SUM(profit_amount)/SUM(net_sales_amount)"]}},
+        {"id": "disc_impact", "type": "CHART", "name": "Discount Impact", "sourceId": "ds_kpi", "chartConfig": {"chartType": "COLUMN", "dimension": "category", "metric": "SUM(discount_amount)"}},
+        {"id": "order_value", "type": "CHART", "name": "Average Basket by Channel", "sourceId": "ds_kpi", "chartConfig": {"chartType": "BAR", "dimension": "channel_name", "metric": "SUM(net_sales_amount)/COUNT_DISTINCT(order_id)"}},
+        {"id": "detail_table", "type": "TABLE", "name": "Audit Detail", "sourceId": "ds_kpi", "chartConfig": {"dimensions": ["sales_date", "category", "brand", "segment", "channel_name"], "metrics": ["SUM(quantity)", "SUM(net_sales_amount)", "SUM(profit_amount)"]}}
+      ]
+    }
+  ],
+  "calculatedFields": [
+    {"id": "cf_margin_pct", "name": "MarginPct", "expression": "SUM(profit_amount) / SUM(net_sales_amount)", "type": "NUMBER", "sourceId": "ds_kpi"},
+    {"id": "cf_avg_order_value", "name": "AverageOrderValue", "expression": "SUM(net_sales_amount) / COUNT_DISTINCT(order_id)", "type": "NUMBER", "sourceId": "ds_kpi"},
+    {"id": "cf_discount_rate", "name": "DiscountRate", "expression": "SUM(discount_amount) / SUM(gross_amount)", "type": "NUMBER", "sourceId": "ds_kpi"},
+    {"id": "cf_profit_per_unit", "name": "ProfitPerUnit", "expression": "SUM(profit_amount) / SUM(quantity)", "type": "NUMBER", "sourceId": "ds_kpi"}
+  ]
+}

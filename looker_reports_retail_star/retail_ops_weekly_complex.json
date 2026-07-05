@@ -1,0 +1,93 @@
+{
+  "id": "retail-ops-weekly-complex",
+  "title": "Retail Operations Weekly Command Center",
+  "description": "Complex operational report focused on weekly performance, channel execution and regional alerts",
+  "dataSources": [
+    {
+      "id": "ds_ops",
+      "sourceType": "BigQuery",
+      "name": "Retail Ops Mart",
+      "query": "WITH ops AS ( SELECT d.full_date AS sales_date, d.iso_week, d.year, p.category, p.subcategory, p.product_name, c.region AS customer_region, c.segment, s.store_name, s.store_format, s.region AS store_region, ch.channel_name, f.order_id, f.quantity, f.net_sales_amount, f.cost_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_product` p ON f.product_key = p.product_key JOIN `ferrous-gate-496806-b7.retail_star.dim_customer` c ON f.customer_key = c.customer_key JOIN `ferrous-gate-496806-b7.retail_star.dim_store` s ON f.store_key = s.store_key JOIN `ferrous-gate-496806-b7.retail_star.dim_channel` ch ON f.channel_key = ch.channel_key ) SELECT * FROM ops",
+      "configuration": {
+        "projectId": "ferrous-gate-496806-b7",
+        "datasetId": "retail_star",
+        "tableId": "fact_sales"
+      }
+    }
+  ],
+  "parameterControls": [
+    {
+      "id": "ctrl_ops_date",
+      "name": "Date Range",
+      "controlType": "date_range_control",
+      "linkedParameter": "sales_date",
+      "options": {
+        "startDate": "2025-01-01",
+        "endDate": "2025-03-31"
+      }
+    },
+    {
+      "id": "ctrl_ops_week",
+      "name": "ISO Week",
+      "controlType": "filter_control",
+      "linkedParameter": "iso_week",
+      "options": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]
+    },
+    {
+      "id": "ctrl_ops_store_format",
+      "name": "Store Format",
+      "controlType": "dropdown_control",
+      "linkedParameter": "store_format",
+      "options": ["Flagship", "Mall", "Street", "Online"]
+    },
+    {
+      "id": "ctrl_ops_channel",
+      "name": "Channel",
+      "controlType": "dropdown_control",
+      "linkedParameter": "channel_name",
+      "options": ["In-Store", "Website", "Mobile App", "Marketplace"]
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_01_weekly_pulse",
+      "name": "01 Weekly Pulse",
+      "layout": "GRID",
+      "elements": [
+        {"id": "kpi_week_sales", "type": "SCORECARD", "name": "Weekly Sales", "sourceId": "ds_ops", "chartConfig": {"metric": "SUM(net_sales_amount)"}},
+        {"id": "kpi_week_profit", "type": "SCORECARD", "name": "Weekly Profit", "sourceId": "ds_ops", "chartConfig": {"metric": "SUM(profit_amount)"}},
+        {"id": "kpi_orders", "type": "SCORECARD", "name": "Orders", "sourceId": "ds_ops", "chartConfig": {"metric": "COUNT_DISTINCT(order_id)"}},
+        {"id": "kpi_units", "type": "SCORECARD", "name": "Units", "sourceId": "ds_ops", "chartConfig": {"metric": "SUM(quantity)"}},
+        {"id": "weekly_trend", "type": "CHART", "name": "Weekly Sales Trend", "sourceId": "ds_ops", "chartConfig": {"chartType": "LINE", "dimension": "iso_week", "metric": "SUM(net_sales_amount)"}},
+        {"id": "weekly_profit_trend", "type": "CHART", "name": "Weekly Profit Trend", "sourceId": "ds_ops", "chartConfig": {"chartType": "LINE", "dimension": "iso_week", "metric": "SUM(profit_amount)"}}
+      ]
+    },
+    {
+      "id": "page_02_store_execution",
+      "name": "02 Store Execution",
+      "layout": "GRID",
+      "elements": [
+        {"id": "store_perf", "type": "TABLE", "name": "Store Performance", "sourceId": "ds_ops", "chartConfig": {"dimensions": ["store_name", "store_region", "store_format"], "metrics": ["COUNT_DISTINCT(order_id)", "SUM(quantity)", "SUM(net_sales_amount)", "SUM(profit_amount)"]}},
+        {"id": "format_sales", "type": "CHART", "name": "Sales by Store Format", "sourceId": "ds_ops", "chartConfig": {"chartType": "COLUMN", "dimension": "store_format", "metric": "SUM(net_sales_amount)"}},
+        {"id": "region_profit", "type": "CHART", "name": "Profit by Region", "sourceId": "ds_ops", "chartConfig": {"chartType": "BAR", "dimension": "store_region", "metric": "SUM(profit_amount)"}},
+        {"id": "channel_store", "type": "CHART", "name": "Channel by Store Format", "sourceId": "ds_ops", "chartConfig": {"chartType": "STACKED_COLUMN", "dimension": "store_format", "breakdown": "channel_name", "metric": "SUM(net_sales_amount)"}}
+      ]
+    },
+    {
+      "id": "page_03_product_flow",
+      "name": "03 Product Flow",
+      "layout": "GRID",
+      "elements": [
+        {"id": "subcategory_perf", "type": "TABLE", "name": "Subcategory Weekly", "sourceId": "ds_ops", "chartConfig": {"dimensions": ["category", "subcategory", "iso_week"], "metrics": ["SUM(quantity)", "SUM(net_sales_amount)", "SUM(profit_amount)"]}},
+        {"id": "top_products_ops", "type": "TABLE", "name": "Top Products", "sourceId": "ds_ops", "chartConfig": {"dimensions": ["product_name", "category", "subcategory"], "metrics": ["SUM(quantity)", "SUM(net_sales_amount)", "SUM(profit_amount)"]}},
+        {"id": "category_week", "type": "CHART", "name": "Category by Week", "sourceId": "ds_ops", "chartConfig": {"chartType": "AREA", "dimension": "iso_week", "breakdown": "category", "metric": "SUM(net_sales_amount)"}},
+        {"id": "ops_alert", "type": "TABLE", "name": "Operational Alerts", "sourceId": "ds_ops", "chartConfig": {"dimensions": ["store_region", "category", "iso_week"], "metrics": ["SUM(net_sales_amount)", "SUM(profit_amount)", "SUM(profit_amount)/SUM(net_sales_amount)"]}}
+      ]
+    }
+  ],
+  "calculatedFields": [
+    {"id": "cf_ops_margin", "name": "OpsMarginPct", "expression": "SUM(profit_amount) / SUM(net_sales_amount)", "type": "NUMBER", "sourceId": "ds_ops"},
+    {"id": "cf_units_per_order", "name": "UnitsPerOrder", "expression": "SUM(quantity) / COUNT_DISTINCT(order_id)", "type": "NUMBER", "sourceId": "ds_ops"},
+    {"id": "cf_profit_per_order", "name": "ProfitPerOrder", "expression": "SUM(profit_amount) / COUNT_DISTINCT(order_id)", "type": "NUMBER", "sourceId": "ds_ops"}
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "projectName": "sales_Looker_Studio_Example",
+  "sourceReport": "sales_Looker_Studio_Example",
+  "dataSourcesCount": 1,
+  "tablesCount": 1,
+  "measuresCount": 1,
+  "refreshMode": "Import",
+  "migratedFrom": "Looker Studio (BigQuery)",
+  "createdDate": "2026-07-02T13:21:49.388677"
+}

@@ -1,0 +1,4 @@
+database 'Retail_Board_Storytelling_-_Strategy_Pack' 
+    compatibilityLevel = 1550
+    collation = 'en-US'
+    language = 'en-US'

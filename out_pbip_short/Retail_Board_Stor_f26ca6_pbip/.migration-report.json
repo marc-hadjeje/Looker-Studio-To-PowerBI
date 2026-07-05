@@ -1,0 +1,30 @@
+{
+  "migrationDate": "2026-07-02T16:01:18.147334",
+  "projectPath": "out_pbip_short\\Retail_Board_Stor_f26ca6_pbip",
+  "dataSources": {
+    "totalSources": 1,
+    "bigQuerySources": 1,
+    "googleSheetsSources": 0,
+    "sources": {
+      "ds_kpi": {
+        "original": "WITH base AS ( SELECT d.full_date AS sales_date, d.year, d.month, p.category, p.brand, c.segment, c.is_loyalty_member, s.region AS store_region, s.store_format, ch.channel_name, f.order_id, f.quantity, f.gross_amount, f.discount_amount, f.net_sales_amount, f.cost_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_product` p ON f.product_key = p.product_key JOIN `ferrous-gate-496806-b7.retail_star.dim_customer` c ON f.customer_key = c.customer_key JOIN `ferrous-gate-496806-b7.retail_star.dim_store` s ON f.store_key = s.store_key JOIN `ferrous-gate-496806-b7.retail_star.dim_channel` ch ON f.channel_key = ch.channel_key ) SELECT * FROM base",
+        "dataset": "retail_star",
+        "table": "fact_sales",
+        "sourceType": "bigquery",
+        "priority": 1
+      }
+    }
+  },
+  "transformation": {
+    "dataSources": 1,
+    "controls": 5,
+    "formulas": 4,
+    "formulaFidelity": 100.0
+  },
+  "notes": [
+    "BigQuery queries have been converted to T-SQL format",
+    "Google Sheets connections use ExcelOnline connector",
+    "Review all formulas for DAX compatibility",
+    "Update connection credentials before publishing"
+  ]
+}

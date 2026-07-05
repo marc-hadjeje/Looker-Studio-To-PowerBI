@@ -1,0 +1,67 @@
+{
+  "version": "1.0",
+  "name": "Retail_Product_Performance",
+  "pages": [
+    {
+      "name": "Product Analysis",
+      "displayName": "Product Analysis",
+      "visuals": [
+        {
+          "name": "Units Sold",
+          "type": "table",
+          "title": "",
+          "position": {},
+          "size": {}
+        },
+        {
+          "name": "Net Sales",
+          "type": "table",
+          "title": "",
+          "position": {},
+          "size": {}
+        },
+        {
+          "name": "Profit",
+          "type": "table",
+          "title": "",
+          "position": {},
+          "size": {}
+        },
+        {
+          "name": "Top Products",
+          "type": "table",
+          "title": "",
+          "position": {},
+          "size": {}
+        },
+        {
+          "name": "Sales by Brand",
+          "type": "table",
+          "title": "",
+          "position": {},
+          "size": {}
+        },
+        {
+          "name": "Daily Sales",
+          "type": "table",
+          "title": "",
+          "position": {},
+          "size": {}
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "name": "Date Range",
+      "type": "Filter",
+      "field": "sales_date"
+    },
+    {
+      "name": "Category",
+      "type": "Filter",
+      "field": "category"
+    }
+  ],
+  "theme": {}
+}

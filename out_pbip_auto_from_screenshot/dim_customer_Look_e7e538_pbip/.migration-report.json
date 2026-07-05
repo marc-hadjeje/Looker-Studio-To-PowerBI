@@ -1,0 +1,30 @@
+{
+  "migrationDate": "2026-07-05T10:09:21.494878",
+  "projectPath": "out_pbip_auto_from_screenshot\\dim_customer_Look_e7e538_pbip",
+  "dataSources": {
+    "totalSources": 1,
+    "bigQuerySources": 1,
+    "googleSheetsSources": 0,
+    "sources": {
+      "ds_dim_customer": {
+        "original": "SELECT * FROM `ferrous-gate-496806-b7.retail_star.dim_customer`",
+        "dataset": "retail_star",
+        "table": "dim_customer",
+        "sourceType": "bigquery",
+        "priority": 1
+      }
+    }
+  },
+  "transformation": {
+    "dataSources": 1,
+    "controls": 2,
+    "formulas": 0,
+    "formulaFidelity": 100.0
+  },
+  "notes": [
+    "BigQuery queries have been converted to T-SQL format",
+    "Google Sheets connections use ExcelOnline connector",
+    "Review all formulas for DAX compatibility",
+    "Update connection credentials before publishing"
+  ]
+}

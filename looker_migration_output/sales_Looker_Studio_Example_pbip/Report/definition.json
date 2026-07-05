@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "name": "sales_Looker_Studio_Example",
+  "pages": [
+    {
+      "name": "Overview",
+      "displayName": "Overview",
+      "visuals": []
+    }
+  ],
+  "filters": [
+    {
+      "name": "id",
+      "type": "dropdown",
+      "field": ""
+    }
+  ],
+  "theme": {}
+}

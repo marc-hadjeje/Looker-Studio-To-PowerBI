@@ -1,0 +1,257 @@
+{
+  "id": "customer-analytics-2024",
+  "title": "Customer Analytics",
+  "description": "Detailed customer segmentation, retention, and lifetime value analysis",
+  "dataSources": [
+    {
+      "id": "ds_customers",
+      "sourceType": "BigQuery",
+      "name": "Customer Base",
+      "configuration": {
+        "projectId": "your-gcp-project",
+        "datasetId": "customer_analytics",
+        "table": "customers",
+        "query": "SELECT customer_id, customer_name, signup_date, country, city, customer_segment, lifetime_value, repeat_customer, account_status FROM customer_analytics.customers"
+      }
+    },
+    {
+      "id": "ds_orders",
+      "sourceType": "BigQuery",
+      "name": "Customer Orders",
+      "configuration": {
+        "projectId": "your-gcp-project",
+        "datasetId": "customer_analytics",
+        "table": "customer_orders",
+        "query": "SELECT customer_id, order_id, order_date, order_amount, days_since_signup FROM customer_analytics.customer_orders"
+      }
+    },
+    {
+      "id": "ds_retention",
+      "sourceType": "BigQuery",
+      "name": "Retention Cohorts",
+      "configuration": {
+        "projectId": "your-gcp-project",
+        "datasetId": "customer_analytics",
+        "table": "cohort_analysis",
+        "query": "SELECT cohort_month, months_since_signup, retention_rate, retained_customers FROM customer_analytics.cohort_analysis"
+      }
+    }
+  ],
+  "parameterControls": [
+    {
+      "id": "ctrl_segment",
+      "name": "Customer Segment",
+      "type": "Dropdown",
+      "options": ["New", "At Risk", "Active", "Loyal", "Churned"],
+      "multiSelect": true,
+      "defaultValue": ["Active", "Loyal"]
+    },
+    {
+      "id": "ctrl_country",
+      "name": "Country",
+      "type": "Dropdown",
+      "options": ["US", "UK", "Canada", "Germany", "France", "Australia", "Japan"],
+      "multiSelect": true,
+      "defaultValue": ["US"]
+    },
+    {
+      "id": "ctrl_status",
+      "name": "Account Status",
+      "type": "Dropdown",
+      "options": ["Active", "Inactive", "Suspended"],
+      "multiSelect": true,
+      "defaultValue": ["Active"]
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_overview",
+      "name": "Overview",
+      "layout": {
+        "rows": 3,
+        "columns": 4
+      },
+      "visuals": [
+        {
+          "id": "visual_total_customers",
+          "name": "Total Customers",
+          "type": "Scorecard",
+          "position": {"row": 0, "column": 0, "width": 1, "height": 1},
+          "dataSourceId": "ds_customers",
+          "configuration": {
+            "metric": "COUNT_DISTINCT(customer_id)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_avg_ltv",
+          "name": "Average LTV",
+          "type": "Scorecard",
+          "position": {"row": 0, "column": 1, "width": 1, "height": 1},
+          "dataSourceId": "ds_customers",
+          "configuration": {
+            "metric": "AVG(lifetime_value)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_repeat_rate",
+          "name": "Repeat Purchase Rate",
+          "type": "Scorecard",
+          "position": {"row": 0, "column": 2, "width": 1, "height": 1},
+          "dataSourceId": "ds_customers",
+          "configuration": {
+            "metric": "SUM(repeat_customer) / COUNT_DISTINCT(customer_id) * 100",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_active_rate",
+          "name": "Active Rate",
+          "type": "Scorecard",
+          "position": {"row": 0, "column": 3, "width": 1, "height": 1},
+          "dataSourceId": "ds_customers",
+          "configuration": {
+            "metric": "COUNTIF(account_status = 'Active') / COUNT_DISTINCT(customer_id) * 100",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_segment_breakdown",
+          "name": "Customers by Segment",
+          "type": "PieChart",
+          "position": {"row": 1, "column": 0, "width": 2, "height": 1},
+          "dataSourceId": "ds_customers",
+          "configuration": {
+            "dimension": "customer_segment",
+            "metric": "COUNT_DISTINCT(customer_id)"
+          }
+        },
+        {
+          "id": "visual_ltv_by_segment",
+          "name": "LTV by Segment",
+          "type": "ColumnChart",
+          "position": {"row": 1, "column": 2, "width": 2, "height": 1},
+          "dataSourceId": "ds_customers",
+          "configuration": {
+            "xAxis": "customer_segment",
+            "yAxis": "AVG(lifetime_value)",
+            "sort": "descending"
+          }
+        },
+        {
+          "id": "visual_geo_distribution",
+          "name": "Customers by Country",
+          "type": "BarChart",
+          "position": {"row": 2, "column": 0, "width": 2, "height": 1},
+          "dataSourceId": "ds_customers",
+          "configuration": {
+            "xAxis": "country",
+            "yAxis": "COUNT_DISTINCT(customer_id)",
+            "sort": "descending",
+            "limit": 10
+          }
+        },
+        {
+          "id": "visual_signup_trend",
+          "name": "New Customer Signups",
+          "type": "LineChart",
+          "position": {"row": 2, "column": 2, "width": 2, "height": 1},
+          "dataSourceId": "ds_customers",
+          "configuration": {
+            "xAxis": "DATE_TRUNC(signup_date, MONTH)",
+            "yAxis": "COUNT_DISTINCT(customer_id)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "page_retention",
+      "name": "Retention Analysis",
+      "layout": {
+        "rows": 2,
+        "columns": 2
+      },
+      "visuals": [
+        {
+          "id": "visual_cohort_heatmap",
+          "name": "Cohort Retention Heatmap",
+          "type": "HeatMap",
+          "position": {"row": 0, "column": 0, "width": 1, "height": 2},
+          "dataSourceId": "ds_retention",
+          "configuration": {
+            "rowDimension": "cohort_month",
+            "columnDimension": "months_since_signup",
+            "metric": "AVG(retention_rate)"
+          }
+        },
+        {
+          "id": "visual_churn_risk",
+          "name": "Customers at Risk (No Purchase in 90 Days)",
+          "type": "Scorecard",
+          "position": {"row": 0, "column": 1, "width": 1, "height": 1},
+          "dataSourceId": "ds_customers",
+          "configuration": {
+            "metric": "COUNTIF(days_since_last_order > 90)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_retention_trend",
+          "name": "Retention Trend",
+          "type": "LineChart",
+          "position": {"row": 1, "column": 1, "width": 1, "height": 1},
+          "dataSourceId": "ds_retention",
+          "configuration": {
+            "xAxis": "months_since_signup",
+            "yAxis": "AVG(retention_rate)",
+            "legend": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "page_detail",
+      "name": "Customer List",
+      "layout": {
+        "rows": 1,
+        "columns": 1
+      },
+      "visuals": [
+        {
+          "id": "visual_customer_table",
+          "name": "Customer Details",
+          "type": "Table",
+          "position": {"row": 0, "column": 0, "width": 1, "height": 1},
+          "dataSourceId": "ds_customers",
+          "configuration": {
+            "dimensions": ["customer_name", "country", "customer_segment", "account_status", "signup_date"],
+            "metrics": ["lifetime_value", "repeat_customer"],
+            "sort": "lifetime_value DESC",
+            "limit": 100
+          }
+        }
+      ]
+    }
+  ],
+  "calculatedFields": [
+    {
+      "id": "calc_orders_per_customer",
+      "name": "Orders Per Customer",
+      "formula": "COUNT(order_id) / COUNT_DISTINCT(customer_id)",
+      "description": "Average number of orders per customer"
+    },
+    {
+      "id": "calc_avg_order_value",
+      "name": "Average Order Value",
+      "formula": "SUM(order_amount) / COUNT(order_id)",
+      "description": "Average order value across all orders"
+    },
+    {
+      "id": "calc_time_since_signup",
+      "name": "Customer Tenure (Days)",
+      "formula": "TODAY() - signup_date",
+      "description": "Days since customer signup"
+    }
+  ]
+}

@@ -1,0 +1,298 @@
+{
+  "projectId": "ferrous-gate-496806-b7",
+  "generatedAt": "2026-07-02T19:11:54",
+  "tables": [
+    {
+      "projectId": "ferrous-gate-496806-b7",
+      "datasetId": "demo",
+      "table": "sales",
+      "name": "sales",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER"
+        },
+        {
+          "name": "product",
+          "type": "STRING"
+        },
+        {
+          "name": "amount",
+          "type": "FLOAT"
+        }
+      ]
+    },
+    {
+      "projectId": "ferrous-gate-496806-b7",
+      "datasetId": "retail_star",
+      "table": "dim_channel",
+      "name": "dim_channel",
+      "columns": [
+        {
+          "name": "channel_key",
+          "type": "INTEGER"
+        },
+        {
+          "name": "channel_name",
+          "type": "STRING"
+        },
+        {
+          "name": "channel_group",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "projectId": "ferrous-gate-496806-b7",
+      "datasetId": "retail_star",
+      "table": "dim_customer",
+      "name": "dim_customer",
+      "columns": [
+        {
+          "name": "customer_key",
+          "type": "INTEGER"
+        },
+        {
+          "name": "customer_id",
+          "type": "STRING"
+        },
+        {
+          "name": "full_name",
+          "type": "STRING"
+        },
+        {
+          "name": "gender",
+          "type": "STRING"
+        },
+        {
+          "name": "age_group",
+          "type": "STRING"
+        },
+        {
+          "name": "city",
+          "type": "STRING"
+        },
+        {
+          "name": "region",
+          "type": "STRING"
+        },
+        {
+          "name": "segment",
+          "type": "STRING"
+        },
+        {
+          "name": "signup_date",
+          "type": "DATE"
+        },
+        {
+          "name": "is_loyalty_member",
+          "type": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "projectId": "ferrous-gate-496806-b7",
+      "datasetId": "retail_star",
+      "table": "dim_date",
+      "name": "dim_date",
+      "columns": [
+        {
+          "name": "date_key",
+          "type": "INTEGER"
+        },
+        {
+          "name": "full_date",
+          "type": "DATE"
+        },
+        {
+          "name": "year",
+          "type": "INTEGER"
+        },
+        {
+          "name": "quarter",
+          "type": "INTEGER"
+        },
+        {
+          "name": "month",
+          "type": "INTEGER"
+        },
+        {
+          "name": "month_name",
+          "type": "STRING"
+        },
+        {
+          "name": "week_of_year",
+          "type": "INTEGER"
+        },
+        {
+          "name": "day_of_month",
+          "type": "INTEGER"
+        },
+        {
+          "name": "day_name",
+          "type": "STRING"
+        },
+        {
+          "name": "iso_week",
+          "type": "INTEGER"
+        },
+        {
+          "name": "is_weekend",
+          "type": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "projectId": "ferrous-gate-496806-b7",
+      "datasetId": "retail_star",
+      "table": "dim_product",
+      "name": "dim_product",
+      "columns": [
+        {
+          "name": "product_key",
+          "type": "INTEGER"
+        },
+        {
+          "name": "product_id",
+          "type": "STRING"
+        },
+        {
+          "name": "product_name",
+          "type": "STRING"
+        },
+        {
+          "name": "category",
+          "type": "STRING"
+        },
+        {
+          "name": "subcategory",
+          "type": "STRING"
+        },
+        {
+          "name": "brand",
+          "type": "STRING"
+        },
+        {
+          "name": "unit_cost",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "unit_price",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "is_active",
+          "type": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "projectId": "ferrous-gate-496806-b7",
+      "datasetId": "retail_star",
+      "table": "dim_store",
+      "name": "dim_store",
+      "columns": [
+        {
+          "name": "store_key",
+          "type": "INTEGER"
+        },
+        {
+          "name": "store_id",
+          "type": "STRING"
+        },
+        {
+          "name": "store_name",
+          "type": "STRING"
+        },
+        {
+          "name": "city",
+          "type": "STRING"
+        },
+        {
+          "name": "region",
+          "type": "STRING"
+        },
+        {
+          "name": "country",
+          "type": "STRING"
+        },
+        {
+          "name": "store_format",
+          "type": "STRING"
+        },
+        {
+          "name": "opened_date",
+          "type": "DATE"
+        }
+      ]
+    },
+    {
+      "projectId": "ferrous-gate-496806-b7",
+      "datasetId": "retail_star",
+      "table": "fact_sales",
+      "name": "fact_sales",
+      "columns": [
+        {
+          "name": "sales_key",
+          "type": "INTEGER"
+        },
+        {
+          "name": "order_id",
+          "type": "STRING"
+        },
+        {
+          "name": "order_line_id",
+          "type": "INTEGER"
+        },
+        {
+          "name": "date_key",
+          "type": "INTEGER"
+        },
+        {
+          "name": "product_key",
+          "type": "INTEGER"
+        },
+        {
+          "name": "customer_key",
+          "type": "INTEGER"
+        },
+        {
+          "name": "store_key",
+          "type": "INTEGER"
+        },
+        {
+          "name": "channel_key",
+          "type": "INTEGER"
+        },
+        {
+          "name": "quantity",
+          "type": "INTEGER"
+        },
+        {
+          "name": "unit_price",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "gross_amount",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "discount_amount",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "net_sales_amount",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "cost_amount",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "profit_amount",
+          "type": "NUMERIC"
+        }
+      ]
+    }
+  ]
+}

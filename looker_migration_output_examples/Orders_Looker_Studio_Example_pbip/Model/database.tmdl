@@ -1,0 +1,4 @@
+database 'Orders_Looker_Studio_Example' 
+    compatibilityLevel = 1550
+    collation = 'en-US'
+    language = 'en-US'

@@ -1,0 +1,48 @@
+{
+  "version": "1.0",
+  "name": "sales_Looker_Studio_Example",
+  "pages": [
+    {
+      "name": "Overview",
+      "displayName": "Overview",
+      "visuals": [
+        {
+          "name": "Total Records",
+          "type": "table",
+          "title": "",
+          "position": {},
+          "size": {}
+        },
+        {
+          "name": "Primary Metric",
+          "type": "table",
+          "title": "",
+          "position": {},
+          "size": {}
+        },
+        {
+          "name": "sales by id",
+          "type": "table",
+          "title": "",
+          "position": {},
+          "size": {}
+        },
+        {
+          "name": "sales Details",
+          "type": "table",
+          "title": "",
+          "position": {},
+          "size": {}
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "name": "id",
+      "type": "dropdown",
+      "field": ""
+    }
+  ],
+  "theme": {}
+}

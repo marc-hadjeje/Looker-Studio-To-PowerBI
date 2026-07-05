@@ -1,0 +1,165 @@
+{
+  "id": "orders",
+  "title": "Orders Looker Studio Example",
+  "description": "Adaptive Looker Studio sample generated from orders (sales profile)",
+  "dataSources": [
+    {
+      "id": "ds_orders",
+      "sourceType": "BigQuery",
+      "name": "Orders",
+      "query": "SELECT * FROM `your-gcp-project.sales.orders`",
+      "configuration": {
+        "projectId": "your-gcp-project",
+        "datasetId": "sales",
+        "table": "orders",
+        "tableId": "orders",
+        "query": "SELECT * FROM `your-gcp-project.sales.orders`"
+      }
+    }
+  ],
+  "parameterControls": [
+    {
+      "id": "ctrl_orders_date_range",
+      "name": "Date Range",
+      "type": "DateRange",
+      "defaultValue": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-12-31"
+      },
+      "linkedField": "order_date"
+    },
+    {
+      "id": "ctrl_orders_dimension",
+      "name": "order_id",
+      "type": "Dropdown",
+      "options": [],
+      "multiSelect": true,
+      "linkedField": "order_id"
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_orders_overview",
+      "name": "Overview",
+      "layout": {
+        "rows": 3,
+        "columns": 4
+      },
+      "visuals": [
+        {
+          "id": "visual_orders_scorecard_1",
+          "name": "Total Records",
+          "type": "Scorecard",
+          "position": {
+            "row": 0,
+            "column": 0,
+            "width": 1,
+            "height": 1
+          },
+          "dataSourceId": "ds_orders",
+          "configuration": {
+            "metric": "COUNT(*)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_orders_scorecard_2",
+          "name": "Primary Metric",
+          "type": "Scorecard",
+          "position": {
+            "row": 0,
+            "column": 1,
+            "width": 1,
+            "height": 1
+          },
+          "dataSourceId": "ds_orders",
+          "configuration": {
+            "metric": "SUM(order_id)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_orders_trend",
+          "name": "Orders Trend",
+          "type": "LineChart",
+          "position": {
+            "row": 1,
+            "column": 0,
+            "width": 2,
+            "height": 1
+          },
+          "dataSourceId": "ds_orders",
+          "configuration": {
+            "xAxis": "DATE_TRUNC(order_date, MONTH)",
+            "yAxis": "SUM(order_id)",
+            "legend": false
+          }
+        },
+        {
+          "id": "visual_orders_breakdown",
+          "name": "Orders by order_id",
+          "type": "ColumnChart",
+          "position": {
+            "row": 1,
+            "column": 2,
+            "width": 2,
+            "height": 1
+          },
+          "dataSourceId": "ds_orders",
+          "configuration": {
+            "xAxis": "order_id",
+            "yAxis": "SUM(order_id)",
+            "sort": "descending"
+          }
+        },
+        {
+          "id": "visual_orders_table",
+          "name": "Orders Details",
+          "type": "Table",
+          "position": {
+            "row": 2,
+            "column": 0,
+            "width": 4,
+            "height": 1
+          },
+          "dataSourceId": "ds_orders",
+          "configuration": {
+            "dimensions": [
+              "order_id",
+              "order_date"
+            ],
+            "metrics": [
+              "order_id"
+            ],
+            "sort": "order_id DESC",
+            "limit": 20
+          }
+        }
+      ]
+    }
+  ],
+  "calculatedFields": [
+    {
+      "id": "calc_orders_metric",
+      "name": "order_id Total",
+      "formula": "SUM(order_id)",
+      "description": "Aggregated metric for order_id"
+    }
+  ],
+  "generatedFromTableSchema": {
+    "profile": "sales",
+    "dateColumn": "order_date",
+    "dimensionColumn": "order_id",
+    "metricColumn": "order_id",
+    "columns": [
+      "order_id",
+      "customer_id",
+      "order_date",
+      "region",
+      "product_category",
+      "order_amount"
+    ]
+  },
+  "generatedAt": "2026-07-02T10:28:56.391843",
+  "version": "2.0"
+}

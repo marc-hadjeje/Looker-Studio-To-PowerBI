@@ -1,0 +1,166 @@
+{
+  "id": "campaign_metrics",
+  "title": "Campaign Metrics Looker Studio Example",
+  "description": "Adaptive Looker Studio sample generated from campaign_metrics (marketing profile)",
+  "dataSources": [
+    {
+      "id": "ds_campaign_metrics",
+      "sourceType": "BigQuery",
+      "name": "Campaign Metrics",
+      "query": "SELECT * FROM `your-gcp-project.marketing.campaign_metrics`",
+      "configuration": {
+        "projectId": "your-gcp-project",
+        "datasetId": "marketing",
+        "table": "campaign_metrics",
+        "tableId": "campaign_metrics",
+        "query": "SELECT * FROM `your-gcp-project.marketing.campaign_metrics`"
+      }
+    }
+  ],
+  "parameterControls": [
+    {
+      "id": "ctrl_campaign_metrics_date_range",
+      "name": "Date Range",
+      "type": "DateRange",
+      "defaultValue": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-12-31"
+      },
+      "linkedField": "start_date"
+    },
+    {
+      "id": "ctrl_campaign_metrics_dimension",
+      "name": "campaign_id",
+      "type": "Dropdown",
+      "options": [],
+      "multiSelect": true,
+      "linkedField": "campaign_id"
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_campaign_metrics_overview",
+      "name": "Overview",
+      "layout": {
+        "rows": 3,
+        "columns": 4
+      },
+      "visuals": [
+        {
+          "id": "visual_campaign_metrics_scorecard_1",
+          "name": "Total Records",
+          "type": "Scorecard",
+          "position": {
+            "row": 0,
+            "column": 0,
+            "width": 1,
+            "height": 1
+          },
+          "dataSourceId": "ds_campaign_metrics",
+          "configuration": {
+            "metric": "COUNT(*)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_campaign_metrics_scorecard_2",
+          "name": "Primary Metric",
+          "type": "Scorecard",
+          "position": {
+            "row": 0,
+            "column": 1,
+            "width": 1,
+            "height": 1
+          },
+          "dataSourceId": "ds_campaign_metrics",
+          "configuration": {
+            "metric": "SUM(budget_spent)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_campaign_metrics_trend",
+          "name": "Campaign Metrics Trend",
+          "type": "LineChart",
+          "position": {
+            "row": 1,
+            "column": 0,
+            "width": 2,
+            "height": 1
+          },
+          "dataSourceId": "ds_campaign_metrics",
+          "configuration": {
+            "xAxis": "DATE_TRUNC(start_date, MONTH)",
+            "yAxis": "SUM(budget_spent)",
+            "legend": false
+          }
+        },
+        {
+          "id": "visual_campaign_metrics_breakdown",
+          "name": "Campaign Metrics by campaign_id",
+          "type": "ColumnChart",
+          "position": {
+            "row": 1,
+            "column": 2,
+            "width": 2,
+            "height": 1
+          },
+          "dataSourceId": "ds_campaign_metrics",
+          "configuration": {
+            "xAxis": "campaign_id",
+            "yAxis": "SUM(budget_spent)",
+            "sort": "descending"
+          }
+        },
+        {
+          "id": "visual_campaign_metrics_table",
+          "name": "Campaign Metrics Details",
+          "type": "Table",
+          "position": {
+            "row": 2,
+            "column": 0,
+            "width": 4,
+            "height": 1
+          },
+          "dataSourceId": "ds_campaign_metrics",
+          "configuration": {
+            "dimensions": [
+              "campaign_id",
+              "start_date"
+            ],
+            "metrics": [
+              "budget_spent"
+            ],
+            "sort": "budget_spent DESC",
+            "limit": 20
+          }
+        }
+      ]
+    }
+  ],
+  "calculatedFields": [
+    {
+      "id": "calc_campaign_metrics_metric",
+      "name": "budget_spent Total",
+      "formula": "SUM(budget_spent)",
+      "description": "Aggregated metric for budget_spent"
+    }
+  ],
+  "generatedFromTableSchema": {
+    "profile": "marketing",
+    "dateColumn": "start_date",
+    "dimensionColumn": "campaign_id",
+    "metricColumn": "budget_spent",
+    "columns": [
+      "campaign_id",
+      "channel",
+      "start_date",
+      "budget_spent",
+      "clicks",
+      "conversions",
+      "revenue_attributed"
+    ]
+  },
+  "generatedAt": "2026-07-02T10:28:56.394360",
+  "version": "2.0"
+}

@@ -1,0 +1,7 @@
+// Data sources from Looker Studio
+
+table 'ds_exec'
+    sourceLineageTag = "ds_exec"
+    partition 'Partition1' = m(#"ds_exec")
+    annotation PBI_ResultType = Table
+
