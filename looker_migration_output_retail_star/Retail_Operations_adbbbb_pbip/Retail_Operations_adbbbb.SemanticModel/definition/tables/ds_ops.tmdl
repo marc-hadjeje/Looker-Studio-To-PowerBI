@@ -1,143 +1,143 @@
 table ds_ops
-	lineageTag: 98b5b899-fdf0-44a5-8e33-ec652e5fa1e5
+	lineageTag: a20d5e4a-9037-469a-882d-810b6289a733
 
 	column sales_date
 		dataType: dateTime
 		summarizeBy: none
 		sourceColumn: sales_date
-		lineageTag: 54acefd1-e5af-4f73-b771-b5fe93677f79
+		lineageTag: c7163741-b30e-45d6-9551-567f450f5613
 
 	column iso_week
 		dataType: string
 		summarizeBy: none
 		sourceColumn: iso_week
-		lineageTag: 9537f7be-ef33-435e-aac9-01b9cdc8e037
+		lineageTag: 01997172-245c-4751-9dc9-f2f944c99b84
 
 	column year
 		dataType: int64
 		summarizeBy: sum
 		sourceColumn: year
-		lineageTag: 397be2f1-561b-4073-855e-2fce71bb9137
+		lineageTag: 5a10d6e3-858d-4761-ba34-d88bdf0562c5
 
 	column category
 		dataType: string
 		summarizeBy: none
 		sourceColumn: category
-		lineageTag: 527991de-105f-4c3f-b3f6-4f9e5b25c562
+		lineageTag: 7bf5a992-b05d-4c21-aa87-e30fdb161fb5
 
 	column subcategory
 		dataType: string
 		summarizeBy: none
 		sourceColumn: subcategory
-		lineageTag: 6ad30869-407d-437f-ae9e-57894ea83066
+		lineageTag: 42f3126c-c6eb-4f52-94fd-e85529458062
 
 	column product_name
 		dataType: string
 		summarizeBy: none
 		sourceColumn: product_name
-		lineageTag: 5d7dafef-88ca-461d-aeaa-fd14d6eec5a3
+		lineageTag: 0f680231-beff-40da-aa8d-8afa3cb9765b
 
 	column customer_region
 		dataType: string
 		summarizeBy: none
 		sourceColumn: customer_region
-		lineageTag: 87567f09-7ddf-4487-b80c-8319b5a5f0fb
+		lineageTag: 4ee266b7-d17b-464e-8022-ad4e3fe689be
 
 	column segment
 		dataType: string
 		summarizeBy: none
 		sourceColumn: segment
-		lineageTag: deeb3a81-6e47-4ef8-a21d-90b6d4a2955e
+		lineageTag: eedcf868-7633-4bb1-b81c-e5aacded9e68
 
 	column store_name
 		dataType: string
 		summarizeBy: none
 		sourceColumn: store_name
-		lineageTag: adb9e80f-3d6a-40a5-bbb6-52fd648d94d8
+		lineageTag: 3b47e843-ee6b-4a61-aa86-8e4bf7f1015e
 
 	column store_format
 		dataType: string
 		summarizeBy: none
 		sourceColumn: store_format
-		lineageTag: 8c654c77-eef9-45ff-b5e2-6fae23d673c5
+		lineageTag: 08355137-850b-4ba0-a129-5345419a0a87
 
 	column store_region
 		dataType: string
 		summarizeBy: none
 		sourceColumn: store_region
-		lineageTag: ae321064-4fa4-4d73-bc5b-7895cdaa69f8
+		lineageTag: 31fc7110-6a0c-4fa3-b49a-9406eff7f57a
 
 	column channel_name
 		dataType: string
 		summarizeBy: none
 		sourceColumn: channel_name
-		lineageTag: 911422bd-28de-4123-a06b-83577ad7b1ab
+		lineageTag: eb205d4b-2fd6-4537-9d8d-901821e27566
 
 	column order_id
 		dataType: string
 		summarizeBy: none
 		sourceColumn: order_id
-		lineageTag: 9f17ce04-958a-4aa0-8a93-b8acc1a11692
+		lineageTag: 4ea22163-4cd3-403a-9644-d34d01d70a6a
 
 	column quantity
 		dataType: int64
 		summarizeBy: sum
 		sourceColumn: quantity
-		lineageTag: 308e8832-231a-43f2-a616-7a31dff630b8
+		lineageTag: 3d8f3cd8-a2a3-45f0-8c0d-039752e9fe08
 
 	column net_sales_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: net_sales_amount
-		lineageTag: e0711cbe-af73-4a93-a80c-e54e8840dba5
+		lineageTag: d0c163ff-c8cc-4a65-9c2b-c6bc5de7dfec
 
 	column cost_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: cost_amount
-		lineageTag: a86c2a5a-1427-491f-ad23-18deafe793be
+		lineageTag: 6861b4de-a26a-4c4b-b8e8-346a2b320a70
 
 	column profit_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: profit_amount
-		lineageTag: 76a34e07-9444-4b46-9e5d-81302911e31e
+		lineageTag: 389624f6-7adc-4a2f-8cd3-a96ea2a74ef1
 
 	measure OpsMarginPct = SUM('ds_ops'[profit_amount]) / SUM('ds_ops'[net_sales_amount])
-		lineageTag: 570503e4-9ba0-4e50-88d9-f31973543871
+		lineageTag: 2f09d499-14ac-44f6-b76e-054d639d2c58
 
 	measure UnitsPerOrder = SUM('ds_ops'[quantity]) / DISTINCTCOUNT('ds_ops'[order_id])
-		lineageTag: a8361c6d-e263-4c3e-9b5f-7b13b17a5402
+		lineageTag: f9f2359b-391f-402f-9714-1336a003b433
 
 	measure ProfitPerOrder = SUM('ds_ops'[profit_amount]) / DISTINCTCOUNT('ds_ops'[order_id])
-		lineageTag: 2bbd6918-cddd-444a-90ba-7a30798f69b1
+		lineageTag: c4000599-1215-4b1e-94c7-15ee5a07dc5b
 
 	measure 'Weekly Sales' = SUM('ds_ops'[net_sales_amount])
-		lineageTag: 8cad5548-012d-4eb6-8e13-ba818d06ef68
+		lineageTag: 53a9d225-7a49-4f9b-9f0b-9bdc3a0215ea
 
 	measure 'Weekly Profit' = SUM('ds_ops'[profit_amount])
-		lineageTag: 49fb694f-68d1-46da-bac3-9267686b2338
+		lineageTag: 0db5e9e4-9fbe-402e-8531-50754802e5ca
 
 	measure Units = SUM('ds_ops'[quantity])
-		lineageTag: f53ad56c-8219-468e-8053-16a7dba024ef
+		lineageTag: fe2472a2-2e57-48ec-814f-ab6e5f3d57cb
 
 	measure 'Weekly Sales Trend' = SUM('ds_ops'[net_sales_amount])
-		lineageTag: 931de84d-6f5b-419a-bcad-d7705faff3df
+		lineageTag: 79f04c70-1ca7-4926-a243-ca06220db7d3
 
 	measure 'Weekly Profit Trend' = SUM('ds_ops'[profit_amount])
-		lineageTag: c3d65c42-3caa-4d68-9116-c888734e20f0
+		lineageTag: 13fae4e3-7b81-48d4-bd00-62cb06c81ed5
 
 	measure 'Sales by Store Format' = SUM('ds_ops'[net_sales_amount])
-		lineageTag: 9c1559b7-0eb0-4604-b14f-4d09d71d57a8
+		lineageTag: 86419800-81b0-4bd0-8f39-957d197bdf55
 
 	measure 'Profit by Region' = SUM('ds_ops'[profit_amount])
-		lineageTag: faf851ed-d93d-4832-a3ba-c54287927194
+		lineageTag: c30490bd-73ce-4007-a056-4cb194eeb730
 
 	measure 'Channel by Store Format' = SUM('ds_ops'[net_sales_amount])
-		lineageTag: 95baff65-f004-4565-b073-8c1a3f32994d
+		lineageTag: 42136ed7-09d3-4a65-8c94-9dca99c288df
 
 	measure 'Category by Week' = SUM('ds_ops'[net_sales_amount])
-		lineageTag: 1fc6ae96-c9e2-413e-a052-c49baa2c7be9
+		lineageTag: bfab62a0-6948-4131-8989-71a02a7a216f
 
 	partition ds_ops = m
 		mode: import

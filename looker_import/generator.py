@@ -187,12 +187,24 @@ class PBIPGenerator:
             columns = self._parse_query_columns(query)
             measures = self._build_measures_for_source(source_id, table_name, formulas, pages)
 
-            # Guarantee every column referenced by a measure exists on the table.
-            existing = {c['name'] for c in columns}
-            for col in self._referenced_columns(measures):
-                if col not in existing:
-                    existing.add(col)
-                    columns.append({'name': col, 'dataType': self._infer_data_type(col)})
+            # Keep the model refreshable: a measure must only reference columns
+            # actually produced by the partition query. When we successfully
+            # parsed the query columns, drop measures referencing anything else
+            # (e.g. a Looker metric over a field not present in the SELECT) so
+            # the import does not fail with "column not found". When the query
+            # could not be parsed, fall back to guaranteeing referenced columns.
+            if columns:
+                available = {c['name'] for c in columns}
+                measures = [
+                    m for m in measures
+                    if all(ref in available for ref in self._referenced_columns([m]))
+                ]
+            else:
+                existing = {c['name'] for c in columns}
+                for col in self._referenced_columns(measures):
+                    if col not in existing:
+                        existing.add(col)
+                        columns.append({'name': col, 'dataType': self._infer_data_type(col)})
 
             tmdl = self._render_table_tmdl(table_name, source, columns, measures, query)
             self._fs(tables_dir / f"{table_name}.tmdl").write_text(tmdl, encoding='utf-8')

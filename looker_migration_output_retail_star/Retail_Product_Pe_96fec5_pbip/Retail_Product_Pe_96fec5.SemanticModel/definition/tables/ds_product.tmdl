@@ -1,77 +1,77 @@
 table ds_product
-	lineageTag: 88cfefdb-0151-4513-8ac2-76aa37dd35e9
+	lineageTag: abc7a38f-c1e9-4181-b3bf-5e995fd7e457
 
 	column sales_date
 		dataType: dateTime
 		summarizeBy: none
 		sourceColumn: sales_date
-		lineageTag: d0850718-ef0c-427e-9071-df989bc6fea4
+		lineageTag: 73b78ce0-ec7a-4cfe-be9d-7031dce2dab0
 
 	column product_name
 		dataType: string
 		summarizeBy: none
 		sourceColumn: product_name
-		lineageTag: 7ade90b1-7084-4122-8fdd-b4b20e9a873a
+		lineageTag: 2bfbbe9c-ad11-4cd5-9c39-0a16b4466f05
 
 	column category
 		dataType: string
 		summarizeBy: none
 		sourceColumn: category
-		lineageTag: 07474f38-ae73-418d-b2d7-a13d5a0e9a65
+		lineageTag: 32b99215-b9df-48bb-97aa-8f9782534c28
 
 	column subcategory
 		dataType: string
 		summarizeBy: none
 		sourceColumn: subcategory
-		lineageTag: de0a2d5a-e887-4c21-94d7-3a5851a6626a
+		lineageTag: 0285263f-b7e3-4e86-8501-f30ccfc53311
 
 	column brand
 		dataType: string
 		summarizeBy: none
 		sourceColumn: brand
-		lineageTag: 5b8325b7-1d92-4a3f-aac5-f8e6401dc29a
+		lineageTag: 4417ce36-423a-48c5-8756-9f39ca00fdf6
 
 	column quantity
 		dataType: int64
 		summarizeBy: sum
 		sourceColumn: quantity
-		lineageTag: c2a930de-588f-4fe1-856d-58da6784ee7b
+		lineageTag: d96975d9-4ed2-45cb-b465-603862c3789d
 
 	column net_sales_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: net_sales_amount
-		lineageTag: b918a383-0aa5-423b-9234-fcb0125d145b
+		lineageTag: fb1456b7-46aa-493e-8650-c3ad30771b15
 
 	column cost_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: cost_amount
-		lineageTag: cf3510fe-7d00-48b8-87ae-60a2ef515a9f
+		lineageTag: 52275310-74ae-4d6b-a0ab-a5b947876da1
 
 	column profit_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: profit_amount
-		lineageTag: 0b751347-b60a-4106-99b5-76d7d292ff61
+		lineageTag: e54f6725-e9f6-47ff-aba8-0d3e140c3811
 
 	measure UnitMargin = SUM('ds_product'[profit_amount]) / SUM('ds_product'[quantity])
-		lineageTag: f04a4bec-2e2b-4d71-a9e1-162e1ed73ce3
+		lineageTag: 130786b6-ebbd-4fb2-bd10-86be17cfd151
 
 	measure 'Units Sold' = SUM('ds_product'[quantity])
-		lineageTag: 332426c3-5a4e-4eef-b040-845358642e30
+		lineageTag: 7fa738c6-feac-478a-919a-cf5889c50f9e
 
 	measure 'Net Sales' = SUM('ds_product'[net_sales_amount])
-		lineageTag: 1061e201-9204-49cf-96a9-a541139ce53e
+		lineageTag: a960aa91-f5cf-4c0e-b126-f8c983687956
 
 	measure Profit = SUM('ds_product'[profit_amount])
-		lineageTag: e3c1d0f5-c929-4d5a-94e9-ac74344f3557
+		lineageTag: 154a38be-f676-4f8b-b300-5d99406495df
 
 	measure 'Sales by Brand' = SUM('ds_product'[net_sales_amount])
-		lineageTag: 26d857c1-0600-4232-b2ab-2c0d87b718ab
+		lineageTag: dadaef40-01d0-4e9e-a31f-631c8ec55834
 
 	measure 'Daily Sales' = SUM('ds_product'[net_sales_amount])
-		lineageTag: 040dec65-873c-48f0-9a39-4ca7da831aae
+		lineageTag: 21755d10-7b69-4aac-a57e-10f8aa00ca26
 
 	partition ds_product = m
 		mode: import

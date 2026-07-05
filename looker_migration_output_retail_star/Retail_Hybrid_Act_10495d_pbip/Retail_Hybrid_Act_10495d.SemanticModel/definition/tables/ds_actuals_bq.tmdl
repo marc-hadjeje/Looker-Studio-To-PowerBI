@@ -1,86 +1,77 @@
 table ds_actuals_bq
-	lineageTag: 05fe80de-92ee-4fc4-aeb8-e8fb3be24236
+	lineageTag: 27437a05-77c3-4d12-a8a7-7d3d37cdb258
 
 	column sales_date
 		dataType: dateTime
 		summarizeBy: none
 		sourceColumn: sales_date
-		lineageTag: dbd5d5e7-7fd4-48ff-bcd2-ec01e240dc4e
+		lineageTag: badb54fa-56e7-4f3c-8d0c-d63128cc349e
 
 	column month
 		dataType: int64
 		summarizeBy: sum
 		sourceColumn: month
-		lineageTag: 5daba5dc-5141-4f14-95cf-66331e0fdd02
+		lineageTag: 75b47c4a-4562-46d1-aacb-bf71516fa08c
 
 	column month_name
 		dataType: int64
 		summarizeBy: sum
 		sourceColumn: month_name
-		lineageTag: b7de99c6-106f-496c-95be-53e3c0bdd30f
+		lineageTag: 3ea9666f-0bef-448f-8b07-207277566cb7
 
 	column store_region
 		dataType: string
 		summarizeBy: none
 		sourceColumn: store_region
-		lineageTag: 4ace0a5b-1e6b-4b19-be5f-2dee9fac3168
+		lineageTag: 033157d8-f6de-40b8-98d0-4fc0fff39537
 
 	column category
 		dataType: string
 		summarizeBy: none
 		sourceColumn: category
-		lineageTag: 5fbb3ed9-b351-4264-b060-b62b935adb65
+		lineageTag: 5942471f-e7d6-443e-8842-28cf642090a7
 
 	column channel_name
 		dataType: string
 		summarizeBy: none
 		sourceColumn: channel_name
-		lineageTag: e49ed30f-b169-4c8b-b7a1-8407b4cebf32
+		lineageTag: b86a0311-2e2c-4054-956a-35644546f31d
 
 	column order_id
 		dataType: string
 		summarizeBy: none
 		sourceColumn: order_id
-		lineageTag: bd73ef3e-796a-4019-813e-edc59eae959c
+		lineageTag: e11498d3-67bd-44da-8e2c-30c23e9e0e72
 
 	column net_sales_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: net_sales_amount
-		lineageTag: c812cd1e-056f-4bcd-8af0-107ff013c19f
+		lineageTag: ff52994e-7616-450a-a8f0-af009e1044f6
 
 	column profit_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: profit_amount
-		lineageTag: a7aa3440-2276-48c8-90f1-a6db9e98794b
-
-	column target_sales
-		dataType: double
-		summarizeBy: sum
-		sourceColumn: target_sales
-		lineageTag: a0139b06-471c-4c68-ac22-8231b37ffbf4
+		lineageTag: 45fefc73-5a7e-4ab5-a4a9-70b60e84a512
 
 	measure ActualMarginPct = SUM('ds_actuals_bq'[profit_amount]) / SUM('ds_actuals_bq'[net_sales_amount])
-		lineageTag: d14c6116-21ff-40eb-8b44-129be75c0a1f
-
-	measure TargetAttainmentPlaceholder = SUM('ds_actuals_bq'[net_sales_amount]) / SUM('ds_actuals_bq'[target_sales])
-		lineageTag: 7ee8cc25-bbe8-4368-98f3-636c197ec448
+		lineageTag: b27a808e-af2a-40f7-a2ef-7bcc6de8b576
 
 	measure 'Actual Net Sales' = SUM('ds_actuals_bq'[net_sales_amount])
-		lineageTag: f72c213b-69ff-4026-867e-375224e54f92
+		lineageTag: 4b6243ab-e4be-4890-a2cc-255cd50f852e
 
 	measure 'Actual Profit' = SUM('ds_actuals_bq'[profit_amount])
-		lineageTag: 2e247bd0-03ad-4f66-aea8-a2a5ac576669
+		lineageTag: e0da7c69-f82a-4258-875f-52792bab9dad
 
 	measure 'Actual Trend' = SUM('ds_actuals_bq'[net_sales_amount])
-		lineageTag: 72e3ae49-9cfb-4ba9-9ec6-d920db920c88
+		lineageTag: 579ff1f4-f29c-412a-b9dc-1a39787ebede
 
 	measure 'Actual by Region' = SUM('ds_actuals_bq'[net_sales_amount])
-		lineageTag: 7a08822a-8e2d-4476-88ff-048461540b06
+		lineageTag: d412ddf5-721f-4e89-b095-790e6afb83b5
 
 	measure 'Variance Waterfall Placeholder' = SUM('ds_actuals_bq'[net_sales_amount])
-		lineageTag: f5d9a09d-c4ed-4f5b-85d3-a37a658f16f7
+		lineageTag: d220fe3d-9075-4565-8d06-904b51158cd6
 
 	partition ds_actuals_bq = m
 		mode: import

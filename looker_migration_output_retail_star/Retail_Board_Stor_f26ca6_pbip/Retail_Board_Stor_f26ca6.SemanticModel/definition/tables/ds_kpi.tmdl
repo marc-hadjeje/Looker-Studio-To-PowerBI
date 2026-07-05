@@ -1,158 +1,158 @@
 table ds_kpi
-	lineageTag: 736984a0-8970-4377-952b-38e13524ec55
+	lineageTag: 419ce40a-6934-4c20-8173-6b0cb03fc982
 
 	column sales_date
 		dataType: dateTime
 		summarizeBy: none
 		sourceColumn: sales_date
-		lineageTag: ea65c34a-7225-4ce8-b8d1-08aca2ee0713
+		lineageTag: 262bb3ae-e57d-4492-ac79-492f8ff063ce
 
 	column year
 		dataType: int64
 		summarizeBy: sum
 		sourceColumn: year
-		lineageTag: 59c38fa6-9ee1-4812-a03f-7c95a8592843
+		lineageTag: 8487be21-b8b7-4a39-8f64-98f44aa37dca
 
 	column month
 		dataType: int64
 		summarizeBy: sum
 		sourceColumn: month
-		lineageTag: 1710528d-c8e2-47a7-b278-97b6bb9c7b23
+		lineageTag: 95d41734-b1e4-4b0b-93c3-498a428153b9
 
 	column category
 		dataType: string
 		summarizeBy: none
 		sourceColumn: category
-		lineageTag: 68a81178-df13-4440-ba37-b7ab79e52770
+		lineageTag: ae401c60-45eb-439a-824b-e0b34cc16ea7
 
 	column brand
 		dataType: string
 		summarizeBy: none
 		sourceColumn: brand
-		lineageTag: 16a5cc16-7569-41a4-b5ba-03aa1aa19db1
+		lineageTag: 38e814a2-5eca-4869-9e0c-0ed2d0f92a15
 
 	column segment
 		dataType: string
 		summarizeBy: none
 		sourceColumn: segment
-		lineageTag: 9a3c2370-08a0-40e2-a7bc-15763fa382e2
+		lineageTag: 2f9b8c4f-2a68-4daa-9471-d6be1d84e42b
 
 	column is_loyalty_member
 		dataType: string
 		summarizeBy: none
 		sourceColumn: is_loyalty_member
-		lineageTag: 27e80ae9-ac9b-42df-aac2-e638e736eca2
+		lineageTag: d2ed2cab-7167-48c5-aa0b-9f7b15ab4b54
 
 	column store_region
 		dataType: string
 		summarizeBy: none
 		sourceColumn: store_region
-		lineageTag: 5a2d0308-9aa0-447c-80a7-8cbe93638110
+		lineageTag: 329e9ae6-6f13-4a3c-a6dc-218e687bb4d3
 
 	column store_format
 		dataType: string
 		summarizeBy: none
 		sourceColumn: store_format
-		lineageTag: f5ac7458-ffd1-475a-9f4d-bb7ac3d3ef36
+		lineageTag: 67fed94e-2f3b-4b7e-a8b5-7f9d7db64745
 
 	column channel_name
 		dataType: string
 		summarizeBy: none
 		sourceColumn: channel_name
-		lineageTag: 5f27a461-70d3-476b-be78-053748120877
+		lineageTag: 5af45841-4bfa-40df-8f23-bc372583e8ed
 
 	column order_id
 		dataType: string
 		summarizeBy: none
 		sourceColumn: order_id
-		lineageTag: 18aee128-e0b9-4941-b58e-38cab74e2ace
+		lineageTag: 6596e45d-34f3-40c0-a96f-a1d1458ce906
 
 	column quantity
 		dataType: int64
 		summarizeBy: sum
 		sourceColumn: quantity
-		lineageTag: a2b3b481-abb8-4e48-8c06-eae63e23ccfc
+		lineageTag: e6e48bba-287b-49fb-a47b-41f6d1a8d06b
 
 	column gross_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: gross_amount
-		lineageTag: dd015eb6-9d7b-417f-9f24-ef570e82e9fe
+		lineageTag: 702ef618-b8a8-469f-9945-b6fffc1bd4a3
 
 	column discount_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: discount_amount
-		lineageTag: 99b78f6f-fe0c-49c2-9571-160a655a4967
+		lineageTag: eb179c9d-3961-48ad-a5c8-60c9d591c881
 
 	column net_sales_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: net_sales_amount
-		lineageTag: 6d12a92b-d24f-4021-95e5-aa47a1bb1f45
+		lineageTag: 474fb43e-7094-47d2-bf41-f1a613830d07
 
 	column cost_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: cost_amount
-		lineageTag: 93ce7eed-1ebd-42fe-b20e-5afc59190cde
+		lineageTag: 5ee6b7d8-8536-4fbf-b997-58c8a2a7b3e6
 
 	column profit_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: profit_amount
-		lineageTag: c8142e8e-6604-475f-a8e9-799b494f0fc7
+		lineageTag: 27003e31-51bf-4ca3-8b6d-51ab195e40aa
 
 	measure MarginPct = SUM('ds_kpi'[profit_amount]) / SUM('ds_kpi'[net_sales_amount])
-		lineageTag: 5163fd3f-4372-4d42-b8f4-4ccd351f0871
+		lineageTag: ddc43028-75da-4671-bc9a-1e9c790bfa4e
 
 	measure AverageOrderValue = SUM('ds_kpi'[net_sales_amount]) / DISTINCTCOUNT('ds_kpi'[order_id])
-		lineageTag: 7c24c835-f9cc-40e7-9548-4603e7def698
+		lineageTag: 62ff2d21-ff26-4e72-99b6-1588ab18de7c
 
 	measure DiscountRate = SUM('ds_kpi'[discount_amount]) / SUM('ds_kpi'[gross_amount])
-		lineageTag: d998ead6-fbf0-4ae1-afca-00280774d842
+		lineageTag: 3d443baa-fca0-496e-b2fa-58db1b4589e0
 
 	measure ProfitPerUnit = SUM('ds_kpi'[profit_amount]) / SUM('ds_kpi'[quantity])
-		lineageTag: e0c59286-5f4c-4d05-992c-ebcfd91a8487
+		lineageTag: 9a63faef-4f18-4217-873e-842083508248
 
 	measure 'Net Sales' = SUM('ds_kpi'[net_sales_amount])
-		lineageTag: 43438e55-98fb-4db4-ae4c-35b03d94493e
+		lineageTag: e0a7790e-daed-4516-ac1f-abbf32673b65
 
 	measure Profit = SUM('ds_kpi'[profit_amount])
-		lineageTag: 08266752-da13-4e00-8e69-da19e7048dba
+		lineageTag: 2b95b776-4533-42bd-97a5-1dbe1400abdf
 
 	measure 'Margin %' = SUM('ds_kpi'[profit_amount])/SUM('ds_kpi'[net_sales_amount])
-		lineageTag: cec5f74f-43bd-4783-9fa8-2472d0ed6cff
+		lineageTag: 87d2ac2e-6401-42f9-b695-63bb1e7eed1d
 
 	measure 'Net Sales Trend' = SUM('ds_kpi'[net_sales_amount])
-		lineageTag: df893b76-787a-4f74-9363-eaa714df3c93
+		lineageTag: 43ac181e-955d-416b-a2df-06f9b219a2cf
 
 	measure 'Profit Trend' = SUM('ds_kpi'[profit_amount])
-		lineageTag: 725c8c7c-ede7-4548-9a89-ed8c3a927948
+		lineageTag: e64f998d-430f-4c41-a772-0adeab81adae
 
 	measure 'Sales by Category' = SUM('ds_kpi'[net_sales_amount])
-		lineageTag: dacc9b86-f4d4-416e-af24-6d0e4f8bb871
+		lineageTag: 8d5044d5-ad3a-4889-99d0-1bb2c79f4170
 
 	measure 'Channel Mix' = SUM('ds_kpi'[net_sales_amount])
-		lineageTag: 277339d9-b7d5-4d8a-8f3f-a2e7953ce403
+		lineageTag: c0354555-b00c-4a68-a901-1b2ea9bf3567
 
 	measure 'Profit by Segment' = SUM('ds_kpi'[profit_amount])
-		lineageTag: 50187d96-636e-4ede-aafc-85714f321f08
+		lineageTag: 2b870bde-4274-4cbe-be8f-5768d2128457
 
 	measure 'Margin by Region' = SUM('ds_kpi'[profit_amount])/SUM('ds_kpi'[net_sales_amount])
-		lineageTag: d76b6e40-c6f4-49f0-a81c-363578805a6f
+		lineageTag: a75d162c-55d3-4b1b-bfb2-17da7d7aa823
 
 	measure 'Loyalty vs Non-Loyalty Sales' = SUM('ds_kpi'[net_sales_amount])
-		lineageTag: 5d3ebf6c-b5e9-4cc4-8292-8cb9d00d0396
+		lineageTag: 8197fada-81bd-48c8-b6ab-77847e4bc445
 
 	measure 'Store Format Profit' = SUM('ds_kpi'[profit_amount])
-		lineageTag: aedac2d2-67f9-4cde-97c2-478405503380
+		lineageTag: 30bbe694-7b26-4cb6-9068-319b5dcb315b
 
 	measure 'Discount Impact' = SUM('ds_kpi'[discount_amount])
-		lineageTag: 25dbc230-e173-43a5-b9d0-8eb96c5bef43
+		lineageTag: 01bb2043-d7d6-449d-a8f0-04b0c0235331
 
 	measure 'Average Basket by Channel' = SUM('ds_kpi'[net_sales_amount])/COUNT_DISTINCT(order_id)
-		lineageTag: 1f456844-6f22-4c13-9a6e-5aae37acba0f
+		lineageTag: 5fbaeefb-db02-4719-9e6d-74a3c22c3ca7
 
 	partition ds_kpi = m
 		mode: import
