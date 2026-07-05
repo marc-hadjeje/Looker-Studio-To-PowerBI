@@ -337,16 +337,42 @@ class PBIPGenerator:
     def _summarize_by(self, data_type: str) -> str:
         return 'sum' if data_type in ('double', 'int64') else 'none'
 
+    def _bq_project(self, source: Dict, query: str) -> str:
+        """Resolve the BigQuery project id.
+
+        The transformer's projectId is frequently empty, so fall back to the
+        first project segment of a backtick-qualified `project.dataset.table`
+        reference in the SQL.
+        """
+        project = (source.get('projectId') or '').strip()
+        if not project and query:
+            m = re.search(r'`([A-Za-z0-9\-]+)\.[A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]+`', query)
+            if m:
+                project = m.group(1)
+        return project
+
     def _m_partition_source(self, source: Dict, query: str) -> str:
         pbi_type = source.get('powerbiType', '')
         safe_query = query.replace('"', '""') if query else ''
         if pbi_type == 'GoogleBigQuery' and safe_query:
-            project = source.get('projectId', '')
-            billing = f'[BillingProject = "{project}"]' if project else ''
+            project = self._bq_project(source, query)
+            if project:
+                # Value.NativeQuery must run against a project-level value, not
+                # the GoogleBigQuery.Database() root (which raises "Native
+                # queries aren't supported by this value"). Navigate to the
+                # project node first, then execute the SQL.
+                return (
+                    "let\n"
+                    f'    Source = GoogleBigQuery.Database([BillingProject = "{project}"]),\n'
+                    f'    Project = Source{{[Name = "{project}"]}}[Data],\n'
+                    f'    Data = Value.NativeQuery(Project, "{safe_query}", null, [EnableFolding = false])\n'
+                    "in\n"
+                    "    Data"
+                )
             return (
                 "let\n"
-                f"    Source = GoogleBigQuery.Database({billing}),\n"
-                f'    Data = Value.NativeQuery(Source, "{safe_query}")\n'
+                "    Source = GoogleBigQuery.Database(),\n"
+                f'    Data = Value.NativeQuery(Source, "{safe_query}", null, [EnableFolding = false])\n'
                 "in\n"
                 "    Data"
             )

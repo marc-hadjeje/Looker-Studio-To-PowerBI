@@ -1,96 +1,97 @@
 table ds_customer
-	lineageTag: 85cf5965-88cd-4f4e-ad9f-c06cade3ea15
+	lineageTag: 9006a194-d84b-44f9-acf1-960a91fdce05
 
 	column sales_date
 		dataType: dateTime
 		summarizeBy: none
 		sourceColumn: sales_date
-		lineageTag: 79cd9dd3-b82e-4fb7-b5af-c40a7865f18f
+		lineageTag: 6089195c-4943-4059-ab9a-07ce153c0364
 
 	column customer_id
 		dataType: string
 		summarizeBy: none
 		sourceColumn: customer_id
-		lineageTag: 8401e8d5-9f73-441d-909a-8898f36c73b2
+		lineageTag: 717c8b83-fa27-46a9-b698-49a0aca8cb30
 
 	column segment
 		dataType: string
 		summarizeBy: none
 		sourceColumn: segment
-		lineageTag: ffafd671-871d-4168-a2a3-2312d4e600eb
+		lineageTag: e08d4236-7ae9-453d-80f0-ff97d0d39c9e
 
 	column customer_region
 		dataType: string
 		summarizeBy: none
 		sourceColumn: customer_region
-		lineageTag: 6762b508-ddf0-47ea-9a2d-9e4327a67311
+		lineageTag: f4bfe87c-b805-4a5a-ab0e-e43b29ffd18f
 
 	column age_group
 		dataType: string
 		summarizeBy: none
 		sourceColumn: age_group
-		lineageTag: 166304bb-fdd9-45ee-9233-e61aa221a8e2
+		lineageTag: 893b8070-5a2a-4488-9daf-ae3c824983c8
 
 	column is_loyalty_member
 		dataType: string
 		summarizeBy: none
 		sourceColumn: is_loyalty_member
-		lineageTag: 8c266cfa-c992-4f06-b5a9-d71cf908b9f8
+		lineageTag: c78806eb-cf59-477c-9e23-46436d0ec5b2
 
 	column channel_name
 		dataType: string
 		summarizeBy: none
 		sourceColumn: channel_name
-		lineageTag: 00d8dc6a-c2bb-4692-a8a7-8b1faa71b8c2
+		lineageTag: 81d32ec1-080c-46d1-97c7-f9540a6b7d6c
 
 	column store_format
 		dataType: string
 		summarizeBy: none
 		sourceColumn: store_format
-		lineageTag: 02974410-b4c7-47b0-ad0b-f24c18b42cd9
+		lineageTag: 9c3399aa-b4f4-4a8d-a9b7-ea97bedf5973
 
 	column order_id
 		dataType: string
 		summarizeBy: none
 		sourceColumn: order_id
-		lineageTag: e12efda6-05eb-4a4d-9f67-58385a766546
+		lineageTag: 494e4763-7d7b-4e37-a573-64707474aa7b
 
 	column quantity
 		dataType: int64
 		summarizeBy: sum
 		sourceColumn: quantity
-		lineageTag: 8dbbedb0-0bca-4f75-b74c-1d6321b512e1
+		lineageTag: 0b04169f-2938-47ab-8e74-3109e7dc2184
 
 	column net_sales_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: net_sales_amount
-		lineageTag: f8afd82c-c897-459d-8764-be4601735eb0
+		lineageTag: bf89545b-61ba-4f98-918a-bff752512b5f
 
 	column profit_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: profit_amount
-		lineageTag: 89ec1328-443d-4e82-832c-fa844015eaca
+		lineageTag: 53940b79-e0cf-4774-8571-c71c56eff665
 
 	measure AverageOrderValue = SUM('ds_customer'[net_sales_amount]) / DISTINCTCOUNT('ds_customer'[order_id])
-		lineageTag: dcc10a8f-7fdf-4eb1-ad86-0e733b59da4a
+		lineageTag: 7a4072bc-a6f5-4dfa-b9ce-252ada29c086
 
 	measure 'Net Sales' = SUM('ds_customer'[net_sales_amount])
-		lineageTag: c860b722-16d3-4e65-b66f-9f4853bca648
+		lineageTag: a7465549-6290-4723-b476-3cda27a38a97
 
 	measure 'Sales by Channel' = SUM('ds_customer'[net_sales_amount])
-		lineageTag: 6ecb819e-f359-44ce-8e8d-31229fffee2d
+		lineageTag: 48ceddef-39e6-48e1-91e4-52d0236592b8
 
 	measure 'Loyalty Sales' = SUM('ds_customer'[net_sales_amount])
-		lineageTag: 6253ccd6-88f2-4a83-9b37-5e27b6a02862
+		lineageTag: bd9e024a-3a0a-44f8-9802-28a138cc6599
 
 	partition ds_customer = m
 		mode: import
 		source = ```
 			let
-			    Source = GoogleBigQuery.Database(),
-			    Data = Value.NativeQuery(Source, "SELECT d.full_date AS sales_date, c.customer_id, c.segment, c.region AS customer_region, c.age_group, c.is_loyalty_member, ch.channel_name, s.store_format, f.order_id, f.quantity, f.net_sales_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_customer` c ON f.customer_key = c.customer_key JOIN `ferrous-gate-496806-b7.retail_star.dim_store` s ON f.store_key = s.store_key JOIN `ferrous-gate-496806-b7.retail_star.dim_channel` ch ON f.channel_key = ch.channel_key")
+			    Source = GoogleBigQuery.Database([BillingProject = "ferrous-gate-496806-b7"]),
+			    Project = Source{[Name = "ferrous-gate-496806-b7"]}[Data],
+			    Data = Value.NativeQuery(Project, "SELECT d.full_date AS sales_date, c.customer_id, c.segment, c.region AS customer_region, c.age_group, c.is_loyalty_member, ch.channel_name, s.store_format, f.order_id, f.quantity, f.net_sales_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_customer` c ON f.customer_key = c.customer_key JOIN `ferrous-gate-496806-b7.retail_star.dim_store` s ON f.store_key = s.store_key JOIN `ferrous-gate-496806-b7.retail_star.dim_channel` ch ON f.channel_key = ch.channel_key", null, [EnableFolding = false])
 			in
 			    Data
 			```

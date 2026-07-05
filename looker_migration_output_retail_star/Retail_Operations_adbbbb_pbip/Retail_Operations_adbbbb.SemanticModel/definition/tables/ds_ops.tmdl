@@ -1,150 +1,151 @@
 table ds_ops
-	lineageTag: a20d5e4a-9037-469a-882d-810b6289a733
+	lineageTag: ee2ac762-1651-46e5-89fd-ce4e5874e098
 
 	column sales_date
 		dataType: dateTime
 		summarizeBy: none
 		sourceColumn: sales_date
-		lineageTag: c7163741-b30e-45d6-9551-567f450f5613
+		lineageTag: de82d562-bba7-4124-bca0-fdaad18a6b44
 
 	column iso_week
 		dataType: string
 		summarizeBy: none
 		sourceColumn: iso_week
-		lineageTag: 01997172-245c-4751-9dc9-f2f944c99b84
+		lineageTag: 56001208-34f8-470e-9af3-a46a429fd7dd
 
 	column year
 		dataType: int64
 		summarizeBy: sum
 		sourceColumn: year
-		lineageTag: 5a10d6e3-858d-4761-ba34-d88bdf0562c5
+		lineageTag: 9cff267f-b177-4d95-b6e2-e84de46a4106
 
 	column category
 		dataType: string
 		summarizeBy: none
 		sourceColumn: category
-		lineageTag: 7bf5a992-b05d-4c21-aa87-e30fdb161fb5
+		lineageTag: 110d0a4e-965f-48b1-9826-90182fd0a9f8
 
 	column subcategory
 		dataType: string
 		summarizeBy: none
 		sourceColumn: subcategory
-		lineageTag: 42f3126c-c6eb-4f52-94fd-e85529458062
+		lineageTag: ee3228a4-d4a0-4ce5-917a-7c95d7141acd
 
 	column product_name
 		dataType: string
 		summarizeBy: none
 		sourceColumn: product_name
-		lineageTag: 0f680231-beff-40da-aa8d-8afa3cb9765b
+		lineageTag: da168c26-3529-49f8-bb69-dd6045e62acf
 
 	column customer_region
 		dataType: string
 		summarizeBy: none
 		sourceColumn: customer_region
-		lineageTag: 4ee266b7-d17b-464e-8022-ad4e3fe689be
+		lineageTag: ec58e36b-1866-4bb8-bb53-1c5e74621c95
 
 	column segment
 		dataType: string
 		summarizeBy: none
 		sourceColumn: segment
-		lineageTag: eedcf868-7633-4bb1-b81c-e5aacded9e68
+		lineageTag: c21afff6-fd6a-4731-803b-cdf23647097d
 
 	column store_name
 		dataType: string
 		summarizeBy: none
 		sourceColumn: store_name
-		lineageTag: 3b47e843-ee6b-4a61-aa86-8e4bf7f1015e
+		lineageTag: 216fc3ad-fbfb-4bfa-ab3e-069e28074839
 
 	column store_format
 		dataType: string
 		summarizeBy: none
 		sourceColumn: store_format
-		lineageTag: 08355137-850b-4ba0-a129-5345419a0a87
+		lineageTag: 40aaa768-f31d-4643-8e15-95437f58c021
 
 	column store_region
 		dataType: string
 		summarizeBy: none
 		sourceColumn: store_region
-		lineageTag: 31fc7110-6a0c-4fa3-b49a-9406eff7f57a
+		lineageTag: 32055654-15dc-4449-afeb-e3925aeaf897
 
 	column channel_name
 		dataType: string
 		summarizeBy: none
 		sourceColumn: channel_name
-		lineageTag: eb205d4b-2fd6-4537-9d8d-901821e27566
+		lineageTag: ca4abac6-f8c2-4a63-b954-982836d58e05
 
 	column order_id
 		dataType: string
 		summarizeBy: none
 		sourceColumn: order_id
-		lineageTag: 4ea22163-4cd3-403a-9644-d34d01d70a6a
+		lineageTag: c11d9319-4179-4781-acb7-47b9291efc7c
 
 	column quantity
 		dataType: int64
 		summarizeBy: sum
 		sourceColumn: quantity
-		lineageTag: 3d8f3cd8-a2a3-45f0-8c0d-039752e9fe08
+		lineageTag: 200d20ae-8cb2-4dc8-b111-bf3c3a88e808
 
 	column net_sales_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: net_sales_amount
-		lineageTag: d0c163ff-c8cc-4a65-9c2b-c6bc5de7dfec
+		lineageTag: fb4c9fff-b24c-4847-be7b-f74bba94434a
 
 	column cost_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: cost_amount
-		lineageTag: 6861b4de-a26a-4c4b-b8e8-346a2b320a70
+		lineageTag: d73d93e4-efa4-4e3a-9b78-9f62b97e30ec
 
 	column profit_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: profit_amount
-		lineageTag: 389624f6-7adc-4a2f-8cd3-a96ea2a74ef1
+		lineageTag: 0acdef1e-eda6-4f8d-905b-2b703caaaa9f
 
 	measure OpsMarginPct = SUM('ds_ops'[profit_amount]) / SUM('ds_ops'[net_sales_amount])
-		lineageTag: 2f09d499-14ac-44f6-b76e-054d639d2c58
+		lineageTag: 5a2c774b-2278-4712-a2b0-545f10267a40
 
 	measure UnitsPerOrder = SUM('ds_ops'[quantity]) / DISTINCTCOUNT('ds_ops'[order_id])
-		lineageTag: f9f2359b-391f-402f-9714-1336a003b433
+		lineageTag: d3a0c504-d51f-472f-a8d4-15b5f2db0a52
 
 	measure ProfitPerOrder = SUM('ds_ops'[profit_amount]) / DISTINCTCOUNT('ds_ops'[order_id])
-		lineageTag: c4000599-1215-4b1e-94c7-15ee5a07dc5b
+		lineageTag: d6e40872-f492-4c09-8a17-b8aef7291b2d
 
 	measure 'Weekly Sales' = SUM('ds_ops'[net_sales_amount])
-		lineageTag: 53a9d225-7a49-4f9b-9f0b-9bdc3a0215ea
+		lineageTag: cfb20073-ced6-4166-be60-56be89463a4b
 
 	measure 'Weekly Profit' = SUM('ds_ops'[profit_amount])
-		lineageTag: 0db5e9e4-9fbe-402e-8531-50754802e5ca
+		lineageTag: dd11e4a5-9158-425f-bf91-3d26f29210e0
 
 	measure Units = SUM('ds_ops'[quantity])
-		lineageTag: fe2472a2-2e57-48ec-814f-ab6e5f3d57cb
+		lineageTag: 056fb62c-e885-4354-98bf-9560868eba55
 
 	measure 'Weekly Sales Trend' = SUM('ds_ops'[net_sales_amount])
-		lineageTag: 79f04c70-1ca7-4926-a243-ca06220db7d3
+		lineageTag: 04380696-eea8-464f-bb49-f27c21a6f51c
 
 	measure 'Weekly Profit Trend' = SUM('ds_ops'[profit_amount])
-		lineageTag: 13fae4e3-7b81-48d4-bd00-62cb06c81ed5
+		lineageTag: 7e41a7f9-8a4c-4a0b-a084-76d0ced0831b
 
 	measure 'Sales by Store Format' = SUM('ds_ops'[net_sales_amount])
-		lineageTag: 86419800-81b0-4bd0-8f39-957d197bdf55
+		lineageTag: d5116d92-16e2-47df-b727-59ebaf12efbc
 
 	measure 'Profit by Region' = SUM('ds_ops'[profit_amount])
-		lineageTag: c30490bd-73ce-4007-a056-4cb194eeb730
+		lineageTag: 61a763b5-bf31-4c6f-93c6-0f1e5eb15bcc
 
 	measure 'Channel by Store Format' = SUM('ds_ops'[net_sales_amount])
-		lineageTag: 42136ed7-09d3-4a65-8c94-9dca99c288df
+		lineageTag: adcb4210-ecc8-48eb-bf06-10b073308c97
 
 	measure 'Category by Week' = SUM('ds_ops'[net_sales_amount])
-		lineageTag: bfab62a0-6948-4131-8989-71a02a7a216f
+		lineageTag: 910dbebf-54cc-4729-a36e-55cb70eaf862
 
 	partition ds_ops = m
 		mode: import
 		source = ```
 			let
-			    Source = GoogleBigQuery.Database(),
-			    Data = Value.NativeQuery(Source, "WITH ops AS ( SELECT d.full_date AS sales_date, d.iso_week, d.year, p.category, p.subcategory, p.product_name, c.region AS customer_region, c.segment, s.store_name, s.store_format, s.region AS store_region, ch.channel_name, f.order_id, f.quantity, f.net_sales_amount, f.cost_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_product` p ON f.product_key = p.product_key JOIN `ferrous-gate-496806-b7.retail_star.dim_customer` c ON f.customer_key = c.customer_key JOIN `ferrous-gate-496806-b7.retail_star.dim_store` s ON f.store_key = s.store_key JOIN `ferrous-gate-496806-b7.retail_star.dim_channel` ch ON f.channel_key = ch.channel_key ) SELECT * FROM ops")
+			    Source = GoogleBigQuery.Database([BillingProject = "ferrous-gate-496806-b7"]),
+			    Project = Source{[Name = "ferrous-gate-496806-b7"]}[Data],
+			    Data = Value.NativeQuery(Project, "WITH ops AS ( SELECT d.full_date AS sales_date, d.iso_week, d.year, p.category, p.subcategory, p.product_name, c.region AS customer_region, c.segment, s.store_name, s.store_format, s.region AS store_region, ch.channel_name, f.order_id, f.quantity, f.net_sales_amount, f.cost_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_product` p ON f.product_key = p.product_key JOIN `ferrous-gate-496806-b7.retail_star.dim_customer` c ON f.customer_key = c.customer_key JOIN `ferrous-gate-496806-b7.retail_star.dim_store` s ON f.store_key = s.store_key JOIN `ferrous-gate-496806-b7.retail_star.dim_channel` ch ON f.channel_key = ch.channel_key ) SELECT * FROM ops", null, [EnableFolding = false])
 			in
 			    Data
 			```

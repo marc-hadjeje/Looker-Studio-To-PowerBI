@@ -1,35 +1,35 @@
 table 'Retail Targets Sheet'
-	lineageTag: c1249ce9-7e83-4a8a-86c4-0f8f22100ce2
+	lineageTag: f11605b3-cf73-4148-8b3e-f3025db0b381
 
 	column profit_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: profit_amount
-		lineageTag: 740f86e5-140a-44d8-8127-5325303cad2f
+		lineageTag: b90d973c-19d7-429e-afa3-0f990863a4b2
 
 	column net_sales_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: net_sales_amount
-		lineageTag: 31e191e0-1e74-4d65-979b-a5d93e0fdfaf
+		lineageTag: 42b135de-9c73-46d3-a136-8ea442a85755
 
 	column target_sales
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: target_sales
-		lineageTag: 6cf1bc2f-8f7a-4846-bcb0-f41950c699d5
+		lineageTag: 83ced21e-af3b-4797-bf62-ab22930c5e2a
 
 	measure ActualMarginPct = SUM('Retail Targets Sheet'[profit_amount]) / SUM('Retail Targets Sheet'[net_sales_amount])
-		lineageTag: 968ccb72-6261-4db3-b94c-57d6891e5362
+		lineageTag: ea8257af-6191-4b47-9474-2bde291e832f
 
 	measure TargetAttainmentPlaceholder = SUM('Retail Targets Sheet'[net_sales_amount]) / SUM('Retail Targets Sheet'[target_sales])
-		lineageTag: 2a93645b-8cb2-40aa-8f7e-7dabed81b2a6
+		lineageTag: fa375978-c5eb-4fca-bb40-72a673c1d69b
 
 	measure 'Target by Region' = SUM('Retail Targets Sheet'[target_sales])
-		lineageTag: 324b7526-00a1-438e-b977-2fc3ccd91a43
+		lineageTag: 13383931-5500-4dd7-855b-f5bdadc23e3a
 
 	measure 'Target by Category' = SUM('Retail Targets Sheet'[target_sales])
-		lineageTag: 7b05390e-b64a-4d63-b7dd-1127c2e1057a
+		lineageTag: d91f3604-9691-464b-b5c5-e41bc3a90588
 
 	partition 'Retail Targets Sheet' = m
 		mode: import

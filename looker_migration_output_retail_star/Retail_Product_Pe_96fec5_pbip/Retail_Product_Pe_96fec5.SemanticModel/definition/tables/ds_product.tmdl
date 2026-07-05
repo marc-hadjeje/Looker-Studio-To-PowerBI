@@ -1,84 +1,85 @@
 table ds_product
-	lineageTag: abc7a38f-c1e9-4181-b3bf-5e995fd7e457
+	lineageTag: cbb218bf-5027-4d7d-87ab-57109f48ccf8
 
 	column sales_date
 		dataType: dateTime
 		summarizeBy: none
 		sourceColumn: sales_date
-		lineageTag: 73b78ce0-ec7a-4cfe-be9d-7031dce2dab0
+		lineageTag: 4e3d0682-e98a-4daa-8926-2adc06843035
 
 	column product_name
 		dataType: string
 		summarizeBy: none
 		sourceColumn: product_name
-		lineageTag: 2bfbbe9c-ad11-4cd5-9c39-0a16b4466f05
+		lineageTag: 3caf7ce2-d520-4912-adbe-593e61fa5991
 
 	column category
 		dataType: string
 		summarizeBy: none
 		sourceColumn: category
-		lineageTag: 32b99215-b9df-48bb-97aa-8f9782534c28
+		lineageTag: 3eff9fa8-fd4f-42df-82a4-7ea5ab46de01
 
 	column subcategory
 		dataType: string
 		summarizeBy: none
 		sourceColumn: subcategory
-		lineageTag: 0285263f-b7e3-4e86-8501-f30ccfc53311
+		lineageTag: ccae1406-c9ac-4283-98f1-492fa8fd7d4d
 
 	column brand
 		dataType: string
 		summarizeBy: none
 		sourceColumn: brand
-		lineageTag: 4417ce36-423a-48c5-8756-9f39ca00fdf6
+		lineageTag: 513732e1-d129-47b8-9611-bcd645952de2
 
 	column quantity
 		dataType: int64
 		summarizeBy: sum
 		sourceColumn: quantity
-		lineageTag: d96975d9-4ed2-45cb-b465-603862c3789d
+		lineageTag: 3282f230-aff7-45ec-8257-723eed0ce0b7
 
 	column net_sales_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: net_sales_amount
-		lineageTag: fb1456b7-46aa-493e-8650-c3ad30771b15
+		lineageTag: a6b31889-1664-44fd-84c1-40af7205ea69
 
 	column cost_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: cost_amount
-		lineageTag: 52275310-74ae-4d6b-a0ab-a5b947876da1
+		lineageTag: f8fd33bf-02f2-46c6-9151-79edd9328cce
 
 	column profit_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: profit_amount
-		lineageTag: e54f6725-e9f6-47ff-aba8-0d3e140c3811
+		lineageTag: 265ec6d5-6a85-49a0-ae11-20e6d88efce3
 
 	measure UnitMargin = SUM('ds_product'[profit_amount]) / SUM('ds_product'[quantity])
-		lineageTag: 130786b6-ebbd-4fb2-bd10-86be17cfd151
+		lineageTag: 5dec9942-6b52-4143-b9c4-7b2255eb9d3e
 
 	measure 'Units Sold' = SUM('ds_product'[quantity])
-		lineageTag: 7fa738c6-feac-478a-919a-cf5889c50f9e
+		lineageTag: 44da016c-f89e-4309-a941-428bacae85c3
 
 	measure 'Net Sales' = SUM('ds_product'[net_sales_amount])
-		lineageTag: a960aa91-f5cf-4c0e-b126-f8c983687956
+		lineageTag: c54d0b02-1881-446b-99aa-52bd52f8c98b
 
 	measure Profit = SUM('ds_product'[profit_amount])
-		lineageTag: 154a38be-f676-4f8b-b300-5d99406495df
+		lineageTag: e377c907-3fa1-4b6f-bc30-a1e99227e8f9
 
 	measure 'Sales by Brand' = SUM('ds_product'[net_sales_amount])
-		lineageTag: dadaef40-01d0-4e9e-a31f-631c8ec55834
+		lineageTag: b56e8876-8e76-49b5-b35b-af8a24a57fe8
 
 	measure 'Daily Sales' = SUM('ds_product'[net_sales_amount])
-		lineageTag: 21755d10-7b69-4aac-a57e-10f8aa00ca26
+		lineageTag: 92f40bee-68f5-4494-acdb-386455f6f244
 
 	partition ds_product = m
 		mode: import
 		source = ```
 			let
-			    Source = GoogleBigQuery.Database(),
-			    Data = Value.NativeQuery(Source, "SELECT d.full_date AS sales_date, p.product_name, p.category, p.subcategory, p.brand, f.quantity, f.net_sales_amount, f.cost_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_product` p ON f.product_key = p.product_key")
+			    Source = GoogleBigQuery.Database([BillingProject = "ferrous-gate-496806-b7"]),
+			    Project = Source{[Name = "ferrous-gate-496806-b7"]}[Data],
+			    Data = Value.NativeQuery(Project, "SELECT d.full_date AS sales_date, p.product_name, p.category, p.subcategory, p.brand, f.quantity, f.net_sales_amount, f.cost_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_product` p ON f.product_key = p.product_key", null, [EnableFolding = false])
 			in
 			    Data
 			```

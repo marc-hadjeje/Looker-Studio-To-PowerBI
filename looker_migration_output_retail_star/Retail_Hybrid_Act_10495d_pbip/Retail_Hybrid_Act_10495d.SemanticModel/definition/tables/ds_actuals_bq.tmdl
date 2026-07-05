@@ -1,84 +1,85 @@
 table ds_actuals_bq
-	lineageTag: 27437a05-77c3-4d12-a8a7-7d3d37cdb258
+	lineageTag: 91d3e0e5-55ee-4778-a79b-71f438744b8d
 
 	column sales_date
 		dataType: dateTime
 		summarizeBy: none
 		sourceColumn: sales_date
-		lineageTag: badb54fa-56e7-4f3c-8d0c-d63128cc349e
+		lineageTag: 65775d3b-02a5-4e14-8ad2-c6d7072eb5bc
 
 	column month
 		dataType: int64
 		summarizeBy: sum
 		sourceColumn: month
-		lineageTag: 75b47c4a-4562-46d1-aacb-bf71516fa08c
+		lineageTag: 534548c7-1fa2-4529-9f62-d9ff2463fd19
 
 	column month_name
 		dataType: int64
 		summarizeBy: sum
 		sourceColumn: month_name
-		lineageTag: 3ea9666f-0bef-448f-8b07-207277566cb7
+		lineageTag: 1aeea141-82d5-464f-899e-9dd0ca002169
 
 	column store_region
 		dataType: string
 		summarizeBy: none
 		sourceColumn: store_region
-		lineageTag: 033157d8-f6de-40b8-98d0-4fc0fff39537
+		lineageTag: 1a3f2e0e-70d2-4f43-a5b9-5a640f0b3ca6
 
 	column category
 		dataType: string
 		summarizeBy: none
 		sourceColumn: category
-		lineageTag: 5942471f-e7d6-443e-8842-28cf642090a7
+		lineageTag: 383b1263-54e4-4d3f-b08c-543b8e727331
 
 	column channel_name
 		dataType: string
 		summarizeBy: none
 		sourceColumn: channel_name
-		lineageTag: b86a0311-2e2c-4054-956a-35644546f31d
+		lineageTag: d5f0d0bf-808e-4d02-be16-de37b40bd636
 
 	column order_id
 		dataType: string
 		summarizeBy: none
 		sourceColumn: order_id
-		lineageTag: e11498d3-67bd-44da-8e2c-30c23e9e0e72
+		lineageTag: 53b08308-ac4a-4e69-9278-a65b28a32886
 
 	column net_sales_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: net_sales_amount
-		lineageTag: ff52994e-7616-450a-a8f0-af009e1044f6
+		lineageTag: 6abdd69a-12ae-4108-aeba-afa3ccd44d2d
 
 	column profit_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: profit_amount
-		lineageTag: 45fefc73-5a7e-4ab5-a4a9-70b60e84a512
+		lineageTag: 4516b571-028b-4f97-b7b6-3ab739911cf8
 
 	measure ActualMarginPct = SUM('ds_actuals_bq'[profit_amount]) / SUM('ds_actuals_bq'[net_sales_amount])
-		lineageTag: b27a808e-af2a-40f7-a2ef-7bcc6de8b576
+		lineageTag: 5c3075fc-25fe-40d0-97af-66355360916a
 
 	measure 'Actual Net Sales' = SUM('ds_actuals_bq'[net_sales_amount])
-		lineageTag: 4b6243ab-e4be-4890-a2cc-255cd50f852e
+		lineageTag: fd066c52-87ac-4cbb-93c5-b14cf652208c
 
 	measure 'Actual Profit' = SUM('ds_actuals_bq'[profit_amount])
-		lineageTag: e0da7c69-f82a-4258-875f-52792bab9dad
+		lineageTag: 84ee6fda-856e-4b7c-91b3-b9a518637b40
 
 	measure 'Actual Trend' = SUM('ds_actuals_bq'[net_sales_amount])
-		lineageTag: 579ff1f4-f29c-412a-b9dc-1a39787ebede
+		lineageTag: 5d8d3bbe-435b-480c-883b-b06de9ce8b18
 
 	measure 'Actual by Region' = SUM('ds_actuals_bq'[net_sales_amount])
-		lineageTag: d412ddf5-721f-4e89-b095-790e6afb83b5
+		lineageTag: 6f8bafa4-5f95-49cc-bd2d-97d702190d6b
 
 	measure 'Variance Waterfall Placeholder' = SUM('ds_actuals_bq'[net_sales_amount])
-		lineageTag: d220fe3d-9075-4565-8d06-904b51158cd6
+		lineageTag: d31f7b97-d0e2-4f2e-ac50-fe2c93220f50
 
 	partition ds_actuals_bq = m
 		mode: import
 		source = ```
 			let
-			    Source = GoogleBigQuery.Database(),
-			    Data = Value.NativeQuery(Source, "SELECT d.full_date AS sales_date, d.month, d.month_name, s.region AS store_region, p.category, ch.channel_name, f.order_id, f.net_sales_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_store` s ON f.store_key = s.store_key JOIN `ferrous-gate-496806-b7.retail_star.dim_product` p ON f.product_key = p.product_key JOIN `ferrous-gate-496806-b7.retail_star.dim_channel` ch ON f.channel_key = ch.channel_key")
+			    Source = GoogleBigQuery.Database([BillingProject = "ferrous-gate-496806-b7"]),
+			    Project = Source{[Name = "ferrous-gate-496806-b7"]}[Data],
+			    Data = Value.NativeQuery(Project, "SELECT d.full_date AS sales_date, d.month, d.month_name, s.region AS store_region, p.category, ch.channel_name, f.order_id, f.net_sales_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_store` s ON f.store_key = s.store_key JOIN `ferrous-gate-496806-b7.retail_star.dim_product` p ON f.product_key = p.product_key JOIN `ferrous-gate-496806-b7.retail_star.dim_channel` ch ON f.channel_key = ch.channel_key", null, [EnableFolding = false])
 			in
 			    Data
 			```
