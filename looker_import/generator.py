@@ -426,7 +426,8 @@ class PBIPGenerator:
 
             page_dir = pages_root / internal_name
             page_dir.mkdir(parents=True, exist_ok=True)
-            (page_dir / "visuals").mkdir(parents=True, exist_ok=True)
+            visuals_dir = page_dir / "visuals"
+            visuals_dir.mkdir(parents=True, exist_ok=True)
 
             page_def = {
                 "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
@@ -438,44 +439,152 @@ class PBIPGenerator:
             }
             (page_dir / "page.json").write_text(json.dumps(page_def, indent=2), encoding='utf-8')
 
+            # Emit one PBIR visual.json per Looker element, bound to the model.
+            self._write_page_visuals(visuals_dir, page_info.get("visuals", []))
+
         pages_metadata = {
             "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.0.0/schema.json",
             "pageOrder": page_order,
             "activePageName": page_order[0],
         }
         (pages_root / "pages.json").write_text(json.dumps(pages_metadata, indent=2), encoding='utf-8')
-    
-    def _generate_report_pages(self, pages: Dict[str, Any]) -> List[Dict]:
-        """Generate report page definitions."""
-        
-        report_pages = []
-        
-        for page_id, page_info in pages.items():
-            page_def = {
-                "name": page_info.get('name', f"Page_{page_id}"),
-                "displayName": page_info.get('name', f"Page_{page_id}"),
-                "visuals": self._generate_visuals(page_info.get('visuals', page_info.get('elements', []))),
-            }
-            report_pages.append(page_def)
-        
-        return report_pages
-    
-    def _generate_visuals(self, elements: List[Dict]) -> List[Dict]:
-        """Generate visual definitions."""
-        
-        visuals = []
-        
-        for i, element in enumerate(elements):
-            visual_def = {
-                "name": element.get('name', f"Visual_{i}"),
-                "type": element.get('type', 'table'),
-                "title": element.get('title', ''),
-                "position": element.get('position', {}),
-                "size": element.get('size', {}),
-            }
-            visuals.append(visual_def)
-        
-        return visuals
+
+    # PBIR visualType names keyed by the transformer's powerbiType.
+    _VISUAL_TYPE_MAP = {
+        'card': 'card',
+        'table': 'tableEx',
+        'lineChart': 'lineChart',
+        'columnChart': 'clusteredColumnChart',
+        'barChart': 'clusteredBarChart',
+        'pieChart': 'pieChart',
+        'areaChart': 'areaChart',
+        'scatterChart': 'scatterChart',
+        'bubbleChart': 'scatterChart',
+        'gauge': 'gauge',
+        'map': 'map',
+        'image': 'image',
+        'textbox': 'textbox',
+        'visual': 'card',
+    }
+
+    # (measure role, category role) per PBIR visualType.
+    _VISUAL_ROLES = {
+        'card': ('Values', None),
+        'tableEx': ('Values', 'Values'),
+        'lineChart': ('Y', 'Category'),
+        'clusteredColumnChart': ('Y', 'Category'),
+        'clusteredBarChart': ('Y', 'Category'),
+        'pieChart': ('Y', 'Category'),
+        'areaChart': ('Y', 'Category'),
+        'scatterChart': ('Values', 'Category'),
+        'gauge': ('Y', None),
+        'map': ('Size', 'Category'),
+    }
+
+    def _write_page_visuals(self, visuals_dir: Path, visuals: List[Dict]) -> None:
+        """Write a PBIR visual.json per Looker element into the page's visuals folder."""
+
+        table_names = getattr(self, '_table_names', {})
+        used_names = set()
+
+        for index, element in enumerate(visuals or []):
+            powerbi_type = element.get('powerbiType', 'card')
+            visual_type = self._VISUAL_TYPE_MAP.get(powerbi_type, 'card')
+
+            raw_name = element.get('name') or element.get('title') or f"visual{index}"
+            visual_name = self._safe_visual_name(raw_name, index, used_names)
+            used_names.add(visual_name)
+
+            entity = table_names.get(element.get('sourceId', ''), element.get('sourceId', ''))
+            measure_name = element.get('title') or element.get('name') if element.get('metric') else ''
+            dimension = element.get('dimension', '')
+
+            visual_json = self._build_visual_json(
+                visual_name, visual_type, index, entity, measure_name, dimension,
+            )
+
+            visual_folder = visuals_dir / visual_name
+            visual_folder.mkdir(parents=True, exist_ok=True)
+            (visual_folder / "visual.json").write_text(
+                json.dumps(visual_json, indent=2), encoding='utf-8',
+            )
+
+    def _safe_visual_name(self, name: str, index: int, used: set) -> str:
+        cleaned = re.sub(r'[^A-Za-z0-9_]+', '_', str(name or f'visual{index}')).strip('_')
+        if not cleaned:
+            cleaned = f'visual{index}'
+        candidate = cleaned
+        suffix = 1
+        while candidate in used:
+            candidate = f"{cleaned}_{suffix}"
+            suffix += 1
+        return candidate
+
+    def _visual_position(self, index: int) -> Dict[str, int]:
+        per_row, width, height, gap = 3, 400, 200, 16
+        return {
+            "x": gap + (index % per_row) * (width + gap),
+            "y": gap + (index // per_row) * (height + gap),
+            "z": index,
+            "width": width,
+            "height": height,
+            "tabOrder": index,
+        }
+
+    def _measure_projection(self, entity: str, prop: str) -> Dict[str, Any]:
+        return {
+            "field": {
+                "Measure": {
+                    "Expression": {"SourceRef": {"Entity": entity}},
+                    "Property": prop,
+                }
+            },
+            "queryRef": f"{entity}.{prop}",
+            "nativeQueryRef": prop,
+        }
+
+    def _column_projection(self, entity: str, prop: str) -> Dict[str, Any]:
+        return {
+            "field": {
+                "Column": {
+                    "Expression": {"SourceRef": {"Entity": entity}},
+                    "Property": prop,
+                }
+            },
+            "queryRef": f"{entity}.{prop}",
+            "nativeQueryRef": prop,
+        }
+
+    def _build_visual_json(self, name: str, visual_type: str, index: int,
+                           entity: str, measure_name: str, dimension: str) -> Dict[str, Any]:
+        visual: Dict[str, Any] = {"visualType": visual_type}
+        query_state: Dict[str, Any] = {}
+
+        if entity and visual_type not in ('textbox', 'image'):
+            measure_role, category_role = self._VISUAL_ROLES.get(visual_type, ('Values', None))
+
+            if category_role and dimension:
+                query_state.setdefault(category_role, {"projections": []})
+                query_state[category_role]["projections"].append(
+                    self._column_projection(entity, dimension)
+                )
+            if measure_role and measure_name:
+                query_state.setdefault(measure_role, {"projections": []})
+                query_state[measure_role]["projections"].append(
+                    self._measure_projection(entity, measure_name)
+                )
+
+        if query_state:
+            visual["query"] = {"queryState": query_state}
+        visual["drillFilterOtherVisuals"] = True
+
+        return {
+            "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+            "name": name,
+            "position": self._visual_position(index),
+            "visual": visual,
+        }
+
     
     def _generate_filters(self, controls: Dict[str, Any]) -> List[Dict]:
         """Generate filter/slicer definitions."""
