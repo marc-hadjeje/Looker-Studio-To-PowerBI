@@ -32,10 +32,17 @@ python migrate.py --auth
 python migrate.py --report-id "your_report_id"
 ```
 
-### Option 2: Migrate from exported JSON
+### Option 2: Migrate from a JSON input file
 ```bash
 python migrate.py report.json
 ```
+
+> [!NOTE]
+> `report.json` uses **this project's own input schema** — Looker Studio has **no native
+> JSON export** for report definitions. See
+> [docs/LOOKER_EXTRACTION_GUIDE.md](docs/LOOKER_EXTRACTION_GUIDE.md) for the 3 real ways
+> to obtain a report's structure (screenshot + BigQuery scan, hand-written input JSON, or
+> DevTools Network capture).
 
 > [!TIP]
 > The output is a `.pbip` project — just double-click to open in **Power BI Desktop** (December 2025+).
@@ -110,7 +117,7 @@ python migrate.py --batch --input-dir reports/ --global-assess
 ## 🏗️ How It Works
 
 ### 1️⃣ Extract
-- Authenticate with Google API (or use exported JSON)
+- Provide a report as a JSON input file (this project's input schema) or scan BigQuery sources directly
 - Retrieve Looker Studio report schema & data sources
 - Parse embedded queries, formulas, controls
 

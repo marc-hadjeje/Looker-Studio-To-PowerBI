@@ -1,27 +1,26 @@
 # Processus de Récupération des Sources Looker Studio
 
-Il existe plusieurs façons de récupérer les données depuis Looker Studio pour la migration vers Power BI.
+Il existe plusieurs façons d'alimenter la migration vers Power BI.
 
-## 1️⃣ Option A : Export JSON (Recommandé pour commencer)
+> [!IMPORTANT]
+> **Looker Studio n'offre AUCUN export natif de la définition d'un rapport en JSON.**
+> Le menu Looker Studio permet d'exporter un rapport en **PDF**, ou les **données** d'un
+> graphe en CSV/Google Sheets — mais **jamais** la structure du rapport (pages, visuals,
+> formules) sous forme de fichier. Il n'existe pas non plus d'API publique Google qui
+> retourne cette définition. Toute affirmation contraire (ancienne version de ce guide
+> incluse) est **fausse**.
 
-### Via l'interface Looker Studio
-```
-1. Ouvrir le rapport dans Looker Studio
-2. Menu ☰ → "Télécharger le rapport"
-3. Format : JSON
-4. Fichier téléchargé = structure complète du rapport
-```
+## 🧩 Le format JSON de ce dépôt est un format d'ENTRÉE maison
 
-**Avantages :**
-- Simple, pas d'authentification complexe
-- Récupère structure complète (datasources, filtres, visuals)
-- Pas besoin de clé API
+Le schéma `{ id, title, dataSources[], pages[], visuals[], parameterControls[] }` utilisé
+par `migrate.py` et par les exemples (`looker_reports_*/*.json`) est un **format d'entrée
+défini par ce projet**. Ce n'est **pas** le JSON interne réel de Looker Studio. Les fichiers
+d'exemple sont **générés synthétiquement** par `examples/generate_sample_reports.py` à
+partir d'un schéma BigQuery (le champ `generatedFromTableSchema` dans ces fichiers en est
+la preuve).
 
-**Limitations :**
-- Export manuel (pas d'automatisation)
-- Données de visualisation non incluses
+Structure attendue en entrée par l'outil :
 
-**Fichier JSON contient :**
 ```json
 {
   "id": "report_id",
@@ -46,10 +45,24 @@ Il existe plusieurs façons de récupérer les données depuis Looker Studio pou
       }
     }
   ],
-  "pages": [...],
-  "parameterControls": [...]
+  "pages": [],
+  "parameterControls": []
 }
 ```
+
+## 🎯 Les 3 approches réelles pour reconstruire un rapport
+
+1. **Screenshot + scan BigQuery** — capturer le rapport, scanner le schéma des sources
+   BigQuery (auxquelles vous avez accès via l'API), puis reconstruire le modèle et le
+   rapport Power BI. C'est le pipeline `generate_sample_reports.py --screenshot-file` +
+   `migrate.py`.
+2. **Format d'entrée maison** — écrire/compléter à la main le JSON au format ci-dessus,
+   puis `python migrate.py mon_rapport.json`.
+3. **Capture Network (DevTools)** — ouvrir le rapport, `F12` → onglet **Network** →
+   filtrer **Fetch/XHR** → recharger la page → repérer la requête qui contient la
+   définition du rapport → **Copy → Copy response**. C'est le seul moyen de voir le
+   *vrai* JSON interne de Looker Studio (structure non documentée et bien plus complexe
+   que le format maison).
 
 ---
 
@@ -240,12 +253,14 @@ Vu que vous avez **BigQuery + Google Sheets** comme sources :
 
 **Étape 1 - Récupération (QUICKSTART)**
 ```bash
-# Export manuel du rapport Looker Studio en JSON
-# Sauvegarder dans: examples/looker_reports/
+# Looker Studio n'exporte PAS la définition d'un rapport en JSON.
+# Utilisez l'une des 3 approches réelles (voir le haut de ce guide) :
+#   1. Screenshot + scan BigQuery  → examples/generate_sample_reports.py
+#   2. Écrire le JSON au format d'entrée maison
+#   3. Capture Network via DevTools (Copy → Copy response)
 
 mkdir -p examples/looker_reports/
-# Télécharger rapport JSON depuis Looker Studio
-# → my_report.json
+# Sauvegarder le JSON obtenu dans : examples/looker_reports/my_report.json
 ```
 
 **Étape 2 - Migration**
