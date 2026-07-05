@@ -216,11 +216,16 @@ class LookerStudioTransformer:
             'GEO_MAP': 'map',
         }
         
+        chart_config = element.get('chartConfig', {})
         return {
             'name': element.get('name', ''),
             'powerbiType': visual_mapping.get(element_type, 'visual'),
             'title': element.get('title', ''),
             'sourceId': element.get('sourceId', ''),
+            'metric': chart_config.get('metric', ''),
+            'dimension': chart_config.get('dimension', ''),
+            'position': element.get('position', {}),
+            'size': element.get('size', {}),
             'style': element.get('style', {}),
         }
     

@@ -158,7 +158,8 @@ class LookerStudioMigrator:
             # Generate model
             self.generator.generate_model(
                 data_sources=transformed_sources,
-                measures=[],
+                formulas=transformed_formulas,
+                pages=transformed_pages,
                 relationships=[]
             )
             

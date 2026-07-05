@@ -125,28 +125,35 @@ class PBIPGenerator:
         
         return self.project_dir
     
-    def generate_model(self, data_sources: Dict[str, Any], measures: List[Dict],
-                      relationships: List[Dict] = None) -> None:
-        """Generate TMDL semantic model."""
-        
-        # Generate database.tmdl
+    def generate_model(self, data_sources: Dict[str, Any], measures: List[Dict] = None,
+                      relationships: List[Dict] = None, formulas: Dict[str, Any] = None,
+                      pages: Dict[str, Any] = None) -> None:
+        """Generate TMDL semantic model with real tables, columns and measures."""
+
+        self._table_names = {}
+
+        # Emit one TMDL table per data source (columns + measures + M partition).
+        self._generate_tables_tmdl(data_sources, formulas or {}, pages or {})
+
+        # Generate database.tmdl / model.tmdl once table names are known.
         self._generate_database_tmdl(data_sources)
         self._generate_model_tmdl()
-        
-        # Generate placeholder folders/files expected by PBIP/TMDL projects.
-        self._generate_tables_tmdl(data_sources)
 
         if relationships:
             self._generate_relationships_tmdl(relationships)
 
     def _generate_model_tmdl(self) -> None:
-        """Generate a minimal valid model.tmdl file."""
+        """Generate a valid model.tmdl file referencing generated tables."""
 
-        model_tmdl = """model Model
-	culture: en-US
-	defaultPowerBIDataSourceVersion: powerBI_V3
-	sourceQueryCulture: en-US
-"""
+        table_names = list(getattr(self, '_table_names', {}).values())
+        model_tmdl = (
+            "model Model\n"
+            "\tculture: en-US\n"
+            "\tdefaultPowerBIDataSourceVersion: powerBI_V3\n"
+            "\tsourceQueryCulture: en-US\n"
+        )
+        if table_names:
+            model_tmdl += f"\n\tannotation PBI_QueryOrder = {json.dumps(table_names)}\n"
 
         (self.semantic_model_definition_dir / "model.tmdl").write_text(model_tmdl, encoding='utf-8')
     
@@ -159,16 +166,223 @@ class PBIPGenerator:
         
         (self.semantic_model_definition_dir / "database.tmdl").write_text(db_tmdl, encoding='utf-8')
     
-    def _generate_tables_tmdl(self, data_sources: Dict) -> None:
-        """Generate placeholder table artifacts.
+    def _generate_tables_tmdl(self, data_sources: Dict, formulas: Dict = None,
+                              pages: Dict = None) -> None:
+        """Generate real TMDL table definitions (columns + measures + M partition)."""
 
-        The current converter does not yet emit full valid TMDL table definitions,
-        so keep this empty but create the standard folder expected by PBIP projects.
-        """
-
+        formulas = formulas or {}
+        pages = pages or {}
         tables_dir = self.semantic_model_definition_dir / "tables"
         tables_dir.mkdir(parents=True, exist_ok=True)
-    
+
+        if not hasattr(self, '_table_names'):
+            self._table_names = {}
+
+        for source_id, source in data_sources.items():
+            table_name = self._safe_table_name(source.get('name') or source_id)
+            self._table_names[source_id] = table_name
+
+            query = source.get('query', '') or ''
+            columns = self._parse_query_columns(query)
+            measures = self._build_measures_for_source(source_id, table_name, formulas, pages)
+
+            # Guarantee every column referenced by a measure exists on the table.
+            existing = {c['name'] for c in columns}
+            for col in self._referenced_columns(measures):
+                if col not in existing:
+                    existing.add(col)
+                    columns.append({'name': col, 'dataType': self._infer_data_type(col)})
+
+            tmdl = self._render_table_tmdl(table_name, source, columns, measures, query)
+            (tables_dir / f"{table_name}.tmdl").write_text(tmdl, encoding='utf-8')
+
+    # ------------------------------------------------------------------ helpers
+
+    def _safe_table_name(self, name: str) -> str:
+        cleaned = re.sub(r'[^A-Za-z0-9_ ]+', '', str(name or 'Table')).strip()
+        return cleaned or 'Table'
+
+    def _tmdl_name(self, name: str) -> str:
+        """Quote a TMDL identifier if it is not a simple bareword."""
+        if re.match(r'^[A-Za-z_][A-Za-z0-9_]*$', name or ''):
+            return name
+        escaped = str(name).replace("'", "''")
+        return f"'{escaped}'"
+
+    def _infer_data_type(self, name: str) -> str:
+        n = (name or '').lower()
+        if 'date' in n or n.endswith('_at') or n.endswith('_time') or n == 'timestamp':
+            return 'dateTime'
+        if any(k in n for k in ('amount', 'price', 'cost', 'profit', 'sales', 'revenue',
+                                 'margin', 'ratio', 'pct', 'rate', 'value', 'total', 'avg',
+                                 'net', 'gross')):
+            return 'double'
+        if any(k in n for k in ('qty', 'quantity', 'count', 'number', 'num', 'year',
+                                 'month', 'day')):
+            return 'int64'
+        return 'string'
+
+    def _split_top_level(self, text: str) -> List[str]:
+        parts, depth, cur, in_tick = [], 0, '', False
+        for ch in text:
+            if ch == '`':
+                in_tick = not in_tick
+            if not in_tick:
+                if ch == '(':
+                    depth += 1
+                elif ch == ')':
+                    depth = max(0, depth - 1)
+                elif ch == ',' and depth == 0:
+                    parts.append(cur)
+                    cur = ''
+                    continue
+            cur += ch
+        if cur.strip():
+            parts.append(cur)
+        return parts
+
+    def _parse_query_columns(self, query: str) -> List[Dict[str, str]]:
+        if not query:
+            return []
+        m = re.search(r'\bSELECT\b(.*?)\bFROM\b', query, re.IGNORECASE | re.DOTALL)
+        if not m:
+            return []
+        columns, seen = [], set()
+        for part in self._split_top_level(m.group(1)):
+            part = part.strip()
+            if not part or part == '*':
+                continue
+            alias_match = re.search(r'\bAS\b\s+([`"\[]?[A-Za-z_][A-Za-z0-9_]*[`"\]]?)\s*$',
+                                    part, re.IGNORECASE)
+            if alias_match:
+                alias = alias_match.group(1)
+            else:
+                token = part.split()[-1]
+                alias = token.split('.')[-1]
+            alias = alias.strip('`"[]')
+            if alias and alias not in seen and re.match(r'^[A-Za-z_][A-Za-z0-9_]*$', alias):
+                seen.add(alias)
+                columns.append({'name': alias, 'dataType': self._infer_data_type(alias)})
+        return columns
+
+    def _looker_metric_to_dax(self, metric: str, table: str) -> str:
+        if not metric:
+            return ''
+
+        def repl(mo):
+            agg = mo.group(1).upper()
+            col = mo.group(2)
+            agg = {'AVG': 'AVERAGE', 'COUNTD': 'DISTINCTCOUNT'}.get(agg, agg)
+            return f"{agg}('{table}'[{col}])"
+
+        return re.sub(
+            r'\b(SUM|AVERAGE|AVG|DISTINCTCOUNT|COUNTD|COUNTA|COUNT|MIN|MAX)\s*\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*\)',
+            repl, metric)
+
+    def _build_measures_for_source(self, source_id: str, table_name: str,
+                                   formulas: Dict, pages: Dict) -> List[Dict[str, str]]:
+        measures, seen = [], set()
+
+        # Calculated fields -> DAX measures.
+        for f in formulas.values():
+            fs = f.get('sourceId')
+            if fs and fs != source_id:
+                continue
+            name = f.get('name')
+            dax = (f.get('daxExpression') or '').replace('\r', ' ').replace('\n', ' ').strip()
+            # Qualify any bare Looker-style aggregations (e.g. SUM(col)) to the table.
+            dax = self._looker_metric_to_dax(dax, table_name)
+            if name and dax and name not in seen:
+                seen.add(name)
+                measures.append({'name': name, 'dax': dax})
+
+        # Visual metrics -> DAX measures.
+        for page in pages.values():
+            for v in page.get('visuals', []):
+                vs = v.get('sourceId')
+                if vs and vs != source_id:
+                    continue
+                metric = v.get('metric', '')
+                name = v.get('title') or v.get('name')
+                if not metric or not name or name in seen:
+                    continue
+                dax = self._looker_metric_to_dax(metric, table_name)
+                if dax and dax != metric:
+                    seen.add(name)
+                    measures.append({'name': name, 'dax': dax})
+
+        return measures
+
+    def _referenced_columns(self, measures: List[Dict]) -> List[str]:
+        cols = []
+        for meas in measures:
+            for col in re.findall(r"\[([A-Za-z_][A-Za-z0-9_]*)\]", meas.get('dax', '')):
+                if col not in cols:
+                    cols.append(col)
+        return cols
+
+    def _summarize_by(self, data_type: str) -> str:
+        return 'sum' if data_type in ('double', 'int64') else 'none'
+
+    def _m_partition_source(self, source: Dict, query: str) -> str:
+        pbi_type = source.get('powerbiType', '')
+        safe_query = query.replace('"', '""') if query else ''
+        if pbi_type == 'GoogleBigQuery' and safe_query:
+            project = source.get('projectId', '')
+            billing = f'[BillingProject = "{project}"]' if project else ''
+            return (
+                "let\n"
+                f"    Source = GoogleBigQuery.Database({billing}),\n"
+                f'    Data = Value.NativeQuery(Source, "{safe_query}")\n'
+                "in\n"
+                "    Data"
+            )
+        if safe_query:
+            return (
+                "let\n"
+                f'    Source = Value.NativeQuery(null, "{safe_query}")\n'
+                "in\n"
+                "    Source"
+            )
+        return (
+            "let\n"
+            "    Source = #table({}, {})\n"
+            "in\n"
+            "    Source"
+        )
+
+    def _render_table_tmdl(self, table_name: str, source: Dict, columns: List[Dict],
+                           measures: List[Dict], query: str) -> str:
+        tname = self._tmdl_name(table_name)
+        lines = [f"table {tname}", f"\tlineageTag: {uuid.uuid4()}", ""]
+
+        for col in columns:
+            cname = self._tmdl_name(col['name'])
+            dtype = col['dataType']
+            lines.append(f"\tcolumn {cname}")
+            lines.append(f"\t\tdataType: {dtype}")
+            lines.append(f"\t\tsummarizeBy: {self._summarize_by(dtype)}")
+            lines.append(f"\t\tsourceColumn: {col['name']}")
+            lines.append(f"\t\tlineageTag: {uuid.uuid4()}")
+            lines.append("")
+
+        for meas in measures:
+            mname = self._tmdl_name(meas['name'])
+            lines.append(f"\tmeasure {mname} = {meas['dax']}")
+            lines.append(f"\t\tlineageTag: {uuid.uuid4()}")
+            lines.append("")
+
+        m_source = self._m_partition_source(source, query)
+        indented = "\n".join("\t\t\t" + ln for ln in m_source.split("\n"))
+        lines.append(f"\tpartition {tname} = m")
+        lines.append("\t\tmode: import")
+        lines.append("\t\tsource = ```")
+        lines.append(indented)
+        lines.append("\t\t\t```")
+        lines.append("")
+
+        return "\n".join(lines) + "\n"
+
     def _generate_relationships_tmdl(self, relationships: List[Dict]) -> None:
         """Generate relationship definitions."""
 
