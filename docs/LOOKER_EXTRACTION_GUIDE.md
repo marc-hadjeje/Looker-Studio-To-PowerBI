@@ -73,6 +73,16 @@ Structure attendue en entrée par l'outil :
    *vrai* JSON interne de Looker Studio (structure non documentée et bien plus complexe
    que le format maison).
 
+> [!NOTE]
+> **Variante : export CSV par table via Selenium.** Le projet communautaire
+> [woskam/looker-studio-automation](https://github.com/woskam/looker-studio-automation)
+> pilote Chrome avec Selenium pour ouvrir le menu 3-points d'une table Looker Studio et
+> télécharger son **CSV** (login via copie des cookies Chrome, GUI obligatoire car Google
+> bloque le headless). ⚠️ Cette technique récupère **les données d'une table, PAS la
+> structure du rapport** (pages, visuels, formules, mise en page). Elle peut compléter
+> l'approche 1 pour quelqu'un **sans accès direct BigQuery** ; si vous avez l'accès
+> BigQuery, le scan direct reste plus fiable (ni scraping, ni cookies, ni anti-bot).
+
 ---
 
 ## 2️⃣ Option B : Google Looker Studio Reporting API
@@ -220,16 +230,13 @@ print(data['values'])  # Toutes les lignes
 ## 4️⃣ Implémentation dans le Script migrate.py
 
 ```bash
-# Option 1: Depuis JSON exporté
+# Option 1: Depuis un JSON au format d'entrée maison
 python migrate.py rapport_export.json
 
-# Option 2: Depuis Looker Studio (avec auth)
-python migrate.py --report-id "abc123" --auth
-
-# Option 3: Batch - récupérer plusieurs rapports
+# Option 2: Batch - migrer plusieurs rapports
 python migrate.py --batch --input-dir ./looker_exports/ --output-dir ./pbip_projects/
 
-# Option 4: Assessment seulement (validation)
+# Option 3: Assessment seulement (validation)
 python migrate.py rapport_export.json --assess --verbose
 ```
 
