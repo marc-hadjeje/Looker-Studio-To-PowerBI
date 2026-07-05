@@ -23,25 +23,26 @@
 
 ## ⚡ Quick Start
 
-The engine always consumes the **same input contract**: a JSON file following this
-project's schema (`{ id, title, dataSources[], pages[], visuals[], parameterControls[] }`).
-Once you have such a file, migration is one command:
+Le moteur consomme toujours le **même contrat d'entrée** : un fichier JSON qui suit le
+schéma du projet (`{ id, title, dataSources[], pages[], visuals[], parameterControls[] }`).
+Une fois ce fichier obtenu, la migration tient en une commande :
 
 ```bash
 python migrate.py report.json
 ```
 
 > [!IMPORTANT]
-> **Looker Studio has no native JSON export and no public API that returns a report
-> definition.** The internal `datastudio.google.com/api` endpoint returns an HTML login
-> page, not JSON — so any "live extraction by report ID" is not reliable. To feed the
-> engine, use one of the **3 real extraction approaches** below.
+> **Looker Studio n'offre aucun export JSON natif ni API publique renvoyant la définition
+> d'un rapport.** L'endpoint interne `datastudio.google.com/api` renvoie une page HTML de
+> connexion, pas du JSON — toute « extraction live par report ID » est donc non fiable.
+> Pour alimenter le moteur, utilisez l'une des **3 approches d'extraction réelles**
+> ci-dessous.
 
-### 3 ways to obtain the input JSON
+### 3 façons d'obtenir le JSON d'entrée
 
-**1️⃣ Screenshot + BigQuery scan (recommended)**
-Capture the Looker report, scan the BigQuery source schema you already have access to,
-then let the tooling rebuild the model and report from scratch.
+**1️⃣ Screenshot + scan BigQuery (recommandé)**
+Capturez le rapport Looker, scannez le schéma des sources BigQuery auxquelles vous avez
+déjà accès, puis laissez l'outil reconstruire le modèle et le rapport depuis zéro.
 ```bash
 python examples/generate_sample_reports.py \
   --schema-file examples/bigquery_schema.generated.json \
@@ -50,25 +51,26 @@ python examples/generate_sample_reports.py \
 python migrate.py looker_reports_auto/<report>.json
 ```
 
-**2️⃣ Hand-written input JSON (or a bundled sample)**
-The `looker_reports_*/*.json` files are **samples** that follow the input contract. Copy
-one as a template, adjust data sources / visuals, then migrate.
+**2️⃣ JSON d'entrée écrit à la main (ou un échantillon fourni)**
+Les fichiers `looker_reports_*/*.json` sont des **échantillons** qui respectent le contrat
+d'entrée. Copiez-en un comme gabarit, ajustez les sources / visuels, puis migrez.
 ```bash
 python migrate.py looker_reports_retail_star/retail_exec_dashboard.json
 ```
 
-**3️⃣ DevTools Network capture**
-Open the report → `F12` → **Network** → filter **Fetch/XHR** → reload → find the request
-carrying the report definition → **Copy → Copy response** → save as `report.json`, then
-`python migrate.py report.json`. This is the only way to see Looker Studio's *real*
-internal JSON (undocumented, more complex than the home-made format).
+**3️⃣ Capture Network via DevTools**
+Ouvrez le rapport → `F12` → onglet **Network** → filtrez **Fetch/XHR** → rechargez →
+repérez la requête qui porte la définition du rapport → **Copy → Copy response** →
+enregistrez sous `report.json`, puis `python migrate.py report.json`. C'est le seul moyen
+de voir le *vrai* JSON interne de Looker Studio (non documenté, plus complexe que le
+format maison).
 
 > [!NOTE]
-> See [docs/LOOKER_EXTRACTION_GUIDE.md](docs/LOOKER_EXTRACTION_GUIDE.md) for the full
-> details of these 3 approaches.
+> Voir [docs/LOOKER_EXTRACTION_GUIDE.md](docs/LOOKER_EXTRACTION_GUIDE.md) pour le détail
+> complet de ces 3 approches.
 
 > [!TIP]
-> The output is a `.pbip` project — just double-click to open in **Power BI Desktop** (December 2025+).
+> La sortie est un projet `.pbip` — double-cliquez pour l'ouvrir dans **Power BI Desktop** (décembre 2025+).
 
 <details>
 <summary><b>📦 Installation</b></summary>
@@ -76,7 +78,7 @@ internal JSON (undocumented, more complex than the home-made format).
 ```bash
 git clone https://github.com/your-org/Looker-Studio-To-PowerBI.git
 cd Looker-Studio-To-PowerBI
-python migrate.py --report-id "report_id"
+python migrate.py report.json
 ```
 
 **Requirements:** Python 3.9+ • No `pip install` needed — pure standard library.
