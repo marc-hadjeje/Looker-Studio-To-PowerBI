@@ -39,7 +39,10 @@ python migrate.py report.json
 
 > [!NOTE]
 > `report.json` uses **this project's own input schema** — Looker Studio has **no native
-> JSON export** for report definitions. See
+> JSON export** for report definitions. The bundled `looker_reports_*/*.json` files are
+> **samples**: they don't come out of Looker Studio, they simply follow the input contract
+> the engine expects, which is enough to run the migration pipeline end-to-end and produce
+> a `.pbip`. Use them as a **working template** to reproduce. See
 > [docs/LOOKER_EXTRACTION_GUIDE.md](docs/LOOKER_EXTRACTION_GUIDE.md) for the 3 real ways
 > to obtain a report's structure (screenshot + BigQuery scan, hand-written input JSON, or
 > DevTools Network capture).

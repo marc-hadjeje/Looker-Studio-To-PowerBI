@@ -19,6 +19,15 @@ d'exemple sont **générés synthétiquement** par `examples/generate_sample_rep
 partir d'un schéma BigQuery (le champ `generatedFromTableSchema` dans ces fichiers en est
 la preuve).
 
+> [!NOTE]
+> **Ces JSON sont des échantillons.** Ils ne "sortent" pas de Looker Studio : ce sont des
+> exemples qui **respectent le contrat d'entrée** attendu par l'outil, et qui suffisent
+> donc à faire tourner la moulinette de migration (`migrate.py`) jusqu'à produire un
+> projet Power BI (`.pbip`). Autrement dit, tant qu'un fichier respecte cette structure
+> — peu importe qu'il vienne d'un screenshot + scan BigQuery, d'une saisie manuelle ou
+> d'une capture Network — la moulinette sait le convertir. L'échantillon sert de
+> **preuve de fonctionnement** et de **gabarit** à reproduire.
+
 Structure attendue en entrée par l'outil :
 
 ```json
