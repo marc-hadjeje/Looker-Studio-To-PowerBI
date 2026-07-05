@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "Variance_Waterfall_P",
+  "position": {
+    "x": 848,
+    "y": 16,
+    "z": 2,
+    "width": 400,
+    "height": 200,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_actuals_bq"
+                    }
+                  },
+                  "Property": "month_name"
+                }
+              },
+              "queryRef": "ds_actuals_bq.month_name",
+              "nativeQueryRef": "month_name"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_actuals_bq"
+                    }
+                  },
+                  "Property": "Variance Waterfall Placeholder"
+                }
+              },
+              "queryRef": "ds_actuals_bq.Variance Waterfall Placeholder",
+              "nativeQueryRef": "Variance Waterfall Placeholder"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

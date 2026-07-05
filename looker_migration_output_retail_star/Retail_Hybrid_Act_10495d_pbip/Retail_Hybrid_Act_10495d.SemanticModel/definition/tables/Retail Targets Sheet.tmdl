@@ -1,0 +1,42 @@
+table 'Retail Targets Sheet'
+	lineageTag: 69c71ba4-dc27-45a5-af48-78b64cf0749b
+
+	column profit_amount
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: profit_amount
+		lineageTag: db858c46-a3f6-4b01-b3ef-efc4e193f852
+
+	column net_sales_amount
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: net_sales_amount
+		lineageTag: 95b067b3-4332-45b9-a266-d08ac2cee576
+
+	column target_sales
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: target_sales
+		lineageTag: bae7a4ac-54d3-4316-8854-c94f0b2c57c7
+
+	measure ActualMarginPct = SUM('Retail Targets Sheet'[profit_amount]) / SUM('Retail Targets Sheet'[net_sales_amount])
+		lineageTag: 3faa1ca2-9495-4dd5-b1e5-8d6589d3401a
+
+	measure TargetAttainmentPlaceholder = SUM('Retail Targets Sheet'[net_sales_amount]) / SUM('Retail Targets Sheet'[target_sales])
+		lineageTag: 1389ffb3-34cc-4e09-987b-19bf370c390f
+
+	measure 'Target by Region' = SUM('Retail Targets Sheet'[target_sales])
+		lineageTag: 7e4cd52d-0235-4515-bf2b-713b67c0d45d
+
+	measure 'Target by Category' = SUM('Retail Targets Sheet'[target_sales])
+		lineageTag: 5c77c337-a947-4ad7-8a47-b878cf878921
+
+	partition 'Retail Targets Sheet' = m
+		mode: import
+		source = ```
+			let
+			    Source = #table({}, {})
+			in
+			    Source
+			```
+

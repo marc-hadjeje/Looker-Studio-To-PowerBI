@@ -1,0 +1,94 @@
+table ds_actuals_bq
+	lineageTag: 7990030d-bce5-41da-ad8a-230f5c25be65
+
+	column sales_date
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: sales_date
+		lineageTag: 93091245-61b5-4724-8d7d-81eb9b65ba92
+
+	column month
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: month
+		lineageTag: ab2ea0d8-73e9-471c-821a-ae050a691a68
+
+	column month_name
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: month_name
+		lineageTag: d2902d45-c525-48cc-bdb5-c97d1325c0db
+
+	column store_region
+		dataType: string
+		summarizeBy: none
+		sourceColumn: store_region
+		lineageTag: 79886c7f-a64b-4085-931d-9aa5e24b9a7c
+
+	column category
+		dataType: string
+		summarizeBy: none
+		sourceColumn: category
+		lineageTag: 3b338acf-2bbe-4458-8513-c7a6a913b9e2
+
+	column channel_name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: channel_name
+		lineageTag: 4dc3b730-327d-4ebe-9156-2d5d7a0bb554
+
+	column order_id
+		dataType: string
+		summarizeBy: none
+		sourceColumn: order_id
+		lineageTag: 36160a67-9ce3-492c-85f2-3cf7a8475dd0
+
+	column net_sales_amount
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: net_sales_amount
+		lineageTag: 9259c326-5b4b-4ff9-bb68-64da44931f70
+
+	column profit_amount
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: profit_amount
+		lineageTag: ac191b17-412e-4fe4-83ea-b504534a90a3
+
+	column target_sales
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: target_sales
+		lineageTag: ab5c67ca-85f8-4cc9-902f-0387549e7239
+
+	measure ActualMarginPct = SUM('ds_actuals_bq'[profit_amount]) / SUM('ds_actuals_bq'[net_sales_amount])
+		lineageTag: 29ed6f4f-7c96-4db8-98f1-5b90c0513f9c
+
+	measure TargetAttainmentPlaceholder = SUM('ds_actuals_bq'[net_sales_amount]) / SUM('ds_actuals_bq'[target_sales])
+		lineageTag: 94b132ad-5881-49f3-9a05-4aaac4292cf9
+
+	measure 'Actual Net Sales' = SUM('ds_actuals_bq'[net_sales_amount])
+		lineageTag: 6f4ac05a-b435-491e-b331-247eedbb2b49
+
+	measure 'Actual Profit' = SUM('ds_actuals_bq'[profit_amount])
+		lineageTag: f0a553e3-a4de-4892-b929-4e654a6e100c
+
+	measure 'Actual Trend' = SUM('ds_actuals_bq'[net_sales_amount])
+		lineageTag: 83143fb1-1754-4809-bf51-79a4ab73ed80
+
+	measure 'Actual by Region' = SUM('ds_actuals_bq'[net_sales_amount])
+		lineageTag: ba7ddb89-0afe-4254-bff5-413ae2726b73
+
+	measure 'Variance Waterfall Placeholder' = SUM('ds_actuals_bq'[net_sales_amount])
+		lineageTag: 32cbefc8-9f46-49a7-a31c-4a0490a7cd68
+
+	partition ds_actuals_bq = m
+		mode: import
+		source = ```
+			let
+			    Source = GoogleBigQuery.Database(),
+			    Data = Value.NativeQuery(Source, "SELECT d.full_date AS sales_date, d.month, d.month_name, s.region AS store_region, p.category, ch.channel_name, f.order_id, f.net_sales_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_store` s ON f.store_key = s.store_key JOIN `ferrous-gate-496806-b7.retail_star.dim_product` p ON f.product_key = p.product_key JOIN `ferrous-gate-496806-b7.retail_star.dim_channel` ch ON f.channel_key = ch.channel_key")
+			in
+			    Data
+			```
+

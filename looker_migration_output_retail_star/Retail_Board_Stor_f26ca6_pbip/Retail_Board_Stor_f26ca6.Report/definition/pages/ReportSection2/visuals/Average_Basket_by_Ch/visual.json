@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "Average_Basket_by_Ch",
+  "position": {
+    "x": 848,
+    "y": 16,
+    "z": 2,
+    "width": 400,
+    "height": 200,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_kpi"
+                    }
+                  },
+                  "Property": "channel_name"
+                }
+              },
+              "queryRef": "ds_kpi.channel_name",
+              "nativeQueryRef": "channel_name"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_kpi"
+                    }
+                  },
+                  "Property": "Average Basket by Channel"
+                }
+              },
+              "queryRef": "ds_kpi.Average Basket by Channel",
+              "nativeQueryRef": "Average Basket by Channel"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

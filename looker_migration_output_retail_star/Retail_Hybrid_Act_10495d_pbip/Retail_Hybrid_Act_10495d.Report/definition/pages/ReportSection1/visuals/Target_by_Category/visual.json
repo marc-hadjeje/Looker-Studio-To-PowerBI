@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "Target_by_Category",
+  "position": {
+    "x": 848,
+    "y": 16,
+    "z": 2,
+    "width": 400,
+    "height": 200,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Retail Targets Sheet"
+                    }
+                  },
+                  "Property": "category"
+                }
+              },
+              "queryRef": "Retail Targets Sheet.category",
+              "nativeQueryRef": "category"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Retail Targets Sheet"
+                    }
+                  },
+                  "Property": "Target by Category"
+                }
+              },
+              "queryRef": "Retail Targets Sheet.Target by Category",
+              "nativeQueryRef": "Target by Category"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

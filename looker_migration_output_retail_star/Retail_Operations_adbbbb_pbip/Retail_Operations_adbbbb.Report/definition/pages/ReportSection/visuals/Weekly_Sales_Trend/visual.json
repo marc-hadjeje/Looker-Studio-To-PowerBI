@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "Weekly_Sales_Trend",
+  "position": {
+    "x": 432,
+    "y": 232,
+    "z": 4,
+    "width": 400,
+    "height": 200,
+    "tabOrder": 4
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_ops"
+                    }
+                  },
+                  "Property": "iso_week"
+                }
+              },
+              "queryRef": "ds_ops.iso_week",
+              "nativeQueryRef": "iso_week"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_ops"
+                    }
+                  },
+                  "Property": "Weekly Sales Trend"
+                }
+              },
+              "queryRef": "ds_ops.Weekly Sales Trend",
+              "nativeQueryRef": "Weekly Sales Trend"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

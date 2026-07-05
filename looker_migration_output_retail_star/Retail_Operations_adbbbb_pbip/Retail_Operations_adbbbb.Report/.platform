@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Retail_Operations_Weekly_Command_Center"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "9c8d100e-b1a8-4262-b014-9b039d47ad86"
+  }
+}

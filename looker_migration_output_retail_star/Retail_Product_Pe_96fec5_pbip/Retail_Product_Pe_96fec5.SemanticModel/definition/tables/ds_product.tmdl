@@ -1,0 +1,85 @@
+table ds_product
+	lineageTag: 399564c0-ed7e-4ce9-b34b-71d81ac1c8b7
+
+	column sales_date
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: sales_date
+		lineageTag: 113d2a87-c5be-480d-b245-a14880c42502
+
+	column product_name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: product_name
+		lineageTag: 7d0e8856-0088-4975-baab-52645510def4
+
+	column category
+		dataType: string
+		summarizeBy: none
+		sourceColumn: category
+		lineageTag: 03884e80-4f8c-4ea2-9f4b-f818bb316095
+
+	column subcategory
+		dataType: string
+		summarizeBy: none
+		sourceColumn: subcategory
+		lineageTag: b9e2b3e6-10eb-48a5-8da9-c8c7c45ffaae
+
+	column brand
+		dataType: string
+		summarizeBy: none
+		sourceColumn: brand
+		lineageTag: 84a23d6b-d9b7-4c46-b4ce-90e7915c084a
+
+	column quantity
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: quantity
+		lineageTag: d16cca1e-f580-4f19-be1c-290067efda2b
+
+	column net_sales_amount
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: net_sales_amount
+		lineageTag: 9cd24765-470d-4653-9cc1-fd9c179bd432
+
+	column cost_amount
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: cost_amount
+		lineageTag: 40085848-3729-4283-8646-9dc28b1e6aea
+
+	column profit_amount
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: profit_amount
+		lineageTag: a8db7023-e46d-4b22-b21e-66cbf9c0ee0d
+
+	measure UnitMargin = SUM('ds_product'[profit_amount]) / SUM('ds_product'[quantity])
+		lineageTag: c82f1548-85c6-41f9-9c5c-b85fadd855cd
+
+	measure 'Units Sold' = SUM('ds_product'[quantity])
+		lineageTag: a5975d33-dfdb-48bf-9802-4cbd2e9c2be2
+
+	measure 'Net Sales' = SUM('ds_product'[net_sales_amount])
+		lineageTag: 66b4830c-bc8e-4f47-84ff-aea07683134c
+
+	measure Profit = SUM('ds_product'[profit_amount])
+		lineageTag: 2b906fcc-2166-4b05-8bde-aaab8430506b
+
+	measure 'Sales by Brand' = SUM('ds_product'[net_sales_amount])
+		lineageTag: 516930c7-4717-465e-8cb4-047e8d16489d
+
+	measure 'Daily Sales' = SUM('ds_product'[net_sales_amount])
+		lineageTag: c0f9bb25-1ac5-48a9-a06b-ff1a5498efd5
+
+	partition ds_product = m
+		mode: import
+		source = ```
+			let
+			    Source = GoogleBigQuery.Database(),
+			    Data = Value.NativeQuery(Source, "SELECT d.full_date AS sales_date, p.product_name, p.category, p.subcategory, p.brand, f.quantity, f.net_sales_amount, f.cost_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_product` p ON f.product_key = p.product_key")
+			in
+			    Data
+			```
+

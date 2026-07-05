@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "Loyalty_vs_Non_Loyal",
+  "position": {
+    "x": 16,
+    "y": 232,
+    "z": 3,
+    "width": 400,
+    "height": 200,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "clusteredColumnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_kpi"
+                    }
+                  },
+                  "Property": "is_loyalty_member"
+                }
+              },
+              "queryRef": "ds_kpi.is_loyalty_member",
+              "nativeQueryRef": "is_loyalty_member"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_kpi"
+                    }
+                  },
+                  "Property": "Loyalty vs Non-Loyalty Sales"
+                }
+              },
+              "queryRef": "ds_kpi.Loyalty vs Non-Loyalty Sales",
+              "nativeQueryRef": "Loyalty vs Non-Loyalty Sales"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

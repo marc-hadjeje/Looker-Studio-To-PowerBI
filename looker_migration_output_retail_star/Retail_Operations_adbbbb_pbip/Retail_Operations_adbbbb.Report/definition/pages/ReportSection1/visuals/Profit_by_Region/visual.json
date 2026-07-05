@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "Profit_by_Region",
+  "position": {
+    "x": 848,
+    "y": 16,
+    "z": 2,
+    "width": 400,
+    "height": 200,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_ops"
+                    }
+                  },
+                  "Property": "store_region"
+                }
+              },
+              "queryRef": "ds_ops.store_region",
+              "nativeQueryRef": "store_region"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_ops"
+                    }
+                  },
+                  "Property": "Profit by Region"
+                }
+              },
+              "queryRef": "ds_ops.Profit by Region",
+              "nativeQueryRef": "Profit by Region"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

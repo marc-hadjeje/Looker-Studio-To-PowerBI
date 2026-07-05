@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Retail_Customer_&_Channel_Insights"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "39245aac-5178-48a8-be5d-f2af1a901eda"
+  }
+}

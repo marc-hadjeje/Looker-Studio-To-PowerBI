@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "Daily_Sales",
+  "position": {
+    "x": 848,
+    "y": 232,
+    "z": 5,
+    "width": 400,
+    "height": 200,
+    "tabOrder": 5
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_product"
+                    }
+                  },
+                  "Property": "sales_date"
+                }
+              },
+              "queryRef": "ds_product.sales_date",
+              "nativeQueryRef": "sales_date"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_product"
+                    }
+                  },
+                  "Property": "Daily Sales"
+                }
+              },
+              "queryRef": "ds_product.Daily Sales",
+              "nativeQueryRef": "Daily Sales"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

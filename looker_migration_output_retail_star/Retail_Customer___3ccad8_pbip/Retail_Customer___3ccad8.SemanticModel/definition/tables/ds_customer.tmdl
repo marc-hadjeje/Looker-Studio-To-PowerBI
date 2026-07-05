@@ -1,0 +1,97 @@
+table ds_customer
+	lineageTag: 208043ca-bb41-4a90-9f2d-c48a5c2e7f4d
+
+	column sales_date
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: sales_date
+		lineageTag: eb9bc0aa-76c6-4cb8-8a9f-e3af9251765d
+
+	column customer_id
+		dataType: string
+		summarizeBy: none
+		sourceColumn: customer_id
+		lineageTag: d8772c32-03dc-42e0-b675-3a8f2ab7add4
+
+	column segment
+		dataType: string
+		summarizeBy: none
+		sourceColumn: segment
+		lineageTag: 9a652ea7-f019-400a-8209-eb57cfd617d3
+
+	column customer_region
+		dataType: string
+		summarizeBy: none
+		sourceColumn: customer_region
+		lineageTag: 753038ed-59d0-4688-af24-643dcda18e89
+
+	column age_group
+		dataType: string
+		summarizeBy: none
+		sourceColumn: age_group
+		lineageTag: 628f614c-0443-4539-b7dc-702573625548
+
+	column is_loyalty_member
+		dataType: string
+		summarizeBy: none
+		sourceColumn: is_loyalty_member
+		lineageTag: 1ad1be39-0fb0-4c9f-b78b-9c6787a0667a
+
+	column channel_name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: channel_name
+		lineageTag: cda37e57-4fa3-45f7-bbcd-4129fccea56b
+
+	column store_format
+		dataType: string
+		summarizeBy: none
+		sourceColumn: store_format
+		lineageTag: cba5a1e3-1fe9-4fd0-be1a-1638c54b8a95
+
+	column order_id
+		dataType: string
+		summarizeBy: none
+		sourceColumn: order_id
+		lineageTag: 7e48334a-1ccc-4fa4-b70f-0785eaf9c273
+
+	column quantity
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: quantity
+		lineageTag: 9565873c-0c43-4ba5-af1f-c7bcf88d0e5e
+
+	column net_sales_amount
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: net_sales_amount
+		lineageTag: 29754e09-94c7-493f-ad90-f27f535e557f
+
+	column profit_amount
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: profit_amount
+		lineageTag: f174e81a-5192-4573-a4c7-af2deae03b38
+
+	measure AverageOrderValue = SUM('ds_customer'[net_sales_amount]) / DISTINCTCOUNT('ds_customer'[order_id])
+		lineageTag: 20a0ce2d-9f66-49c8-b501-442619b34d84
+
+	measure 'Net Sales' = SUM('ds_customer'[net_sales_amount])
+		lineageTag: 04ce0aa0-5a05-44ec-beb4-4f4c51e27381
+
+	measure 'Sales by Channel' = SUM('ds_customer'[net_sales_amount])
+		lineageTag: a8d69824-6979-473a-8b91-d2600c14e54e
+
+	measure 'Loyalty Sales' = SUM('ds_customer'[net_sales_amount])
+		lineageTag: 73a1773d-7070-4998-bf09-3e91eb4192a0
+
+	partition ds_customer = m
+		mode: import
+		source = ```
+			let
+			    Source = GoogleBigQuery.Database(),
+			    Data = Value.NativeQuery(Source, "SELECT d.full_date AS sales_date, c.customer_id, c.segment, c.region AS customer_region, c.age_group, c.is_loyalty_member, ch.channel_name, s.store_format, f.order_id, f.quantity, f.net_sales_amount, f.profit_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_customer` c ON f.customer_key = c.customer_key JOIN `ferrous-gate-496806-b7.retail_star.dim_store` s ON f.store_key = s.store_key JOIN `ferrous-gate-496806-b7.retail_star.dim_channel` ch ON f.channel_key = ch.channel_key")
+			in
+			    Data
+			```
+

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "Sales_by_Category",
+  "position": {
+    "x": 16,
+    "y": 448,
+    "z": 6,
+    "width": 400,
+    "height": 200,
+    "tabOrder": 6
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_kpi"
+                    }
+                  },
+                  "Property": "category"
+                }
+              },
+              "queryRef": "ds_kpi.category",
+              "nativeQueryRef": "category"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_kpi"
+                    }
+                  },
+                  "Property": "Sales by Category"
+                }
+              },
+              "queryRef": "ds_kpi.Sales by Category",
+              "nativeQueryRef": "Sales by Category"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

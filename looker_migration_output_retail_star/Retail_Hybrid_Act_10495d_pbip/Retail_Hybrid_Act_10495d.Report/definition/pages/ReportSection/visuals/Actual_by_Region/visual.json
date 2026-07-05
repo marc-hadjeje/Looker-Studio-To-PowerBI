@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "Actual_by_Region",
+  "position": {
+    "x": 16,
+    "y": 232,
+    "z": 3,
+    "width": 400,
+    "height": 200,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_actuals_bq"
+                    }
+                  },
+                  "Property": "store_region"
+                }
+              },
+              "queryRef": "ds_actuals_bq.store_region",
+              "nativeQueryRef": "store_region"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_actuals_bq"
+                    }
+                  },
+                  "Property": "Actual by Region"
+                }
+              },
+              "queryRef": "ds_actuals_bq.Actual by Region",
+              "nativeQueryRef": "Actual by Region"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "projectName": "Retail_Executive_Dashboard",
+  "sourceReport": "Retail_Executive_Dashboard",
+  "dataSourcesCount": 1,
+  "tablesCount": 1,
+  "measuresCount": 2,
+  "refreshMode": "Import",
+  "migratedFrom": "Looker Studio (BigQuery)",
+  "createdDate": "2026-07-05T14:59:33.823631"
+}

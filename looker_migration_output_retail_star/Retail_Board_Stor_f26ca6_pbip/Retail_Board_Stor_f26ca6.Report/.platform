@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Retail_Board_Storytelling_-_Strategy_Pack"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "5122f6b7-96a0-42d9-93d2-52033df6f9e6"
+  }
+}

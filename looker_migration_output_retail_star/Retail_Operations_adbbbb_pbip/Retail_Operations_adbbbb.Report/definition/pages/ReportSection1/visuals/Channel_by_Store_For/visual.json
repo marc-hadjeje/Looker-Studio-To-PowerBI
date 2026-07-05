@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "Channel_by_Store_For",
+  "position": {
+    "x": 16,
+    "y": 232,
+    "z": 3,
+    "width": 400,
+    "height": 200,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_ops"
+                    }
+                  },
+                  "Property": "store_format"
+                }
+              },
+              "queryRef": "ds_ops.store_format",
+              "nativeQueryRef": "store_format"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_ops"
+                    }
+                  },
+                  "Property": "Channel by Store Format"
+                }
+              },
+              "queryRef": "ds_ops.Channel by Store Format",
+              "nativeQueryRef": "Channel by Store Format"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

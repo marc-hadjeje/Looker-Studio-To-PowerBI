@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "Sales_by_Channel",
+  "position": {
+    "x": 432,
+    "y": 232,
+    "z": 4,
+    "width": 400,
+    "height": 200,
+    "tabOrder": 4
+  },
+  "visual": {
+    "visualType": "pieChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_customer"
+                    }
+                  },
+                  "Property": "channel_name"
+                }
+              },
+              "queryRef": "ds_customer.channel_name",
+              "nativeQueryRef": "channel_name"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_customer"
+                    }
+                  },
+                  "Property": "Sales by Channel"
+                }
+              },
+              "queryRef": "ds_customer.Sales by Channel",
+              "nativeQueryRef": "Sales by Channel"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

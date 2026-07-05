@@ -1,4 +1,0 @@
-database 'Retail_Operations_Weekly_Command_Center' 
-    compatibilityLevel = 1550
-    collation = 'en-US'
-    language = 'en-US'

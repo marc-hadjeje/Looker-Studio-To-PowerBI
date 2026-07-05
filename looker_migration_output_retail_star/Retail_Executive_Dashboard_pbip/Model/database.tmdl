@@ -1,4 +1,0 @@
-database 'Retail_Executive_Dashboard' 
-    compatibilityLevel = 1550
-    collation = 'en-US'
-    language = 'en-US'

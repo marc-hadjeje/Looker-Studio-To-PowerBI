@@ -12,6 +12,7 @@ Generates complete Power BI project structure with:
 from pathlib import Path
 from typing import Dict, List, Any
 import json
+import os
 import uuid
 import re
 import hashlib
@@ -173,7 +174,7 @@ class PBIPGenerator:
         formulas = formulas or {}
         pages = pages or {}
         tables_dir = self.semantic_model_definition_dir / "tables"
-        tables_dir.mkdir(parents=True, exist_ok=True)
+        self._fs(tables_dir).mkdir(parents=True, exist_ok=True)
 
         if not hasattr(self, '_table_names'):
             self._table_names = {}
@@ -194,7 +195,7 @@ class PBIPGenerator:
                     columns.append({'name': col, 'dataType': self._infer_data_type(col)})
 
             tmdl = self._render_table_tmdl(table_name, source, columns, measures, query)
-            (tables_dir / f"{table_name}.tmdl").write_text(tmdl, encoding='utf-8')
+            self._fs(tables_dir / f"{table_name}.tmdl").write_text(tmdl, encoding='utf-8')
 
     # ------------------------------------------------------------------ helpers
 
@@ -425,9 +426,9 @@ class PBIPGenerator:
             page_order.append(internal_name)
 
             page_dir = pages_root / internal_name
-            page_dir.mkdir(parents=True, exist_ok=True)
+            self._fs(page_dir).mkdir(parents=True, exist_ok=True)
             visuals_dir = page_dir / "visuals"
-            visuals_dir.mkdir(parents=True, exist_ok=True)
+            self._fs(visuals_dir).mkdir(parents=True, exist_ok=True)
 
             page_def = {
                 "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
@@ -437,7 +438,7 @@ class PBIPGenerator:
                 "height": 720,
                 "width": 1280,
             }
-            (page_dir / "page.json").write_text(json.dumps(page_def, indent=2), encoding='utf-8')
+            self._fs(page_dir / "page.json").write_text(json.dumps(page_def, indent=2), encoding='utf-8')
 
             # Emit one PBIR visual.json per Looker element, bound to the model.
             self._write_page_visuals(visuals_dir, page_info.get("visuals", []))
@@ -504,13 +505,30 @@ class PBIPGenerator:
             )
 
             visual_folder = visuals_dir / visual_name
-            visual_folder.mkdir(parents=True, exist_ok=True)
-            (visual_folder / "visual.json").write_text(
+            self._fs(visual_folder).mkdir(parents=True, exist_ok=True)
+            self._fs(visual_folder / "visual.json").write_text(
                 json.dumps(visual_json, indent=2), encoding='utf-8',
             )
 
+    @staticmethod
+    def _fs(path: Path) -> Path:
+        """Return a filesystem path safe against the Windows MAX_PATH (260) limit.
+
+        Deep PBIR trees (…/pages/ReportSectionN/visuals/<name>/visual.json) can
+        exceed 260 characters, especially under long base paths (e.g. OneDrive),
+        which otherwise causes writes to fail silently and truncates the output.
+        """
+        if os.name == 'nt':
+            resolved = os.path.abspath(str(path))
+            if not resolved.startswith('\\\\?\\'):
+                resolved = '\\\\?\\' + resolved
+            return Path(resolved)
+        return path
+
     def _safe_visual_name(self, name: str, index: int, used: set) -> str:
         cleaned = re.sub(r'[^A-Za-z0-9_]+', '_', str(name or f'visual{index}')).strip('_')
+        # Keep folder names short to limit total PBIR path length (Windows MAX_PATH).
+        cleaned = cleaned[:20].strip('_')
         if not cleaned:
             cleaned = f'visual{index}'
         candidate = cleaned

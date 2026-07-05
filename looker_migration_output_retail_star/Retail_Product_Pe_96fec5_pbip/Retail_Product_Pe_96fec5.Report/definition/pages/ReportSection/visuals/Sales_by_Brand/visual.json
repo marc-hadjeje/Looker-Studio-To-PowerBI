@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "Sales_by_Brand",
+  "position": {
+    "x": 432,
+    "y": 232,
+    "z": 4,
+    "width": 400,
+    "height": 200,
+    "tabOrder": 4
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_product"
+                    }
+                  },
+                  "Property": "brand"
+                }
+              },
+              "queryRef": "ds_product.brand",
+              "nativeQueryRef": "brand"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_product"
+                    }
+                  },
+                  "Property": "Sales by Brand"
+                }
+              },
+              "queryRef": "ds_product.Sales by Brand",
+              "nativeQueryRef": "Sales by Brand"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "Category_by_Week",
+  "position": {
+    "x": 848,
+    "y": 16,
+    "z": 2,
+    "width": 400,
+    "height": 200,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "areaChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_ops"
+                    }
+                  },
+                  "Property": "iso_week"
+                }
+              },
+              "queryRef": "ds_ops.iso_week",
+              "nativeQueryRef": "iso_week"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ds_ops"
+                    }
+                  },
+                  "Property": "Category by Week"
+                }
+              },
+              "queryRef": "ds_ops.Category by Week",
+              "nativeQueryRef": "Category by Week"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

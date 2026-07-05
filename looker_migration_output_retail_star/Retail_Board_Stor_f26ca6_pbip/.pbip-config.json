@@ -1,0 +1,10 @@
+{
+  "projectName": "Retail_Board_Storytelling_-_Strategy_Pack",
+  "sourceReport": "Retail_Board_Storytelling_-_Strategy_Pack",
+  "dataSourcesCount": 1,
+  "tablesCount": 1,
+  "measuresCount": 4,
+  "refreshMode": "Import",
+  "migratedFrom": "Looker Studio (BigQuery)",
+  "createdDate": "2026-07-05T14:59:32.056336"
+}

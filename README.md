@@ -31,7 +31,61 @@ Une fois ce fichier obtenu, la migration tient en une commande :
 python migrate.py report.json
 ```
 
+## 🗺️ Workflow global
+
+La migration se déroule en **3 étapes**. La dernière étape offre **2 voies** pour produire
+le PBIP : la **moulinette** (déterministe, sans coût IA) ou le **vibe coding Power BI** via
+les MCP servers (plus flexible, mais consomme de l'IA et des tokens).
+
+```mermaid
+flowchart TD
+    A["1. Inventaire<br/>digilytiks report-exporter → CSV nom/URL/owner"] --> B["2. Récupération du JSON d'entrée"]
+    B -->|Screenshot + scan BigQuery| J["report.json"]
+    B -->|Capture Network DevTools| J
+    B -->|Échantillon / écrit à la main| J
+    J --> C{"3. Génération de la sortie PBIP"}
+    C -->|"Voie 1 — Moulinette<br/>migrate.py report.json"| D["PBIP généré<br/>modèle + visuels<br/>(déterministe, 0 token)"]
+    C -->|"Voie 2 — Vibe coding<br/>MCP modeling + skill powerbi-report-authoring"| E["PBIP construit à la main<br/>(flexible, consomme IA/tokens)"]
+    D --> F["Ouverture dans Power BI Desktop"]
+    E --> F
+```
+
+Depuis un **unique JSON d'entrée**, la moulinette produit désormais **le modèle sémantique
+complet** (tables + colonnes + mesures DAX + partition M) **et le rapport** (un `visual.json`
+PBIR par élément, bindé aux tables/mesures du modèle).
+
+## 🌳 Arbre de décision — quelle voie pour l'étape 3 ?
+
+```mermaid
+flowchart TD
+    Q1{"Avez-vous un JSON d'entrée<br/>exploitable ?"} -->|Non| Q0["→ Revenez à l'étape 2<br/>(screenshot / Network / échantillon)"]
+    Q1 -->|Oui| Q2{"Voulez-vous éviter tout<br/>coût IA / token et un résultat<br/>100% reproductible ?"}
+    Q2 -->|Oui| M["🏭 Voie 1 — Moulinette<br/>python migrate.py report.json"]
+    Q2 -->|Non| Q3{"Besoin de mise en page fine,<br/>visuels complexes ou ajustements<br/>sur-mesure non couverts ?"}
+    Q3 -->|Non| M
+    Q3 -->|Oui| V["🤖 Voie 2 — Vibe coding Power BI<br/>MCP modeling + skill authoring"]
+    M --> H{"Rendu satisfaisant<br/>dans Desktop ?"}
+    H -->|Oui| DONE["✅ Terminé"]
+    H -->|Non, à peaufiner| V
+    V --> DONE
+```
+
+**En résumé :**
+
+| Critère | 🏭 Moulinette (Voie 1) | 🤖 Vibe coding MCP (Voie 2) |
+|---|---|---|
+| Coût IA / tokens | Aucun | Consomme IA + tokens |
+| Reproductibilité | Totale (déterministe) | Variable |
+| Rapidité (lot) | Excellente | Plus lente |
+| Mise en page fine / visuels complexes | Basique (grille auto) | Sur-mesure |
+| Idéal comme | Bootstrap / migration de masse | Finition / cas complexes |
+
+> [!TIP]
+> Meilleure pratique : lancez d'abord la **moulinette** pour obtenir un PBIP complet et
+> gratuit, puis n'utilisez le **vibe coding** que pour peaufiner ce qui en a besoin.
+
 > [!IMPORTANT]
+
 > **Looker Studio n'offre aucun export JSON natif ni API publique renvoyant la définition
 > d'un rapport.** L'endpoint interne `datastudio.google.com/api` renvoie une page HTML de
 > connexion, pas du JSON — toute « extraction live par report ID » est donc non fiable.
@@ -87,6 +141,16 @@ format maison).
 
 > [!TIP]
 > La sortie est un projet `.pbip` — double-cliquez pour l'ouvrir dans **Power BI Desktop** (décembre 2025+).
+
+> [!WARNING]
+> **Windows MAX_PATH (260 caractères).** Les projets PBIR imbriquent des chemins profonds
+> (`…/pages/ReportSectionN/visuals/<nom>/visual.json`). Sous une base longue (ex. OneDrive),
+> le chemin total peut dépasser 260 caractères. La génération est protégée (écritures
+> `\\?\` longues), mais **Power BI Desktop peut refuser d'ouvrir** un projet trop profond.
+> Générez de préférence vers un **dossier court**, par exemple :
+> ```bash
+> python migrate.py report.json --output-dir C:\pbip
+> ```
 
 <details>
 <summary><b>📦 Installation</b></summary>
