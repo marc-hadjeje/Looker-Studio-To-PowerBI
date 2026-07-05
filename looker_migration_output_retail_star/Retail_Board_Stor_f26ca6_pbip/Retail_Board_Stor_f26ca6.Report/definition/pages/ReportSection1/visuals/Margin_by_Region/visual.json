@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
   "name": "Margin_by_Region",
   "position": {
     "x": 848,
@@ -27,7 +27,7 @@
                 }
               },
               "queryRef": "ds_kpi.store_region",
-              "nativeQueryRef": "store_region"
+              "active": true
             }
           ]
         },
@@ -45,7 +45,7 @@
                 }
               },
               "queryRef": "ds_kpi.Margin by Region",
-              "nativeQueryRef": "Margin by Region"
+              "active": true
             }
           ]
         }

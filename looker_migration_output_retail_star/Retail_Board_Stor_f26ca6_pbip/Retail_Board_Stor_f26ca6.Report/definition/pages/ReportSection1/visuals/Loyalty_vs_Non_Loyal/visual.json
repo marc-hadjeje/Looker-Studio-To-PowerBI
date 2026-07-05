@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
   "name": "Loyalty_vs_Non_Loyal",
   "position": {
     "x": 16,
@@ -27,7 +27,7 @@
                 }
               },
               "queryRef": "ds_kpi.is_loyalty_member",
-              "nativeQueryRef": "is_loyalty_member"
+              "active": true
             }
           ]
         },
@@ -45,7 +45,7 @@
                 }
               },
               "queryRef": "ds_kpi.Loyalty vs Non-Loyalty Sales",
-              "nativeQueryRef": "Loyalty vs Non-Loyalty Sales"
+              "active": true
             }
           ]
         }

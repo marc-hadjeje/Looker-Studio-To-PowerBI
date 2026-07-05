@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
   "name": "Average_Basket_by_Ch",
   "position": {
     "x": 848,
@@ -27,7 +27,7 @@
                 }
               },
               "queryRef": "ds_kpi.channel_name",
-              "nativeQueryRef": "channel_name"
+              "active": true
             }
           ]
         },
@@ -45,7 +45,7 @@
                 }
               },
               "queryRef": "ds_kpi.Average Basket by Channel",
-              "nativeQueryRef": "Average Basket by Channel"
+              "active": true
             }
           ]
         }

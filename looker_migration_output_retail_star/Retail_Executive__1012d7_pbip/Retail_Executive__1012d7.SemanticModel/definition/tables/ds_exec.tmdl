@@ -1,107 +1,107 @@
 table ds_exec
-	lineageTag: 64f58746-830d-4d99-81c2-9130549690d8
+	lineageTag: 6e94beca-09cd-4873-ad4c-d89191f02bef
 
 	column sales_date
 		dataType: dateTime
 		summarizeBy: none
 		sourceColumn: sales_date
-		lineageTag: b8b39c4f-e4aa-4704-9c7f-9830c8dd725f
+		lineageTag: d6e6e3d7-ec0d-47c0-b3e7-e99b6a1bec26
 
 	column category
 		dataType: string
 		summarizeBy: none
 		sourceColumn: category
-		lineageTag: 8ef660f5-24d9-45e9-a1b1-5a5b38a57944
+		lineageTag: 16d49dde-4dda-4622-b393-6af3947f173c
 
 	column brand
 		dataType: string
 		summarizeBy: none
 		sourceColumn: brand
-		lineageTag: aeb62739-d547-400a-ae45-5e91254dfed7
+		lineageTag: 69c64b5a-aa49-4849-87d5-85c34df6a823
 
 	column customer_segment
 		dataType: string
 		summarizeBy: none
 		sourceColumn: customer_segment
-		lineageTag: c1e660b9-6644-4ebc-a264-b274aadeb43a
+		lineageTag: 4c90eeaf-beea-43df-8ca8-b70fdd06c055
 
 	column store_region
 		dataType: string
 		summarizeBy: none
 		sourceColumn: store_region
-		lineageTag: 53dde0d2-4e78-4ff3-af9c-02cfd62b5f8e
+		lineageTag: 8160ef75-7ad1-45c5-85ab-05bbbd6d3d65
 
 	column channel_name
 		dataType: string
 		summarizeBy: none
 		sourceColumn: channel_name
-		lineageTag: 94bcc97f-ce64-429e-a785-fe59ad81f0c9
+		lineageTag: 2c4a2f7c-23d2-42f6-a390-07dce4d61334
 
 	column quantity
 		dataType: int64
 		summarizeBy: sum
 		sourceColumn: quantity
-		lineageTag: 5467c78b-33e8-40e0-bcf1-2780a31de848
+		lineageTag: 070d44a4-95ad-4d22-bfd6-41c11bdff8ba
 
 	column gross_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: gross_amount
-		lineageTag: 075ec04a-784f-4611-afeb-9ff1dcd47ca6
+		lineageTag: 38582cd0-c82a-4439-938c-1c6f1f998234
 
 	column discount_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: discount_amount
-		lineageTag: bacedef7-bab8-457b-b734-7306c3ce5cf4
+		lineageTag: bf4e9a28-13c8-403a-a649-c2cb3372e115
 
 	column net_sales_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: net_sales_amount
-		lineageTag: f4d261c3-96eb-46c1-b3d3-428feb748707
+		lineageTag: 789e0755-25a4-4d57-9def-5794f69bb758
 
 	column cost_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: cost_amount
-		lineageTag: 86307719-6012-4d83-8746-6d692e3a2cab
+		lineageTag: 07428745-e681-480c-b634-8c9fce95a308
 
 	column profit_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: profit_amount
-		lineageTag: 5153d989-6afa-4267-9f2e-3067d48e2cb7
+		lineageTag: 0a21df0d-b8f9-4021-ba11-88c1c5d41be9
 
 	column order_id
 		dataType: string
 		summarizeBy: none
 		sourceColumn: order_id
-		lineageTag: e074e4c7-b683-4078-904b-bbc888f9acbb
+		lineageTag: fb1da62a-d4db-426e-8950-776fb5b8da4e
 
 	measure MarginPct = SUM('ds_exec'[profit_amount]) / SUM('ds_exec'[net_sales_amount])
-		lineageTag: 305e49b5-b985-4b85-be37-c1cce0603d73
+		lineageTag: ba783aae-a9b0-4fc6-bbcb-ff2c72bbe580
 
 	measure AvgBasket = SUM('ds_exec'[net_sales_amount]) / DISTINCTCOUNT('ds_exec'[order_id])
-		lineageTag: fe964971-0493-4df5-a5fb-08cf4910699c
+		lineageTag: e75a74d4-03f8-4e22-b00e-5536e3fead06
 
 	measure 'Net Sales' = SUM('ds_exec'[net_sales_amount])
-		lineageTag: acd3c551-28a8-4f2a-9cb4-ab53bde62e35
+		lineageTag: 5b825c98-059e-4070-b502-acca39000d7a
 
 	measure Profit = SUM('ds_exec'[profit_amount])
-		lineageTag: 9a4a49f0-5089-4432-866b-387485718856
+		lineageTag: 3cbb4b02-b02a-4331-9f13-e2f093135770
 
 	measure 'Margin %' = SUM('ds_exec'[profit_amount])/SUM('ds_exec'[net_sales_amount])
-		lineageTag: d7e1efce-074a-4fb6-b82a-49370f172fbd
+		lineageTag: b5d9712e-f3ce-466b-b140-c026d3990407
 
 	measure 'Sales Trend' = SUM('ds_exec'[net_sales_amount])
-		lineageTag: 018e36dc-78d7-4e6a-962a-3b555d8be955
+		lineageTag: e1c0f977-6262-4714-b9c6-9f71fee7ea32
 
 	measure 'Sales by Category' = SUM('ds_exec'[net_sales_amount])
-		lineageTag: 0a588a59-d948-4e0f-95fc-44128f544d55
+		lineageTag: ddf05f12-77cd-46fa-86dc-a5d7d90882f5
 
 	measure 'Profit by Channel' = SUM('ds_exec'[profit_amount])
-		lineageTag: 0535cbfa-5be7-4595-b965-f73dcaea2f91
+		lineageTag: a3619406-8e72-4950-9df6-e0e00e8a64c8
 
 	partition ds_exec = m
 		mode: import

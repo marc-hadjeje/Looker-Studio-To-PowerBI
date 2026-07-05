@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
   "name": "Sales_Trend",
   "position": {
     "x": 16,
@@ -27,7 +27,7 @@
                 }
               },
               "queryRef": "ds_exec.sales_date",
-              "nativeQueryRef": "sales_date"
+              "active": true
             }
           ]
         },
@@ -45,7 +45,7 @@
                 }
               },
               "queryRef": "ds_exec.Sales Trend",
-              "nativeQueryRef": "Sales Trend"
+              "active": true
             }
           ]
         }

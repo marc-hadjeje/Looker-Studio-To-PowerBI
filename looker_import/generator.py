@@ -397,6 +397,26 @@ class PBIPGenerator:
 
         report_def = {
             "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/2.0.0/schema.json",
+            "themeCollection": {
+                "baseTheme": {
+                    "name": "CY24SU06",
+                    "reportVersionAtImport": "5.55",
+                    "type": "SharedResources",
+                }
+            },
+            "resourcePackages": [
+                {
+                    "name": "SharedResources",
+                    "type": "SharedResources",
+                    "items": [
+                        {
+                            "name": "CY24SU06",
+                            "path": "BaseThemes/CY24SU06.json",
+                            "type": "BaseTheme",
+                        }
+                    ],
+                }
+            ],
             "settings": {
                 "hideVisualContainerHeader": True,
                 "useStylableVisualContainerHeader": True,
@@ -558,7 +578,7 @@ class PBIPGenerator:
                 }
             },
             "queryRef": f"{entity}.{prop}",
-            "nativeQueryRef": prop,
+            "active": True,
         }
 
     def _column_projection(self, entity: str, prop: str) -> Dict[str, Any]:
@@ -570,7 +590,7 @@ class PBIPGenerator:
                 }
             },
             "queryRef": f"{entity}.{prop}",
-            "nativeQueryRef": prop,
+            "active": True,
         }
 
     def _build_visual_json(self, name: str, visual_type: str, index: int,
@@ -597,7 +617,7 @@ class PBIPGenerator:
         visual["drillFilterOtherVisuals"] = True
 
         return {
-            "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+            "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
             "name": name,
             "position": self._visual_position(index),
             "visual": visual,

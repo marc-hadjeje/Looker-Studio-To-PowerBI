@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
   "name": "Variance_Waterfall_P",
   "position": {
     "x": 848,
@@ -27,7 +27,7 @@
                 }
               },
               "queryRef": "ds_actuals_bq.month_name",
-              "nativeQueryRef": "month_name"
+              "active": true
             }
           ]
         },
@@ -45,7 +45,7 @@
                 }
               },
               "queryRef": "ds_actuals_bq.Variance Waterfall Placeholder",
-              "nativeQueryRef": "Variance Waterfall Placeholder"
+              "active": true
             }
           ]
         }

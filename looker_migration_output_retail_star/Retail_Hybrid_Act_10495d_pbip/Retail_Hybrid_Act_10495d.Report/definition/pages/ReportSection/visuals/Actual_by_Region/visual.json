@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
   "name": "Actual_by_Region",
   "position": {
     "x": 16,
@@ -27,7 +27,7 @@
                 }
               },
               "queryRef": "ds_actuals_bq.store_region",
-              "nativeQueryRef": "store_region"
+              "active": true
             }
           ]
         },
@@ -45,7 +45,7 @@
                 }
               },
               "queryRef": "ds_actuals_bq.Actual by Region",
-              "nativeQueryRef": "Actual by Region"
+              "active": true
             }
           ]
         }

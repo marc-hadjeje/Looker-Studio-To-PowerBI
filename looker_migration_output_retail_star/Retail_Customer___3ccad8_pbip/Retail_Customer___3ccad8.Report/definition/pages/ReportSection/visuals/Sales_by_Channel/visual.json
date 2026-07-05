@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
   "name": "Sales_by_Channel",
   "position": {
     "x": 432,
@@ -27,7 +27,7 @@
                 }
               },
               "queryRef": "ds_customer.channel_name",
-              "nativeQueryRef": "channel_name"
+              "active": true
             }
           ]
         },
@@ -45,7 +45,7 @@
                 }
               },
               "queryRef": "ds_customer.Sales by Channel",
-              "nativeQueryRef": "Sales by Channel"
+              "active": true
             }
           ]
         }

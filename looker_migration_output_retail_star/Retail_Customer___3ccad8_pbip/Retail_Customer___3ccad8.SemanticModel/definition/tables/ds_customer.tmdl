@@ -1,89 +1,89 @@
 table ds_customer
-	lineageTag: 208043ca-bb41-4a90-9f2d-c48a5c2e7f4d
+	lineageTag: c5bebc55-8587-4231-8f6c-f4cf53b4433e
 
 	column sales_date
 		dataType: dateTime
 		summarizeBy: none
 		sourceColumn: sales_date
-		lineageTag: eb9bc0aa-76c6-4cb8-8a9f-e3af9251765d
+		lineageTag: 72157849-3a0b-4a0f-938a-69dada27e6b3
 
 	column customer_id
 		dataType: string
 		summarizeBy: none
 		sourceColumn: customer_id
-		lineageTag: d8772c32-03dc-42e0-b675-3a8f2ab7add4
+		lineageTag: 91d5872f-4fd0-4fe6-863a-5382e40ba299
 
 	column segment
 		dataType: string
 		summarizeBy: none
 		sourceColumn: segment
-		lineageTag: 9a652ea7-f019-400a-8209-eb57cfd617d3
+		lineageTag: a1e7aca0-383c-4aa0-aa66-03c184a5cba9
 
 	column customer_region
 		dataType: string
 		summarizeBy: none
 		sourceColumn: customer_region
-		lineageTag: 753038ed-59d0-4688-af24-643dcda18e89
+		lineageTag: 7bd62a50-4cfd-424a-b156-af21d39459a0
 
 	column age_group
 		dataType: string
 		summarizeBy: none
 		sourceColumn: age_group
-		lineageTag: 628f614c-0443-4539-b7dc-702573625548
+		lineageTag: 0aaf003e-6640-40ba-b990-3b894c621656
 
 	column is_loyalty_member
 		dataType: string
 		summarizeBy: none
 		sourceColumn: is_loyalty_member
-		lineageTag: 1ad1be39-0fb0-4c9f-b78b-9c6787a0667a
+		lineageTag: ed248159-e572-481f-bf44-c7f2a2c70e67
 
 	column channel_name
 		dataType: string
 		summarizeBy: none
 		sourceColumn: channel_name
-		lineageTag: cda37e57-4fa3-45f7-bbcd-4129fccea56b
+		lineageTag: 953f9497-9b72-405f-9db3-943bdb2c057c
 
 	column store_format
 		dataType: string
 		summarizeBy: none
 		sourceColumn: store_format
-		lineageTag: cba5a1e3-1fe9-4fd0-be1a-1638c54b8a95
+		lineageTag: ec616ca6-553f-4e9b-a785-34053c93d4f8
 
 	column order_id
 		dataType: string
 		summarizeBy: none
 		sourceColumn: order_id
-		lineageTag: 7e48334a-1ccc-4fa4-b70f-0785eaf9c273
+		lineageTag: 2889f707-8dc3-471c-87cf-e42ad0ef182f
 
 	column quantity
 		dataType: int64
 		summarizeBy: sum
 		sourceColumn: quantity
-		lineageTag: 9565873c-0c43-4ba5-af1f-c7bcf88d0e5e
+		lineageTag: 1c3e116f-5cdf-47ad-8803-ffff9513ecdb
 
 	column net_sales_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: net_sales_amount
-		lineageTag: 29754e09-94c7-493f-ad90-f27f535e557f
+		lineageTag: 06681a79-23d9-4650-832e-cc97a21a0762
 
 	column profit_amount
 		dataType: double
 		summarizeBy: sum
 		sourceColumn: profit_amount
-		lineageTag: f174e81a-5192-4573-a4c7-af2deae03b38
+		lineageTag: bd319406-dc88-4d45-913b-c6bf736c9575
 
 	measure AverageOrderValue = SUM('ds_customer'[net_sales_amount]) / DISTINCTCOUNT('ds_customer'[order_id])
-		lineageTag: 20a0ce2d-9f66-49c8-b501-442619b34d84
+		lineageTag: f8a366fb-c186-4d51-ab4b-8a535df0d6a0
 
 	measure 'Net Sales' = SUM('ds_customer'[net_sales_amount])
-		lineageTag: 04ce0aa0-5a05-44ec-beb4-4f4c51e27381
+		lineageTag: 1b8c8a0a-8475-4e34-b946-e4ed6d434037
 
 	measure 'Sales by Channel' = SUM('ds_customer'[net_sales_amount])
-		lineageTag: a8d69824-6979-473a-8b91-d2600c14e54e
+		lineageTag: 4ebf76ee-bd84-4f30-b952-9b1697d8cc4d
 
 	measure 'Loyalty Sales' = SUM('ds_customer'[net_sales_amount])
-		lineageTag: 73a1773d-7070-4998-bf09-3e91eb4192a0
+		lineageTag: 76a50ef0-de27-4372-9323-37496f5f5dbe
 
 	partition ds_customer = m
 		mode: import

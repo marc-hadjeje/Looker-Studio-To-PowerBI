@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
   "name": "Actual_Net_Sales",
   "position": {
     "x": 16,
@@ -27,7 +27,7 @@
                 }
               },
               "queryRef": "ds_actuals_bq.Actual Net Sales",
-              "nativeQueryRef": "Actual Net Sales"
+              "active": true
             }
           ]
         }
