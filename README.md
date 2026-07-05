@@ -38,6 +38,22 @@ python migrate.py report.json
 > Pour alimenter le moteur, utilisez l'une des **3 approches d'extraction réelles**
 > ci-dessous.
 
+### 0️⃣ En amont — inventorier tous vos rapports existants
+
+Avant d'extraire, cataloguez ce que vous avez à migrer. Le script console communautaire
+[digilytiks/looker-studio-report-exporter](https://github.com/digilytiks/looker-studio-report-exporter)
+scrolle la page d'accueil Looker Studio et copie **la liste de tous vos rapports** (nom,
+URL, propriétaire, date de dernière modification) au format **CSV**.
+
+1. Ouvrez Looker Studio, connecté au compte Google concerné.
+2. Console DevTools : `Ctrl+Shift+J` (Windows/Linux) ou `Cmd+Option+J` (Mac).
+3. Collez le script du repo → Entrée → le CSV est copié dans le presse-papiers.
+4. Collez dans Google Sheets / Excel (`Données → Scinder le texte en colonnes`).
+
+> ⚠️ Ce script récupère uniquement les **métadonnées et URLs** des rapports (pas leur
+> structure). C'est le point de départ pour appliquer ensuite l'une des 3 approches
+> ci-dessous, rapport par rapport.
+
 ### 3 façons d'obtenir le JSON d'entrée
 
 **1️⃣ Screenshot + scan BigQuery (recommandé)**
