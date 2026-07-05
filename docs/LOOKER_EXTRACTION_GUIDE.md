@@ -61,6 +61,18 @@ Structure attendue en entrée par l'outil :
 
 ## 🎯 Les 3 approches réelles pour reconstruire un rapport
 
+> [!TIP]
+> **En amont — inventorier tous vos rapports (étape 0).** Avant d'extraire, cataloguez ce
+> que vous avez à migrer. Le script console communautaire
+> [digilytiks/looker-studio-report-exporter](https://github.com/digilytiks/looker-studio-report-exporter)
+> scrolle la page d'accueil Looker Studio et copie **la liste de tous vos rapports**
+> (nom, URL, propriétaire, date de dernière modification) au format **CSV** (à coller
+> dans Google Sheets / Excel). Ouvrez Looker Studio connecté → console DevTools
+> (`Ctrl+Shift+J` / `Cmd+Option+J`) → collez le script → Entrée. ⚠️ Il récupère
+> uniquement les **métadonnées et URLs** des rapports (pas leur structure) : c'est le
+> point de départ idéal pour ensuite appliquer l'une des 3 approches ci-dessous, rapport
+> par rapport.
+
 1. **Screenshot + scan BigQuery** — capturer le rapport, scanner le schéma des sources
    BigQuery (auxquelles vous avez accès via l'API), puis reconstruire le modèle et le
    rapport Power BI. C'est le pipeline `generate_sample_reports.py --screenshot-file` +
