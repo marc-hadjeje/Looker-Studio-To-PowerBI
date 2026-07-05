@@ -4,24 +4,24 @@
   <img src="https://img.shields.io/badge/Power%20BI-F2C811?style=for-the-badge&logo=powerbi&logoColor=black" alt="Power BI"/>
 </p>
 
-<h1 align="center">Looker Studio to Power BI Migration</h1>
+<h1 align="center">Migration Looker Studio vers Power BI</h1>
 
 <p align="center">
-  <strong>Migrate your Looker Studio reports to Power BI in seconds — fully automated, zero manual rework.</strong>
+  <strong>Migrez vos rapports Looker Studio vers Power BI en quelques secondes — entièrement automatisé, sans reprise manuelle.</strong>
 </p>
 
 <p align="center">
-  <a href="#-quick-start">Quick Start</a> •
-  <a href="#-key-features">Features</a> •
-  <a href="#-how-it-works">How It Works</a> •
-  <a href="#-supported-sources">Data Sources</a> •
-  <a href="#-deployment">Deployment</a> •
+  <a href="#-quick-start">Démarrage rapide</a> •
+  <a href="#-key-features">Fonctionnalités</a> •
+  <a href="#-how-it-works">Fonctionnement</a> •
+  <a href="#-supported-sources">Sources de données</a> •
+  <a href="#-deployment">Déploiement</a> •
   <a href="#-documentation">Docs</a>
 </p>
 
 ---
 
-## ⚡ Quick Start
+## ⚡ Démarrage rapide
 
 Le moteur consomme toujours le **même contrat d'entrée** : un fichier JSON qui suit le
 schéma du projet (`{ id, title, dataSources[], pages[], visuals[], parameterControls[] }`).
@@ -81,9 +81,9 @@ cd Looker-Studio-To-PowerBI
 python migrate.py report.json
 ```
 
-**Requirements:** Python 3.9+ • No `pip install` needed — pure standard library.
+**Prérequis :** Python 3.9+ • Aucun `pip install` requis — bibliothèque standard pure.
 
-Optional (for Google Sheets, Analytics, or deployment):
+Optionnel (pour Google Sheets, Analytics ou le déploiement) :
 ```bash
 pip install google-api-python-client google-auth-oauthlib azure-identity requests
 ```
@@ -91,104 +91,104 @@ pip install google-api-python-client google-auth-oauthlib azure-identity request
 
 ---
 
-## ✨ Key Features
+## ✨ Fonctionnalités clés
 
-| Feature | Status | Notes |
+| Fonctionnalité | Statut | Notes |
 |---------|--------|-------|
-| **Report & Dashboard Import** | ✅ | Parse Looker Studio JSON schema |
-| **Data Source Mapping** | ✅ | Google Sheets, BigQuery, GA4, Analytics, YouTube |
-| **Control Conversion** | ✅ | Date, text, dropdown filters → Power Query parameters |
-| **Chart/Visual Generation** | ✅ | Scorecards, tables, time series, geo maps |
-| **Formula Conversion** | ✅ | Looker formulas → DAX (180+ mappings) |
-| **Interactive Filters** | ✅ | Cross-report filtering, date range pickers |
-| **Deployment** | ✅ | Deploy to Power BI Service directly |
-| **Batch Migration** | ✅ | Migrate entire report collections |
-| **Assessment Mode** | ✅ | Pre-migration readiness analysis |
-| **Fabric Output** | ✅ | Generate Lakehouse + DirectLake models |
-| **Custom Themes** | ✅ | Brand color mapping (Looker → Power BI) |
+| **Import de rapports & tableaux de bord** | ✅ | Analyse du schéma JSON d'entrée |
+| **Mapping des sources de données** | ✅ | Google Sheets, BigQuery, GA4, Analytics, YouTube |
+| **Conversion des contrôles** | ✅ | Filtres date, texte, listes → paramètres Power Query |
+| **Génération des graphiques/visuels** | ✅ | Scorecards, tables, séries temporelles, cartes géo |
+| **Conversion des formules** | ✅ | Formules Looker → DAX (180+ correspondances) |
+| **Filtres interactifs** | ✅ | Filtrage croisé, sélecteurs de plage de dates |
+| **Déploiement** | ✅ | Déploiement direct vers Power BI Service |
+| **Migration par lot** | ✅ | Migration de collections entières de rapports |
+| **Mode évaluation** | ✅ | Analyse de faisabilité avant migration |
+| **Sortie Fabric** | ✅ | Génération de modèles Lakehouse + DirectLake |
+| **Thèmes personnalisés** | ✅ | Mapping des couleurs de marque (Looker → Power BI) |
 
 ---
 
-## 📋 More Migration Options
+## 📋 Autres options de migration
 
 ```bash
-# 📁 Batch — migrate multiple reports
+# 📁 Lot — migrer plusieurs rapports
 python migrate.py --batch --input-dir reports/ --output-dir /tmp/output
 
-# 🔍 Pre-migration assessment
-python migrate.py --report-id "report_id" --assess
+# 🔍 Évaluation avant migration
+python migrate.py report.json --assess
 
-# 🚀 Migrate + deploy to Power BI Service
-python migrate.py --report-id "report_id" --deploy WORKSPACE_ID
+# 🚀 Migrer + déployer vers Power BI Service
+python migrate.py report.json --deploy WORKSPACE_ID
 
-# 🧙 Interactive wizard (guided step-by-step)
+# 🧙 Assistant interactif (guidé pas à pas)
 python migrate.py --wizard
 
-# 🏭 Fabric-native output (Lakehouse + Dataflow + DirectLake)
+# 🏭 Sortie native Fabric (Lakehouse + Dataflow + DirectLake)
 python migrate.py report.json --output-format fabric
 
-# ⚡ Optimize DAX + auto-inject Time Intelligence
+# ⚡ Optimiser le DAX + injecter l'intelligence temporelle
 python migrate.py report.json --optimize-dax --time-intelligence auto
 
-# 🌐 Map data sources to custom Power BI connections
+# 🌐 Mapper les sources vers des connexions Power BI personnalisées
 python migrate.py report.json --datasource-config config.json
 
-# 📊 Generate migration assessment report
+# 📊 Générer un rapport d'évaluation de migration
 python migrate.py --batch --input-dir reports/ --global-assess
 ```
 
 ---
 
-## 🏗️ How It Works
+## 🏗️ Fonctionnement
 
-### 1️⃣ Extract
-- Provide a report as a JSON input file (this project's input schema) or scan BigQuery sources directly
-- Retrieve Looker Studio report schema & data sources
-- Parse embedded queries, formulas, controls
+### 1️⃣ Extraction
+- Fournir un rapport sous forme de fichier JSON (schéma d'entrée du projet) ou scanner directement les sources BigQuery
+- Récupérer le schéma du rapport et les sources de données
+- Analyser les requêtes, formules et contrôles embarqués
 
-### 2️⃣ Transform
-- Map Looker data sources to Power BI connections
-- Convert Looker formulas to DAX
-- Transform controls to Power Query parameters
-- Optimize table schemas
+### 2️⃣ Transformation
+- Mapper les sources Looker vers des connexions Power BI
+- Convertir les formules Looker en DAX
+- Transformer les contrôles en paramètres Power Query
+- Optimiser les schémas de tables
 
-### 3️⃣ Generate
-- Create PBIP project structure
-- Generate TMDL semantic model
-- Build Power BI report pages & visuals
-- Configure data refresh & deployment
+### 3️⃣ Génération
+- Créer la structure de projet PBIP
+- Générer le modèle sémantique TMDL
+- Construire les pages et visuels du rapport Power BI
+- Configurer le rafraîchissement et le déploiement
 
-### 4️⃣ Deploy (Optional)
-- Publish to Power BI Service
-- Configure row-level security (RLS)
-- Set up refresh schedule
-- Map Looker data permissions
+### 4️⃣ Déploiement (optionnel)
+- Publier vers Power BI Service
+- Configurer la sécurité au niveau des lignes (RLS)
+- Définir la planification du rafraîchissement
+- Mapper les permissions de données Looker
 
 ---
 
-## 📊 Supported Data Sources
+## 📊 Sources de données prises en charge
 
 | Source | Support | Notes |
 |--------|---------|-------|
-| **Google Sheets** | ✅ Full | Query connectors, named ranges |
-| **BigQuery** | ✅ Full | SQL queries, datasets |
-| **Google Analytics 4** | ✅ Full | Dimensions, metrics, segments |
-| **Google Analytics (UA)** | ✅ Full | Legacy property support |
-| **YouTube Analytics** | ✅ Partial | Channel & video metrics |
-| **Admetrics** | ✅ Partial | Ad platform integrations |
-| **SAP Connector** | ⚠️ Manual | Requires custom mapping |
-| **Salesforce** | ⚠️ Manual | Use Power BI native connectors |
-| **Custom SQL** | ✅ Full | Converted to T-SQL / DAX queries |
+| **Google Sheets** | ✅ Complet | Connecteurs de requête, plages nommées |
+| **BigQuery** | ✅ Complet | Requêtes SQL, datasets |
+| **Google Analytics 4** | ✅ Complet | Dimensions, métriques, segments |
+| **Google Analytics (UA)** | ✅ Complet | Support des propriétés legacy |
+| **YouTube Analytics** | ✅ Partiel | Métriques chaîne & vidéo |
+| **Admetrics** | ✅ Partiel | Intégrations plateformes pub |
+| **Connecteur SAP** | ⚠️ Manuel | Nécessite un mapping personnalisé |
+| **Salesforce** | ⚠️ Manuel | Utiliser les connecteurs natifs Power BI |
+| **SQL personnalisé** | ✅ Complet | Converti en requêtes T-SQL / DAX |
 
 ---
 
-## 🔄 Formula Conversion (180+ Functions)
+## 🔄 Conversion des formules (180+ fonctions)
 
-### Common Mappings
+### Correspondances courantes
 
-**Looker Formula** → **DAX Equivalent**
+**Formule Looker** → **Équivalent DAX**
 
-| Looker | Power BI / DAX | Example |
+| Looker | Power BI / DAX | Exemple |
 |--------|---|---------|
 | `CASE` | `SWITCH` | `CASE WHEN x THEN y END` |
 | `CONCAT` | `CONCATENATE` / `&` | `CONCAT(field1, field2)` |
@@ -196,35 +196,35 @@ python migrate.py --batch --input-dir reports/ --global-assess
 | `CURRENT_DATE` | `TODAY()` | `CURRENT_DATE()` |
 | `SAFE_DIVIDE` | `DIVIDE` | `SAFE_DIVIDE(a, b)` → `DIVIDE(a, b)` |
 | `PERCENTILE` | `PERCENTILE.INC` | `PERCENTILE(values, 0.9)` |
-| `RUNNING_TOTAL` | `SUM(..., ALL)` | Windowing functions |
+| `RUNNING_TOTAL` | `SUM(..., ALL)` | Fonctions de fenêtrage |
 
-📖 **Full reference:** [FORMULA_CONVERSION_REFERENCE.md](docs/LOOKER_TO_DAX_REFERENCE.md)
+📖 **Référence complète :** [FORMULA_CONVERSION_REFERENCE.md](docs/LOOKER_TO_DAX_REFERENCE.md)
 
 ---
 
 ## 📚 Documentation
 
-- [Architecture Overview](docs/ARCHITECTURE.md)
-- [Quick Start Guide](docs/QUICK_START.md)
-- [Migration Checklist](docs/MIGRATION_CHECKLIST.md)
-- [Deployment Guide](docs/DEPLOYMENT_GUIDE.md)
-- [Known Limitations](docs/KNOWN_LIMITATIONS.md)
+- [Vue d'ensemble de l'architecture](docs/ARCHITECTURE.md)
+- [Guide de démarrage rapide](docs/QUICK_START.md)
+- [Checklist de migration](docs/MIGRATION_CHECKLIST.md)
+- [Guide de déploiement](docs/DEPLOYMENT_GUIDE.md)
+- [Limitations connues](docs/KNOWN_LIMITATIONS.md)
 - [FAQ](docs/FAQ.md)
-- [Roadmap](docs/ROADMAP.md)
+- [Feuille de route](docs/ROADMAP.md)
 
 ---
 
-## 🚀 Deployment
+## 🚀 Déploiement
 
-### To Power BI Service
+### Vers Power BI Service
 ```bash
 python migrate.py report.json --deploy WORKSPACE_ID \
-    --tenant-id "your-tenant-id" \
-    --client-id "your-app-id" \
-    --client-secret "your-secret"
+    --tenant-id "votre-tenant-id" \
+    --client-id "votre-app-id" \
+    --client-secret "votre-secret"
 ```
 
-### To Fabric (Microsoft Fabric)
+### Vers Microsoft Fabric
 ```bash
 python migrate.py report.json --output-format fabric \
     --deploy-fabric WORKSPACE_ID
@@ -232,25 +232,25 @@ python migrate.py report.json --output-format fabric \
 
 ---
 
-## 🤝 Contributing
+## 🤝 Contribuer
 
-We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details.
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License — see [LICENSE](LICENSE) for details.
+Les contributions sont les bienvenues ! Merci de lire [CONTRIBUTING.md](CONTRIBUTING.md) pour les détails.
 
 ---
 
-## ❓ Support & Community
+## 📄 Licence
+
+Ce projet est sous licence MIT — voir [LICENSE](LICENSE) pour les détails.
+
+---
+
+## ❓ Support & Communauté
 
 - 📖 [Documentation](docs/)
-- 🐛 [Bug Reports](https://github.com/your-org/Looker-Studio-To-PowerBI/issues)
+- 🐛 [Signalement de bugs](https://github.com/your-org/Looker-Studio-To-PowerBI/issues)
 - 💬 [Discussions](https://github.com/your-org/Looker-Studio-To-PowerBI/discussions)
-- 🔗 [Related Tools](https://github.com/your-org/Looker-Studio-To-PowerBI/wiki)
+- 🔗 [Outils associés](https://github.com/your-org/Looker-Studio-To-PowerBI/wiki)
 
 ---
 
-**Made with ❤️ by the Looker Studio → Power BI community**
+**Fait avec ❤️ par la communauté Looker Studio → Power BI**
