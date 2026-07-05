@@ -23,29 +23,49 @@
 
 ## ⚡ Quick Start
 
-### Option 1: Migrate from Looker Studio URL
-```bash
-# Authenticate with Google
-python migrate.py --auth
+The engine always consumes the **same input contract**: a JSON file following this
+project's schema (`{ id, title, dataSources[], pages[], visuals[], parameterControls[] }`).
+Once you have such a file, migration is one command:
 
-# Migrate a report
-python migrate.py --report-id "your_report_id"
-```
-
-### Option 2: Migrate from a JSON input file
 ```bash
 python migrate.py report.json
 ```
 
+> [!IMPORTANT]
+> **Looker Studio has no native JSON export and no public API that returns a report
+> definition.** The internal `datastudio.google.com/api` endpoint returns an HTML login
+> page, not JSON — so any "live extraction by report ID" is not reliable. To feed the
+> engine, use one of the **3 real extraction approaches** below.
+
+### 3 ways to obtain the input JSON
+
+**1️⃣ Screenshot + BigQuery scan (recommended)**
+Capture the Looker report, scan the BigQuery source schema you already have access to,
+then let the tooling rebuild the model and report from scratch.
+```bash
+python examples/generate_sample_reports.py \
+  --schema-file examples/bigquery_schema.generated.json \
+  --screenshot-file report.png --layout-mode auto \
+  --output-dir looker_reports_auto
+python migrate.py looker_reports_auto/<report>.json
+```
+
+**2️⃣ Hand-written input JSON (or a bundled sample)**
+The `looker_reports_*/*.json` files are **samples** that follow the input contract. Copy
+one as a template, adjust data sources / visuals, then migrate.
+```bash
+python migrate.py looker_reports_retail_star/retail_exec_dashboard.json
+```
+
+**3️⃣ DevTools Network capture**
+Open the report → `F12` → **Network** → filter **Fetch/XHR** → reload → find the request
+carrying the report definition → **Copy → Copy response** → save as `report.json`, then
+`python migrate.py report.json`. This is the only way to see Looker Studio's *real*
+internal JSON (undocumented, more complex than the home-made format).
+
 > [!NOTE]
-> `report.json` uses **this project's own input schema** — Looker Studio has **no native
-> JSON export** for report definitions. The bundled `looker_reports_*/*.json` files are
-> **samples**: they don't come out of Looker Studio, they simply follow the input contract
-> the engine expects, which is enough to run the migration pipeline end-to-end and produce
-> a `.pbip`. Use them as a **working template** to reproduce. See
-> [docs/LOOKER_EXTRACTION_GUIDE.md](docs/LOOKER_EXTRACTION_GUIDE.md) for the 3 real ways
-> to obtain a report's structure (screenshot + BigQuery scan, hand-written input JSON, or
-> DevTools Network capture).
+> See [docs/LOOKER_EXTRACTION_GUIDE.md](docs/LOOKER_EXTRACTION_GUIDE.md) for the full
+> details of these 3 approaches.
 
 > [!TIP]
 > The output is a `.pbip` project — just double-click to open in **Power BI Desktop** (December 2025+).
