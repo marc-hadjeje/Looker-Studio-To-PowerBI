@@ -1,0 +1,171 @@
+{
+  "id": "retail_executive",
+  "title": "Retail Executive Looker Studio Example",
+  "description": "Adaptive Looker Studio sample generated from retail_executive (finance profile)",
+  "dataSources": [
+    {
+      "id": "ds_retail_executive",
+      "sourceType": "BigQuery",
+      "name": "Retail Executive",
+      "query": "SELECT d.full_date AS sales_date, p.category AS category, p.brand AS brand, c.segment AS customer_segment, s.region AS store_region, ch.channel_name AS channel_name, f.quantity AS quantity, f.net_sales_amount AS net_sales_amount, f.profit_amount AS profit_amount, f.gross_amount AS gross_amount, f.discount_amount AS discount_amount, f.cost_amount AS cost_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_product` p ON f.product_key = p.product_key JOIN `ferrous-gate-496806-b7.retail_star.dim_customer` c ON f.customer_key = c.customer_key JOIN `ferrous-gate-496806-b7.retail_star.dim_store` s ON f.store_key = s.store_key JOIN `ferrous-gate-496806-b7.retail_star.dim_channel` ch ON f.channel_key = ch.channel_key",
+      "configuration": {
+        "projectId": "ferrous-gate-496806-b7",
+        "datasetId": "retail_star",
+        "table": "retail_executive",
+        "tableId": "retail_executive",
+        "query": "SELECT d.full_date AS sales_date, p.category AS category, p.brand AS brand, c.segment AS customer_segment, s.region AS store_region, ch.channel_name AS channel_name, f.quantity AS quantity, f.net_sales_amount AS net_sales_amount, f.profit_amount AS profit_amount, f.gross_amount AS gross_amount, f.discount_amount AS discount_amount, f.cost_amount AS cost_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_product` p ON f.product_key = p.product_key JOIN `ferrous-gate-496806-b7.retail_star.dim_customer` c ON f.customer_key = c.customer_key JOIN `ferrous-gate-496806-b7.retail_star.dim_store` s ON f.store_key = s.store_key JOIN `ferrous-gate-496806-b7.retail_star.dim_channel` ch ON f.channel_key = ch.channel_key"
+      }
+    }
+  ],
+  "parameterControls": [
+    {
+      "id": "ctrl_retail_executive_date_range",
+      "name": "Date Range",
+      "type": "DateRange",
+      "defaultValue": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-12-31"
+      },
+      "linkedField": "sales_date"
+    },
+    {
+      "id": "ctrl_retail_executive_dimension",
+      "name": "category",
+      "type": "Dropdown",
+      "options": [],
+      "multiSelect": true,
+      "linkedField": "category"
+    }
+  ],
+  "pages": [
+    {
+      "id": "page_retail_executive_overview",
+      "name": "Overview",
+      "layout": {
+        "rows": 3,
+        "columns": 4
+      },
+      "visuals": [
+        {
+          "id": "visual_retail_executive_scorecard_1",
+          "name": "Total Records",
+          "type": "Scorecard",
+          "position": {
+            "row": 0,
+            "column": 0,
+            "width": 1,
+            "height": 1
+          },
+          "dataSourceId": "ds_retail_executive",
+          "configuration": {
+            "metric": "COUNT(*)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_retail_executive_scorecard_2",
+          "name": "Primary Metric",
+          "type": "Scorecard",
+          "position": {
+            "row": 0,
+            "column": 1,
+            "width": 1,
+            "height": 1
+          },
+          "dataSourceId": "ds_retail_executive",
+          "configuration": {
+            "metric": "SUM(net_sales_amount)",
+            "dimensions": []
+          }
+        },
+        {
+          "id": "visual_retail_executive_trend",
+          "name": "Retail Executive Trend",
+          "type": "LineChart",
+          "position": {
+            "row": 1,
+            "column": 0,
+            "width": 2,
+            "height": 1
+          },
+          "dataSourceId": "ds_retail_executive",
+          "configuration": {
+            "xAxis": "DATE_TRUNC(sales_date, MONTH)",
+            "yAxis": "SUM(net_sales_amount)",
+            "legend": false
+          }
+        },
+        {
+          "id": "visual_retail_executive_breakdown",
+          "name": "Retail Executive by category",
+          "type": "ColumnChart",
+          "position": {
+            "row": 1,
+            "column": 2,
+            "width": 2,
+            "height": 1
+          },
+          "dataSourceId": "ds_retail_executive",
+          "configuration": {
+            "xAxis": "category",
+            "yAxis": "SUM(net_sales_amount)",
+            "sort": "descending"
+          }
+        },
+        {
+          "id": "visual_retail_executive_table",
+          "name": "Retail Executive Details",
+          "type": "Table",
+          "position": {
+            "row": 2,
+            "column": 0,
+            "width": 4,
+            "height": 1
+          },
+          "dataSourceId": "ds_retail_executive",
+          "configuration": {
+            "dimensions": [
+              "category",
+              "sales_date"
+            ],
+            "metrics": [
+              "net_sales_amount"
+            ],
+            "sort": "net_sales_amount DESC",
+            "limit": 20
+          }
+        }
+      ]
+    }
+  ],
+  "calculatedFields": [
+    {
+      "id": "calc_retail_executive_metric",
+      "name": "net_sales_amount Total",
+      "formula": "SUM(net_sales_amount)",
+      "description": "Aggregated metric for net_sales_amount"
+    }
+  ],
+  "generatedFromTableSchema": {
+    "profile": "finance",
+    "dateColumn": "sales_date",
+    "dimensionColumn": "category",
+    "metricColumn": "net_sales_amount",
+    "columns": [
+      "sales_date",
+      "category",
+      "brand",
+      "customer_segment",
+      "store_region",
+      "channel_name",
+      "quantity",
+      "net_sales_amount",
+      "profit_amount",
+      "gross_amount",
+      "discount_amount",
+      "cost_amount"
+    ]
+  },
+  "generatedAt": "2026-07-06T13:45:32.730374",
+  "version": "2.0"
+}

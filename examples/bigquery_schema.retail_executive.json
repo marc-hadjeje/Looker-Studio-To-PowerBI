@@ -1,0 +1,26 @@
+{
+  "projectId": "ferrous-gate-496806-b7",
+  "defaultDatasetId": "retail_star",
+  "tables": [
+    {
+      "table": "retail_executive",
+      "name": "Retail Executive",
+      "preferredReport": "finance",
+      "query": "SELECT d.full_date AS sales_date, p.category AS category, p.brand AS brand, c.segment AS customer_segment, s.region AS store_region, ch.channel_name AS channel_name, f.quantity AS quantity, f.net_sales_amount AS net_sales_amount, f.profit_amount AS profit_amount, f.gross_amount AS gross_amount, f.discount_amount AS discount_amount, f.cost_amount AS cost_amount FROM `ferrous-gate-496806-b7.retail_star.fact_sales` f JOIN `ferrous-gate-496806-b7.retail_star.dim_date` d ON f.date_key = d.date_key JOIN `ferrous-gate-496806-b7.retail_star.dim_product` p ON f.product_key = p.product_key JOIN `ferrous-gate-496806-b7.retail_star.dim_customer` c ON f.customer_key = c.customer_key JOIN `ferrous-gate-496806-b7.retail_star.dim_store` s ON f.store_key = s.store_key JOIN `ferrous-gate-496806-b7.retail_star.dim_channel` ch ON f.channel_key = ch.channel_key",
+      "columns": [
+        { "name": "sales_date", "type": "DATE" },
+        { "name": "category", "type": "STRING" },
+        { "name": "brand", "type": "STRING" },
+        { "name": "customer_segment", "type": "STRING" },
+        { "name": "store_region", "type": "STRING" },
+        { "name": "channel_name", "type": "STRING" },
+        { "name": "quantity", "type": "INT64" },
+        { "name": "net_sales_amount", "type": "NUMERIC" },
+        { "name": "profit_amount", "type": "NUMERIC" },
+        { "name": "gross_amount", "type": "NUMERIC" },
+        { "name": "discount_amount", "type": "NUMERIC" },
+        { "name": "cost_amount", "type": "NUMERIC" }
+      ]
+    }
+  ]
+}

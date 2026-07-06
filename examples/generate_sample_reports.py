@@ -9,7 +9,6 @@ import copy
 import json
 import os
 import re
-import struct
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -23,304 +22,6 @@ def load_json_file(file_path: str) -> Dict[str, Any]:
 def slugify(value: str) -> str:
     value = re.sub(r'[^a-zA-Z0-9]+', '_', value.strip().lower())
     return value.strip('_') or 'report'
-
-
-def get_image_size(image_path: str) -> Optional[Tuple[int, int]]:
-    """Get image dimensions from common formats (PNG/JPEG) without extra dependencies."""
-    path = Path(image_path)
-    if not path.exists() or not path.is_file():
-        return None
-
-    with open(path, 'rb') as handle:
-        header = handle.read(24)
-
-    # PNG: width/height in IHDR (bytes 16..24)
-    if header.startswith(b'\x89PNG\r\n\x1a\n') and len(header) >= 24:
-        width, height = struct.unpack('>II', header[16:24])
-        return int(width), int(height)
-
-    # JPEG fallback: use Pillow if available
-    if path.suffix.lower() in {'.jpg', '.jpeg'}:
-        try:
-            from PIL import Image  # type: ignore
-            with Image.open(path) as image:
-                return int(image.width), int(image.height)
-        except Exception:
-            return None
-
-    return None
-
-
-def infer_layout_profile_from_screenshot(screenshot_file: str) -> Tuple[str, Optional[Tuple[int, int]]]:
-    """Infer a coarse layout profile from screenshot dimensions."""
-    size = get_image_size(screenshot_file)
-    if not size:
-        return 'desktop', None
-
-    width, height = size
-    if width <= 0 or height <= 0:
-        return 'desktop', None
-
-    ratio = width / height
-    if ratio < 0.9:
-        return 'mobile', size
-    if ratio < 1.5:
-        return 'tablet', size
-    return 'desktop', size
-
-
-def detect_visual_blocks_from_screenshot(
-    screenshot_file: str,
-    max_blocks: int = 5,
-) -> List[Dict[str, float]]:
-    """
-    Detect likely visual blocks in a dashboard screenshot.
-
-    Returns a list of normalized rectangles: [{x,y,w,h}] where values are in [0,1].
-    Falls back to empty list if Pillow is unavailable or analysis fails.
-    """
-    try:
-        from PIL import Image  # type: ignore
-    except Exception:
-        return []
-
-
-def export_detection_debug_artifacts(
-    screenshot_file: str,
-    blocks: List[Dict[str, float]],
-    output_dir: Path,
-) -> Optional[Path]:
-    """Export debug artifacts for visual block detection.
-
-    Creates:
-    - Annotated image with detected blocks
-    - JSON metadata with normalized block coordinates
-    """
-    try:
-        from PIL import Image, ImageDraw  # type: ignore
-    except Exception:
-        return None
-
-    try:
-        source = Path(screenshot_file)
-        if not source.exists() or not source.is_file():
-            return None
-
-        debug_dir = output_dir / '_debug'
-        debug_dir.mkdir(parents=True, exist_ok=True)
-
-        with Image.open(source) as image:
-            canvas = image.convert('RGB')
-            draw = ImageDraw.Draw(canvas)
-            width, height = canvas.size
-
-            for index, block in enumerate(blocks):
-                x0 = int(block['x'] * width)
-                y0 = int(block['y'] * height)
-                x1 = int((block['x'] + block['w']) * width)
-                y1 = int((block['y'] + block['h']) * height)
-                draw.rectangle([(x0, y0), (x1, y1)], outline=(255, 64, 64), width=3)
-                draw.text((x0 + 4, max(0, y0 - 16)), f"#{index + 1}", fill=(255, 64, 64))
-
-            annotated_path = debug_dir / f"{source.stem}.annotated{source.suffix}"
-            canvas.save(annotated_path)
-
-        metadata_path = debug_dir / f"{source.stem}.blocks.json"
-        with open(metadata_path, 'w', encoding='utf-8') as handle:
-            json.dump({'screenshot': str(source), 'blocks': blocks}, handle, indent=2)
-
-        return annotated_path
-
-    except Exception:
-        return None
-
-    try:
-        with Image.open(screenshot_file) as image:
-            gray = image.convert('L')
-            width, height = gray.size
-            if width < 40 or height < 40:
-                return []
-
-            # Downscale for cheap connected-component analysis.
-            max_dim = 320
-            scale = min(1.0, max_dim / float(max(width, height)))
-            if scale < 1.0:
-                small_w = max(40, int(width * scale))
-                small_h = max(40, int(height * scale))
-                gray = gray.resize((small_w, small_h))
-
-            w, h = gray.size
-            pix = list(gray.getdata())
-
-            # Estimate background luminance from borders.
-            border_values: List[int] = []
-            for x in range(w):
-                border_values.append(pix[x])
-                border_values.append(pix[(h - 1) * w + x])
-            for y in range(h):
-                border_values.append(pix[y * w])
-                border_values.append(pix[y * w + (w - 1)])
-
-            border_values.sort()
-            bg = border_values[len(border_values) // 2]
-
-            # Create foreground mask where luminance differs enough from background.
-            delta = 18
-            fg = [abs(v - bg) > delta for v in pix]
-
-            visited = [False] * (w * h)
-            components: List[Tuple[int, int, int, int, int]] = []  # x0,y0,x1,y1,area
-            min_area = max(35, int((w * h) * 0.006))
-
-            # 4-neighbor flood fill.
-            for y in range(h):
-                row_offset = y * w
-                for x in range(w):
-                    idx = row_offset + x
-                    if visited[idx] or not fg[idx]:
-                        continue
-
-                    stack = [idx]
-                    visited[idx] = True
-                    x0 = x1 = x
-                    y0 = y1 = y
-                    area = 0
-
-                    while stack:
-                        cur = stack.pop()
-                        cx = cur % w
-                        cy = cur // w
-                        area += 1
-                        if cx < x0:
-                            x0 = cx
-                        if cx > x1:
-                            x1 = cx
-                        if cy < y0:
-                            y0 = cy
-                        if cy > y1:
-                            y1 = cy
-
-                        # left
-                        if cx > 0:
-                            n = cur - 1
-                            if not visited[n] and fg[n]:
-                                visited[n] = True
-                                stack.append(n)
-                        # right
-                        if cx < w - 1:
-                            n = cur + 1
-                            if not visited[n] and fg[n]:
-                                visited[n] = True
-                                stack.append(n)
-                        # up
-                        if cy > 0:
-                            n = cur - w
-                            if not visited[n] and fg[n]:
-                                visited[n] = True
-                                stack.append(n)
-                        # down
-                        if cy < h - 1:
-                            n = cur + w
-                            if not visited[n] and fg[n]:
-                                visited[n] = True
-                                stack.append(n)
-
-                    box_w = x1 - x0 + 1
-                    box_h = y1 - y0 + 1
-                    if area >= min_area and box_w >= 16 and box_h >= 10:
-                        components.append((x0, y0, x1, y1, area))
-
-            if not components:
-                return []
-
-            # Keep larger components and order like dashboard reading flow.
-            components.sort(key=lambda c: c[4], reverse=True)
-            components = components[: max_blocks * 2]
-            components.sort(key=lambda c: (c[1], c[0]))
-            components = components[:max_blocks]
-
-            blocks: List[Dict[str, float]] = []
-            for x0, y0, x1, y1, _ in components:
-                blocks.append(
-                    {
-                        'x': max(0.0, min(1.0, x0 / float(w))),
-                        'y': max(0.0, min(1.0, y0 / float(h))),
-                        'w': max(0.02, min(1.0, (x1 - x0 + 1) / float(w))),
-                        'h': max(0.02, min(1.0, (y1 - y0 + 1) / float(h))),
-                    }
-                )
-
-            return blocks
-
-    except Exception:
-        return []
-
-
-def apply_layout_from_blocks(visuals: List[Dict[str, Any]], blocks: List[Dict[str, float]]) -> bool:
-    """Apply a layout inferred from screenshot blocks. Returns True if applied."""
-    if not blocks:
-        return False
-
-    # Map normalized coordinates to an integer dashboard grid.
-    grid_cols = 4
-    grid_rows = 6
-
-    for index, visual in enumerate(visuals):
-        if index >= len(blocks):
-            break
-        b = blocks[index]
-        col = int(round(b['x'] * (grid_cols - 1)))
-        row = int(round(b['y'] * (grid_rows - 1)))
-        width = max(1, int(round(b['w'] * grid_cols)))
-        height = max(1, int(round(b['h'] * grid_rows)))
-
-        if col + width > grid_cols:
-            width = max(1, grid_cols - col)
-        if row + height > grid_rows:
-            height = max(1, grid_rows - row)
-
-        visual['position'] = {
-            'row': row,
-            'column': col,
-            'width': width,
-            'height': height,
-        }
-
-    return True
-
-
-def apply_layout_profile(visuals: List[Dict[str, Any]], profile: str) -> None:
-    """Apply layout coordinates based on profile inferred from screenshot."""
-    if profile == 'mobile':
-        positions = [
-            {'row': 0, 'column': 0, 'width': 1, 'height': 1},
-            {'row': 1, 'column': 0, 'width': 1, 'height': 1},
-            {'row': 2, 'column': 0, 'width': 1, 'height': 1},
-            {'row': 3, 'column': 0, 'width': 1, 'height': 1},
-            {'row': 4, 'column': 0, 'width': 1, 'height': 1},
-        ]
-    elif profile == 'tablet':
-        positions = [
-            {'row': 0, 'column': 0, 'width': 1, 'height': 1},
-            {'row': 0, 'column': 1, 'width': 1, 'height': 1},
-            {'row': 1, 'column': 0, 'width': 2, 'height': 1},
-            {'row': 2, 'column': 0, 'width': 2, 'height': 1},
-            {'row': 3, 'column': 0, 'width': 2, 'height': 1},
-        ]
-    else:
-        # Desktop-wide default
-        positions = [
-            {'row': 0, 'column': 0, 'width': 1, 'height': 1},
-            {'row': 0, 'column': 1, 'width': 1, 'height': 1},
-            {'row': 1, 'column': 0, 'width': 2, 'height': 1},
-            {'row': 1, 'column': 2, 'width': 2, 'height': 1},
-            {'row': 2, 'column': 0, 'width': 4, 'height': 1},
-        ]
-
-    for index, visual in enumerate(visuals):
-        if index >= len(positions):
-            break
-        visual['position'] = positions[index]
 
 
 def normalize_columns(raw_columns: Any) -> List[Dict[str, Any]]:
@@ -413,10 +114,32 @@ def infer_dimension_column(columns: List[Dict[str, Any]]) -> Optional[str]:
 
 def infer_metric_column(columns: List[Dict[str, Any]]) -> Optional[str]:
     preferred_tokens = ('amount', 'revenue', 'sales', 'value', 'cost', 'price', 'budget', 'profit', 'margin', 'score', 'click', 'impression', 'conversion', 'order')
+    date_tokens = ('date', 'time', 'timestamp')
+    numeric_types = ('int', 'float', 'numeric', 'bignumeric', 'number', 'decimal', 'double')
+
+    def is_numeric(column: Dict[str, Any]) -> bool:
+        column_type = (column.get('type') or '').lower()
+        # When the type is unknown, don't exclude the column on type grounds.
+        return any(token in column_type for token in numeric_types) if column_type else True
+
+    # First pass: a preferred metric token on a numeric, non-date column.
     for column in columns:
         lower_name = column.get('name', '').lower()
+        if any(token in lower_name for token in date_tokens):
+            continue
+        if not is_numeric(column):
+            continue
         if any(token in lower_name for token in preferred_tokens):
             return column.get('name')
+
+    # Fallback: first numeric, non-date column.
+    for column in columns:
+        lower_name = column.get('name', '').lower()
+        if any(token in lower_name for token in date_tokens):
+            continue
+        if is_numeric(column):
+            return column.get('name')
+
     return None
 
 
@@ -472,14 +195,7 @@ def customize_report(template: dict, project_id: str, dataset_id: str) -> dict:
     return report
 
 
-def build_adaptive_report(
-    table: Dict[str, Any],
-    default_project_id: str,
-    default_dataset_id: str,
-    layout_profile: str = 'desktop',
-    screenshot_size: Optional[Tuple[int, int]] = None,
-    detected_blocks: Optional[List[Dict[str, float]]] = None,
-) -> Dict[str, Any]:
+def build_adaptive_report(table: Dict[str, Any], default_project_id: str, default_dataset_id: str) -> Dict[str, Any]:
     table_name = table['table']
     report_name = table.get('name') or table_name
     columns = table.get('columns', [])
@@ -556,10 +272,6 @@ def build_adaptive_report(
         }
     )
 
-    blocks_used = apply_layout_from_blocks(visuals, detected_blocks or [])
-    if not blocks_used:
-        apply_layout_profile(visuals, layout_profile)
-
     report = {
         'id': slugify(table_name),
         'title': f'{report_name} Looker Studio Example',
@@ -630,24 +342,12 @@ def build_adaptive_report(
         'dimensionColumn': dimension_column,
         'metricColumn': metric_column,
         'columns': [column.get('name') for column in columns],
-        'layoutProfile': layout_profile,
-        'screenshotSize': list(screenshot_size) if screenshot_size else None,
-        'detectedBlocks': detected_blocks or [],
-        'layoutSource': 'screenshot-blocks' if blocks_used else 'profile-ratio',
     }
 
     return report
 
 
-def generate_reports_from_schema(
-    schema_file: str,
-    project_id: str,
-    dataset_id: str,
-    output_dir: Path,
-    screenshot_file: str = '',
-    layout_mode: str = 'auto',
-    debug_visual_detection: bool = False,
-) -> None:
+def generate_reports_from_schema(schema_file: str, project_id: str, dataset_id: str, output_dir: Path) -> None:
     schema = load_json_file(schema_file)
     _, tables = normalize_table_definitions(schema)
 
@@ -660,43 +360,8 @@ def generate_reports_from_schema(
     print(f"   Tables found: {len(tables)}")
     print(f"   Output: {output_dir}\n")
 
-    layout_profile = 'desktop'
-    screenshot_size: Optional[Tuple[int, int]] = None
-    detected_blocks: List[Dict[str, float]] = []
-    if screenshot_file:
-        layout_profile, screenshot_size = infer_layout_profile_from_screenshot(screenshot_file)
-        if layout_mode in {'auto', 'blocks'}:
-            detected_blocks = detect_visual_blocks_from_screenshot(screenshot_file)
-        if screenshot_size:
-            print(
-                f"   Screenshot: {screenshot_file} "
-                f"({screenshot_size[0]}x{screenshot_size[1]}) -> layout={layout_profile}"
-            )
-        else:
-            print(f"   Screenshot unreadable: {screenshot_file} -> fallback layout=desktop")
-
-        if detected_blocks:
-            print(f"   Visual blocks detected: {len(detected_blocks)}")
-        elif layout_mode == 'blocks':
-            print("   No visual blocks detected -> fallback profile layout")
-
-        if debug_visual_detection:
-            artifact = export_detection_debug_artifacts(screenshot_file, detected_blocks, output_dir)
-            if artifact:
-                print(f"   Debug artifact: {artifact}")
-            else:
-                print("   Debug artifact: unavailable (Pillow missing or screenshot not readable)")
-        print()
-
     for table in tables:
-        report = build_adaptive_report(
-            table,
-            project_id,
-            dataset_id,
-            layout_profile=layout_profile,
-            screenshot_size=screenshot_size,
-            detected_blocks=detected_blocks,
-        )
+        report = build_adaptive_report(table, project_id, dataset_id)
         output_path = output_dir / f"{slugify(table['table'])}.json"
         generate_sample_report(report, str(output_path))
 
@@ -741,22 +406,6 @@ def main() -> None:
     parser.add_argument('--dataset-id', default='', help='BigQuery dataset ID (optional)')
     parser.add_argument('--output-dir', default='./looker_reports/', help='Output directory for reports (default: ./looker_reports/)')
     parser.add_argument('--schema-file', default='', help='Adaptive BigQuery schema file (JSON)')
-    parser.add_argument(
-        '--screenshot-file',
-        default='',
-        help='Optional Looker Studio screenshot used to infer layout profile (desktop/tablet/mobile)',
-    )
-    parser.add_argument(
-        '--layout-mode',
-        choices=['auto', 'ratio', 'blocks'],
-        default='auto',
-        help='Layout strategy with screenshot: auto (blocks then ratio), ratio only, or blocks preferred',
-    )
-    parser.add_argument(
-        '--debug-visual-detection',
-        action='store_true',
-        help='Export screenshot debug artifacts (annotated image + blocks JSON) when --screenshot-file is provided',
-    )
     parser.add_argument('--all', action='store_true', help='Generate all sample reports (default: true if no specific report specified)')
     parser.add_argument('--sales', action='store_true', help='Generate sales dashboard')
     parser.add_argument('--marketing', action='store_true', help='Generate marketing report')
@@ -769,15 +418,7 @@ def main() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if args.schema_file:
-        generate_reports_from_schema(
-            args.schema_file,
-            args.project_id,
-            args.dataset_id,
-            output_dir,
-            screenshot_file=args.screenshot_file,
-            layout_mode=args.layout_mode,
-            debug_visual_detection=args.debug_visual_detection,
-        )
+        generate_reports_from_schema(args.schema_file, args.project_id, args.dataset_id, output_dir)
         return
 
     selected_reports: List[str] = []
